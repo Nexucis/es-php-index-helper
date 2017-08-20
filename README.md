@@ -1,1 +1,1 @@
-# es-php-index-helper
+# Elasticsearch Index Helper for php
