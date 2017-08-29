@@ -2,6 +2,7 @@
 ### Composer files
 composer.phar
 /vendor/
+composer.lock
 
 # intelliJ files
 .idea/
