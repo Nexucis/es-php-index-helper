@@ -10,7 +10,8 @@ use Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
 
 /**
  * Class ManageIndex : This class can help you to manage your index with the alias management.
- * According to this link https://www.elastic.co/guide/en/elasticsearch/guide/master/index-aliases.html, alias management allow to use with no downtime your index.
+ * According to this link https://www.elastic.co/guide/en/elasticsearch/guide/master/index-aliases.html,
+ * alias management allow to use with no downtime your index.
  *
  * @category Elasticsearch Helper
  * @package  Elasticsearch\Helper\Nodowntime
@@ -147,7 +148,7 @@ class ManageIndex implements ManageIndexInterface
         }
 
         // currently, the reindex api doesn't work when there are no documents inside the index source
-        //So if there are some documents to copy and if the reindex Api send an error, we throw a RuntimeException
+        // So if there are some documents to copy and if the reindex Api send an error, we throw a RuntimeException
         if (($this->countDocuments($index_src) !== 0) && !$this->copyDocuments($index_src, $index_dest)) {
             $this->deleteIndex($index_dest);
             throw new RuntimeException('reindex failed');
@@ -195,7 +196,8 @@ class ManageIndex implements ManageIndexInterface
      *
      * @param string $alias [REQUIRED]
      * @param array $settings [REQUIRED]
-     * @param bool $needReindexation : The process of reindexation can be so long, instead of calling reindex method inside this method, you may want to call it in an asynchronous process.
+     * @param bool $needReindexation : The process of reindexation can be so long, instead of calling reindex method inside this method,
+     * you may want to call it in an asynchronous process.
      * But if you pass this parameters to false, don't forget to reindex. If you don't do it, you will not see your modification of the settings
      * @return void
      * @throws RuntimeException
@@ -242,7 +244,8 @@ class ManageIndex implements ManageIndexInterface
     /**
      * @param string $alias [REQUIRED]
      * @param array $mapping [REQUIRED]
-     * @param bool $needReindexation : The process of reindexation can be so long, instead of calling reindex method inside this method, you may want to call it in an asynchronous process.
+     * @param bool $needReindexation : The process of reindexation can be so long, instead of calling reindex method inside this method,
+     * you may want to call it in an asynchronous process.
      * But if you pass this parameters to false, don't forget to reindex. If you don't do it, you will not see your modification of the mappings
      * @return void
      * @throws RuntimeException
