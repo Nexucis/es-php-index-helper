@@ -1,18 +1,18 @@
 <?php
 
 
-namespace Elasticsearch\Helper\Nodowntime;
+namespace Nexucis\Elasticsearch\Helper\Nodowntime;
 
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\BadMethodCallException;
 use Elasticsearch\Common\Exceptions\RuntimeException;
-use Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
+use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
 
 /**
  * Class ManageIndexInterface
  *
  * @category Elasticsearch Helper
- * @package  Elasticsearch\Helper\Nodowntime
+ * @package  Nexucis\Elasticsearch\Helper\Nodowntime
  * @author   Augustin Husson <husson.augustin@gmail.com>
  * @license  MIT
  */
