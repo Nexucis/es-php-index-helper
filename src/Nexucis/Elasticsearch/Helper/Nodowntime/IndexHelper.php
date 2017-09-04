@@ -331,37 +331,26 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param string $alias [REQUIRED]
+     * @param int $from the offset from the first result you want to fetch (0 by default)
+     * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
      * @return array
      * @throws IndexNotFoundException
      */
-    public function getAllDocuments($alias)
+    public function getAllDocuments($alias, $from = 0, $size = 10)
     {
-        if (!$this->existsAlias($alias)) {
-            throw new IndexNotFoundException('$index ' . $alias . ' not found');
-        }
-
-        $params = array(
-            'index' => $alias,
-            'body' => array(
-                'query' => array(
-                    'match_all' => array()
-                )
-            )
-        );
-
-        return $this->client->search($params);
+        return $this->searchDocuments($alias, null, null, $from, $size);
     }
 
     /**
      * @param string $alias [REQUIRED]
      * @param array $query [REQUIRED]
      * @param null|string $type
-     * @param int $size
-     * @param int $from
+     * @param int $from the offset from the first result you want to fetch (0 by default)
+     * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
      * @return array
      * @throws IndexNotFoundException
      */
-    public function searchDocuments($alias, $query, $type = null, $size = 10, $from = 0)
+    public function searchDocuments($alias, $query, $type = null, $from = 0, $size = 10)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException('$index ' . $alias . ' not found');
@@ -371,10 +360,11 @@ class IndexHelper implements IndexHelperInterface
             'index' => $alias,
             'size' => $size,
             'from' => $from,
-            'body' => array(
-                'query' => $query
-            ),
         );
+
+        if ($query != null && is_array($query)) {
+            $params['body'] = array('query' => $query);
+        }
 
         if ($type !== null) {
             $params['type'] = $type;

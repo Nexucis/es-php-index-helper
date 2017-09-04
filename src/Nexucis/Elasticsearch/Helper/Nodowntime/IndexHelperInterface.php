@@ -115,19 +115,21 @@ interface IndexHelperInterface
 
     /**
      * @param string $alias [REQUIRED]
+     * @param int $from the offset from the first result you want to fetch (0 by default)
+     * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
      * @return array
      */
-    public function getAllDocuments($alias);
+    public function getAllDocuments($alias, $from = 0, $size = 10);
 
     /**
      * @param string $alias [REQUIRED]
      * @param array $query [REQUIRED]
      * @param null|string $type
-     * @param int $size
-     * @param int $from
+     * @param int $from the offset from the first result you want to fetch (0 by default)
+     * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
      * @return array
      */
-    public function searchDocuments($alias, $query, $type = null, $size = 10, $from = 0);
+    public function searchDocuments($alias, $query, $type = null, $from = 0, $size = 10);
 
     /**
      * @param string $index [REQUIRED]
