@@ -9,14 +9,14 @@ use Elasticsearch\Common\Exceptions\RuntimeException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
 
 /**
- * Class ManageIndexInterface
+ * Class IndexHelperInterface
  *
  * @category Elasticsearch Helper
  * @package  Nexucis\Elasticsearch\Helper\Nodowntime
  * @author   Augustin Husson <husson.augustin@gmail.com>
  * @license  MIT
  */
-interface ManageIndexInterface
+interface IndexHelperInterface
 {
 
     /**

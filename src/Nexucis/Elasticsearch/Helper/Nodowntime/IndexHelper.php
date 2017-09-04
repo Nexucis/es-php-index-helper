@@ -9,7 +9,7 @@ use Elasticsearch\Common\Exceptions\RuntimeException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
 
 /**
- * Class ManageIndex : This class can help you to manage your index with the alias management.
+ * Class IndexHelper : This class can help you to manage your index with the alias management.
  * According to this link https://www.elastic.co/guide/en/elasticsearch/guide/master/index-aliases.html,
  * alias management allow to use with no downtime your index.
  *
@@ -18,7 +18,7 @@ use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
  * @author   Augustin Husson <husson.augustin@gmail.com>
  * @license  MIT
  */
-class ManageIndex implements ManageIndexInterface
+class IndexHelper implements IndexHelperInterface
 {
     /**
      * @var Client
