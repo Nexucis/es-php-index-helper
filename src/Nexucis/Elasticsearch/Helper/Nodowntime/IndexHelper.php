@@ -406,39 +406,30 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * To use this method you need to install the plugin delete-by-query
-     * @see https://www.elastic.co/guide/en/elasticsearch/plugins/current/plugins-delete-by-query.html
+     * Remove all documents from the given index seen through its alias
      *
      * @param string $alias [REQUIRED]
-     * @param null|string $type : if the type is null, this method will delete all documents from the index pointed by $alias
      * @return boolean
      * @throws IndexNotFoundException
      */
-    public function deleteDocuments($alias, $type = null)
+    public function deleteAllDocuments($alias)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException('$index ' . $alias . ' not found');
         }
 
-        $params = array(
-            'index' => $alias,
-            'body' => array(
-                'query' => array(
-                    'match_all' => array()
-                ),
-            )
-        );
+        $index_src = $this->findIndexByAlias($alias);
+        $index_dest = $this->getIndexDest($alias, $index_src);
 
-        if ($type !== null) {
-            $params['type'] = $type;
+        if($this->existsIndex($index_dest)){
+            $this->deleteIndex($index_dest);
         }
 
-        $response = $this->client->deleteByQuery($params);
+        $this->copyMappingAndSetting($index_src, $index_dest);
 
-        return ($response['_indices']['_all']['found'] > 0
-            && $response['_indices']['_all']['found'] === $response['_indices']['_all']['deleted']
-            && $response['_indices']['_all']['missing'] === 0
-            && $response['_indices']['_all']['failed'] === 0);
+        $this->switchIndex($alias, $index_src, $index_dest);
+
+        $this->deleteIndex($index_src);
     }
 
     /**

@@ -152,14 +152,13 @@ interface IndexHelperInterface
     public function addDocument($index, $id, $type, $body);
 
     /**
-     * To use this method you need to install the plugin delete-by-query
-     * @see https://www.elastic.co/guide/en/elasticsearch/plugins/current/plugins-delete-by-query.html
+     * Remove all documents from the given index seen through its alias
      *
      * @param string $alias [REQUIRED]
-     * @param null|string $type : if the type is null, this method will delete all documents from the index pointed by $alias
      * @return boolean
+     * @throws IndexNotFoundException
      */
-    public function deleteDocuments($alias, $type = null);
+    public function deleteAllDocuments($alias);
 
     /**
      * @param $alias [REQUIRED]
