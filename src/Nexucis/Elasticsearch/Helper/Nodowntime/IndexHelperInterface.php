@@ -155,7 +155,7 @@ interface IndexHelperInterface
      * Remove all documents from the given index seen through its alias
      *
      * @param string $alias [REQUIRED]
-     * @return boolean
+     * @return void
      * @throws IndexNotFoundException
      */
     public function deleteAllDocuments($alias);
