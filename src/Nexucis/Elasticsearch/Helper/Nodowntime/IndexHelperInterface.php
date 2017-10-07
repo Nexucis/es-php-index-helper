@@ -146,21 +146,21 @@ interface IndexHelperInterface
     public function searchDocuments($alias, $query, $type = null, $from = 0, $size = 10);
 
     /**
-     * @param string $index [REQUIRED]
+     * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index
      * @param $id [REQUIRED]
      * @param string $type [REQUIRED]
-     * @param array $body [REQUIRED]
-     * @return boolean
+     * @param array $body [REQUIRED] : actual document to update
+     * @return boolean : true if the document has been updated. Otherwise, the document has been created.
      * @throws IndexNotFoundException
      */
     public function updateDocument($index, $id, $type, $body);
 
     /**
-     * @param string $index [REQUIRED]
+     * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index
      * @param $id [REQUIRED]
      * @param string $type [REQUIRED]
-     * @param array $body [REQUIRED]
-     * @return boolean
+     * @param array $body [REQUIRED] : actual document to create
+     * @return boolean : true if the document has been created.
      * @throws IndexNotFoundException
      */
     public function addDocument($index, $id, $type, $body);
