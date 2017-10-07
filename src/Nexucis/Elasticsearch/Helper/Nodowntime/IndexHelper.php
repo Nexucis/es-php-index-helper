@@ -245,7 +245,12 @@ class IndexHelper implements IndexHelperInterface
             $this->deleteIndex($indexDest);
         }
 
-        $mappings = $this->getMappingByIndex($indexSrc)[$indexSrc]['mappings'];
+        $mapping = $this->getMappingByIndex($indexSrc)[$indexSrc];
+        $mappingSource = null;
+
+        if ($mapping && is_array($mapping) && array_key_exists('mappings', $mapping)) {
+            $mappingSource = $mapping['mappings'];
+        }
 
         $params = array(
             'index' => $indexDest,
@@ -257,11 +262,9 @@ class IndexHelper implements IndexHelperInterface
             );
         }
 
-        if (is_array($mappings) && count($mappings) > 0) {
-            if ($params['body'] === null) {
-                $params['body'] = array();
-            }
-            $params['body']['mappings'] = $mappings;
+        if (($mappingSource !== null) && is_array($mappingSource) && (count($mappingSource) !== 0)) {
+            $this->createBody($params);
+            $params['body']['mappings'] = $mappingSource;
         }
 
         $result = $this->client->indices()->create($params);
@@ -592,26 +595,30 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * @param $index_source
-     * @param $index_dest
+     * @param $indexSource
+     * @param $indexDest
      */
-    protected function copyMappingAndSetting($index_source, $index_dest)
+    protected function copyMappingAndSetting($indexSource, $indexDest)
     {
         $params = array(
-            'index' => $index_dest,
+            'index' => $indexDest,
         );
 
-        $mappingSource = $this->getMappingByIndex($index_source)[$index_source]['mappings'];
+        $mapping = $this->getMappingByIndex($indexSource)[$indexSource];
+        $mappingSource = null;
 
-        $settingSource = $this->getSettingsByIndex($index_source)[$index_source]['settings']['index'];
+        if ($mapping && is_array($mapping) && array_key_exists('mappings', $mapping)) {
+            $mappingSource = $mapping['mappings'];
+        }
+
+        $settingSource = $this->getSettingsByIndex($indexSource)[$indexSource]['settings']['index'];
+
+        if (($mappingSource !== null) && is_array($mappingSource) && (count($mappingSource) !== 0)) {
+            $this->createBody($params);
+            $params['body']['mappings'] = $mappingSource;
+        }
 
         $this->copySettings($params, $settingSource);
-
-        if (($mappingSource !== null) && (count($mappingSource) !== 0)) {
-            $params['body'] = array(
-                'mappings' => $mappingSource[$index_source]['mappings']
-            );
-        }
 
 
         $this->client->indices()->create($params);
@@ -622,7 +629,7 @@ class IndexHelper implements IndexHelperInterface
         $numberOfShards = $settings['number_of_shards'];
         $numberOfReplicas = $settings['number_of_replicas'];
 
-        $analysis_source = $settings['analysis'];
+        $analysisSource = $settings['analysis'];
 
         if ($numberOfShards !== null) {
             if ($params['body'] === null) {
@@ -644,7 +651,7 @@ class IndexHelper implements IndexHelperInterface
             $params['body']['settings']['number_of_replicas'] = $numberOfReplicas;
         }
 
-        if (($analysis_source !== null) && (count($analysis_source) !== 0)) {
+        if (($analysisSource !== null) && (count($analysisSource) !== 0)) {
 
             $this->createBody($params);
 
@@ -652,7 +659,7 @@ class IndexHelper implements IndexHelperInterface
                 $params['body']['settings'] = array();
             }
 
-            $params['body']['settings']['analysis'] = $analysis_source;
+            $params['body']['settings']['analysis'] = $analysisSource;
         }
     }
 
