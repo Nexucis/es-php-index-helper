@@ -25,8 +25,8 @@ class IndexHelper implements IndexHelperInterface
      */
     protected $client;
 
-    protected static $INDEX_NAME_CONVENTION_1 = '_v1';
-    protected static $INDEX_NAME_CONVENTION_2 = '_v2';
+    const INDEX_NAME_CONVENTION_1 = '_v1';
+    const INDEX_NAME_CONVENTION_2 = '_v2';
 
     /**
      * You can pass an alias name or an index name here.
@@ -51,7 +51,7 @@ class IndexHelper implements IndexHelperInterface
      */
     public function createIndex($alias)
     {
-        $index = $alias . self::$INDEX_NAME_CONVENTION_1;
+        $index = $alias . self::INDEX_NAME_CONVENTION_1;
 
         if ($this->existsIndex($index)) {
             throw new BadMethodCallException('$index ' . $index . ' already exists. Cannot be created again');
@@ -109,7 +109,7 @@ class IndexHelper implements IndexHelperInterface
         }
 
         $indexSrc = $this->findIndexByAlias($aliasSrc);
-        $indexDest = $aliasDest . self::$INDEX_NAME_CONVENTION_1;
+        $indexDest = $aliasDest . self::INDEX_NAME_CONVENTION_1;
 
 
         $this->copyMappingAndSetting($indexSrc, $indexDest);
@@ -728,10 +728,10 @@ class IndexHelper implements IndexHelperInterface
      */
     protected function getIndexDest($alias, $indexSrc)
     {
-        if ($alias . self::$INDEX_NAME_CONVENTION_1 === $indexSrc) {
-            return $alias . self::$INDEX_NAME_CONVENTION_2;
+        if ($alias . self::INDEX_NAME_CONVENTION_1 === $indexSrc) {
+            return $alias . self::INDEX_NAME_CONVENTION_2;
         } else {
-            return $alias . self::$INDEX_NAME_CONVENTION_1;
+            return $alias . self::INDEX_NAME_CONVENTION_1;
         }
     }
 
