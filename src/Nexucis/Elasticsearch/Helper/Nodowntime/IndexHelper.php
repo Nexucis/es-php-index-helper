@@ -264,9 +264,9 @@ class IndexHelper implements IndexHelperInterface
             $params['body']['mappings'] = $mappings;
         }
 
-        $this->client->indices()->create($params);
+        $result = $this->client->indices()->create($params);
 
-        if ($needReindexation) {
+        if ($result['acknowledged'] && $needReindexation) {
             return $this->reindex($alias, false, $waitForCompletion);
         }
 
@@ -312,9 +312,9 @@ class IndexHelper implements IndexHelperInterface
 
         $this->copySettings($params, $settings);
 
-        $this->client->indices()->create($params);
+        $result = $this->client->indices()->create($params);
 
-        if ($needReindexation) {
+        if ($result['acknowledged'] && $needReindexation) {
             return $this->reindex($alias, false, $waitForCompletion);
         }
 
