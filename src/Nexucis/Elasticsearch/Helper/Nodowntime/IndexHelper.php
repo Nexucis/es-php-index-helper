@@ -248,7 +248,7 @@ class IndexHelper implements IndexHelperInterface
             $this->deleteIndex($indexDest);
         }
 
-        $mapping = $this->getMappingByIndex($indexSrc)[$indexSrc];
+        $mapping = $this->getMappingsByIndex($indexSrc)[$indexSrc];
         $mappingSource = null;
 
         if ($mapping && is_array($mapping) && array_key_exists('mappings', $mapping)) {
@@ -292,7 +292,7 @@ class IndexHelper implements IndexHelperInterface
      * @throws RuntimeException
      * @throws IndexNotFoundException
      */
-    public function updateMapping($alias, $mapping, $needReindexation = true, $waitForCompletion = true)
+    public function updateMappings($alias, $mapping, $needReindexation = true, $waitForCompletion = true)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException($alias);
@@ -347,14 +347,20 @@ class IndexHelper implements IndexHelperInterface
      * @return array
      * @throws IndexNotFoundException
      */
-    public function getMapping($alias)
+    public function getMappings($alias)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException($alias);
         }
 
         $indexSource = $this->findIndexByAlias($alias);
-        return $this->getMappingByIndex($indexSource)[$indexSource]['mappings'];
+        $mapping = $this->getMappingsByIndex($indexSource)[$indexSource];
+
+        if ($mapping && is_array($mapping) && array_key_exists('mappings', $mapping)) {
+            return $mapping['mappings'];
+        }
+
+        return array();
     }
 
     /**
@@ -362,7 +368,7 @@ class IndexHelper implements IndexHelperInterface
      * @return array
      * @throws IndexNotFoundException
      */
-    public function getSetting($alias)
+    public function getSettings($alias)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException($alias);
@@ -607,7 +613,7 @@ class IndexHelper implements IndexHelperInterface
             'index' => $indexDest,
         );
 
-        $mapping = $this->getMappingByIndex($indexSource)[$indexSource];
+        $mapping = $this->getMappingsByIndex($indexSource)[$indexSource];
         $mappingSource = null;
 
         if ($mapping && is_array($mapping) && array_key_exists('mappings', $mapping)) {
@@ -716,7 +722,7 @@ class IndexHelper implements IndexHelperInterface
      * @param string $index
      * @return array
      */
-    protected function getMappingByIndex($index)
+    protected function getMappingsByIndex($index)
     {
         $params = array(
             'index' => $index

@@ -4,8 +4,8 @@
 namespace Nexucis\Elasticsearch\Helper\Nodowntime;
 
 use Elasticsearch\Client;
-use Elasticsearch\Common\Exceptions\BadMethodCallException;
 use Elasticsearch\Common\Exceptions\RuntimeException;
+use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexAlreadyExistException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
 
 /**
@@ -30,7 +30,7 @@ interface IndexHelperInterface
     /**
      * @param string $alias [REQUIRED]
      * @return void
-     * @throws BadMethodCallException
+     * @throws IndexAlreadyExistException
      */
     public function createIndex($alias);
 
@@ -50,7 +50,7 @@ interface IndexHelperInterface
      * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
      * @throws RuntimeException
      * @throws IndexNotFoundException
-     * @throws BadMethodCallException
+     * @throws IndexAlreadyExistException
      */
     public function copyIndex($aliasSrc, $aliasDest, $waitForCompletion = true);
 
@@ -108,7 +108,7 @@ interface IndexHelperInterface
      * @throws RuntimeException
      * @throws IndexNotFoundException
      */
-    public function updateMapping($alias, $mapping, $needReindexation = true, $waitForCompletion = true);
+    public function updateMappings($alias, $mapping, $needReindexation = true, $waitForCompletion = true);
 
     /**
      * @return array
@@ -119,13 +119,13 @@ interface IndexHelperInterface
      * @param string $alias [REQUIRED]
      * @return array
      */
-    public function getMapping($alias);
+    public function getMappings($alias);
 
     /**
      * @param string $alias [REQUIRED]
      * @return array
      */
-    public function getSetting($alias);
+    public function getSettings($alias);
 
     /**
      * @param string $alias [REQUIRED]
