@@ -10,7 +10,7 @@ use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
 
 /**
  * Class IndexHelper : This class can help you to manage your index with the alias management.
- * According to this link https://www.elastic.co/guide/en/elasticsearch/guide/master/index-aliases.html,
+ * According to the official documentation https://www.elastic.co/guide/en/elasticsearch/guide/master/index-aliases.html,
  * alias management allow to use with no downtime your index.
  *
  * @category Elasticsearch Helper
@@ -88,76 +88,102 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * @param string $alias_src [REQUIRED]
-     * @param string $alias_dest [REQUIRED]
-     * @return void
+     * @param string $aliasSrc [REQUIRED]
+     * @param string $aliasDest [REQUIRED]
+     * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
+     * it is strongly advised to not set this parameter to false with ElasticSearch 2.4. In fact, it would be preferable to create an asynchronous process that executes this task.
+     * If you set it to true, don't forget to put an alias to the new index when the corresponding task is gone.
+     * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
      * @throws RuntimeException
      * @throws IndexNotFoundException
      * @throws BadMethodCallException
      */
-    public function copyIndex($alias_src, $alias_dest)
+    public function copyIndex($aliasSrc, $aliasDest, $waitForCompletion = true)
     {
-        if (!$this->existsAlias($alias_src)) {
-            throw new IndexNotFoundException('$index ' . $alias_src . 'not found');
+        if (!$this->existsAlias($aliasSrc)) {
+            throw new IndexNotFoundException('$index ' . $aliasSrc . 'not found');
         }
 
-        if ($this->existsAlias($alias_dest)) {
-            throw new BadMethodCallException('$index ' . $alias_dest . ' must not exist');
+        if ($this->existsAlias($aliasDest)) {
+            throw new BadMethodCallException('$index ' . $aliasDest . ' must not exist');
         }
 
-        $index_src = $this->findIndexByAlias($alias_src);
-        $index_dest = $alias_dest . self::$INDEX_NAME_CONVENTION_1;
+        $indexSrc = $this->findIndexByAlias($aliasSrc);
+        $indexDest = $aliasDest . self::$INDEX_NAME_CONVENTION_1;
 
 
-        $this->copyMappingAndSetting($index_src, $index_dest);
+        $this->copyMappingAndSetting($indexSrc, $indexDest);
 
         // currently, the reindex api doesn't work when there are no documents inside the index source
-        //So if there are some documents to copy and if the reindex Api send an error, we throw a RuntimeException
-        if (($this->countDocuments($index_src) !== 0) && !$this->copyDocuments($index_src, $index_dest)) {
-            $this->deleteIndex($index_dest);
-            throw new RuntimeException('reindex failed');
+        // So if there are some documents to copy and if the reindex Api send an error, we throw a RuntimeException
+        if (!$this->indexIsEmpty($indexSrc)) {
+            $response = $this->copyDocuments($indexSrc, $indexDest, $waitForCompletion);
+
+            if ($waitForCompletion) {
+                if (!$response) {
+                    $this->deleteIndex($indexDest);
+                    throw new RuntimeException('reindex failed');
+                }
+            } else {
+                // return the task ID
+                return $response;
+            }
         }
 
-        $this->putAlias($alias_dest, $index_dest);
+        $this->putAlias($aliasDest, $indexDest);
 
+        return "ok";
     }
 
     /**
      * @param string $alias [REQUIRED]
      * @param bool $needToCreateIndexDest
-     * @return void
+     * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
+     * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
+     * If you set it to true, don't forget to remove the old index and to switch the alias after the task is gone.
+     * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
      * @throws RuntimeException
      * @throws IndexNotFoundException
      */
-    public function reindex($alias, $needToCreateIndexDest = true)
+    public function reindex($alias, $needToCreateIndexDest = true, $waitForCompletion = true)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException('$index ' . $alias . ' not found');
         }
 
-        $index_src = $this->findIndexByAlias($alias);
-        $index_dest = $this->getIndexDest($alias, $index_src);
+        $indexSrc = $this->findIndexByAlias($alias);
+        $indexDest = $this->getIndexDest($alias, $indexSrc);
 
 
         if ($needToCreateIndexDest) { // for example, if you have updated your settings/mappings, your index_dest is already created. So you don't need to create it again
-            if ($this->existsIndex($index_dest)) {
-                $this->deleteIndex($index_dest);
+            if ($this->existsIndex($indexDest)) {
+                $this->deleteIndex($indexDest);
             }
 
-            $this->copyMappingAndSetting($index_src, $index_dest);
+            $this->copyMappingAndSetting($indexSrc, $indexDest);
         }
 
         // currently, the reindex api doesn't work when there are no documents inside the index source
         // So if there are some documents to copy and if the reindex Api send an error, we throw a RuntimeException
-        if (($this->countDocuments($index_src) !== 0) && !$this->copyDocuments($index_src, $index_dest)) {
-            $this->deleteIndex($index_dest);
-            throw new RuntimeException('reindex failed');
+
+        if (!$this->indexIsEmpty($indexSrc)) {
+            $response = $this->copyDocuments($indexSrc, $indexDest, $waitForCompletion);
+
+            if ($waitForCompletion) {
+                if (!$response) {
+                    $this->deleteIndex($indexDest);
+                    throw new RuntimeException('reindex failed');
+                }
+            } else {
+                // return the task ID
+                return $response;
+            }
         }
 
-        $this->switchIndex($alias, $index_src, $index_dest);
+        $this->switchIndex($alias, $indexSrc, $indexDest);
+        $this->deleteIndex($indexSrc);
 
-        $this->deleteIndex($index_src);
-
+        return "ok";
     }
 
     /**
@@ -176,11 +202,11 @@ class IndexHelper implements IndexHelperInterface
             throw new IndexNotFoundException('$index ' . $alias . ' not found');
         }
 
-        $index_source = $this->findIndexByAlias($alias);
+        $indexSource = $this->findIndexByAlias($alias);
 
-        $this->closeIndex($index_source);
+        $this->closeIndex($indexSource);
         $params = array(
-            'index' => $index_source,
+            'index' => $indexSource,
             'body' => array(
                 'settings' => $settings
             )
@@ -188,37 +214,46 @@ class IndexHelper implements IndexHelperInterface
 
         $this->client->indices()->putSettings($params);
 
-        $this->openIndex($index_source);
+        $this->openIndex($indexSource);
     }
 
     /**
-     * This méthod must call when you want to delete something inside the settings.
+     * This method must call when you want to delete something inside the settings.
      *
      * @param string $alias [REQUIRED]
      * @param array $settings [REQUIRED]
      * @param bool $needReindexation : The process of reindexation can be so long, instead of calling reindex method inside this method,
      * you may want to call it in an asynchronous process.
      * But if you pass this parameters to false, don't forget to reindex. If you don't do it, you will not see your modification of the settings
-     * @return void
+     * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
+     * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
+     * If you set it to true, don't forget to remove the old index and to switch the alias after the task is gone.
+     * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
      * @throws RuntimeException
      * @throws IndexNotFoundException
      */
-    public function updateSettings($alias, $settings, $needReindexation = true)
+    public function updateSettings($alias, $settings, $needReindexation = true, $waitForCompletion = true)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException('$index ' . $alias . ' not found');
         }
 
-        $index_src = $this->findIndexByAlias($alias);
-        $index_dest = $this->getIndexDest($alias, $index_src);
-        if ($this->existsIndex($index_dest)) {
-            $this->deleteIndex($index_dest);
+        $indexSrc = $this->findIndexByAlias($alias);
+        $indexDest = $this->getIndexDest($alias, $indexSrc);
+
+        if ($this->existsIndex($indexDest)) {
+            $this->deleteIndex($indexDest);
         }
 
-        $mappings = $this->getMappingByIndex($index_src)[$index_src]['mappings'];
+        $mapping = $this->getMappingByIndex($indexSrc)[$indexSrc];
+        $mappingSource = null;
+
+        if ($mapping && is_array($mapping) && array_key_exists('mappings', $mapping)) {
+            $mappingSource = $mapping['mappings'];
+        }
 
         $params = array(
-            'index' => $index_dest,
+            'index' => $indexDest,
         );
 
         if (is_array($settings) && count($settings) > 0) {
@@ -227,18 +262,18 @@ class IndexHelper implements IndexHelperInterface
             );
         }
 
-        if (is_array($mappings) && count($mappings) > 0) {
-            if ($params['body'] === null) {
-                $params['body'] = array();
-            }
-            $params['body']['mappings'] = $mappings;
+        if (($mappingSource !== null) && is_array($mappingSource) && (count($mappingSource) !== 0)) {
+            $this->createBody($params);
+            $params['body']['mappings'] = $mappingSource;
         }
 
-        $this->client->indices()->create($params);
+        $result = $this->client->indices()->create($params);
 
-        if ($needReindexation) {
-            $this->reindex($alias, false);
+        if ($result['acknowledged'] && $needReindexation) {
+            return $this->reindex($alias, false, $waitForCompletion);
         }
+
+        return "ok";
     }
 
     /**
@@ -247,26 +282,29 @@ class IndexHelper implements IndexHelperInterface
      * @param bool $needReindexation : The process of reindexation can be so long, instead of calling reindex method inside this method,
      * you may want to call it in an asynchronous process.
      * But if you pass this parameters to false, don't forget to reindex. If you don't do it, you will not see your modification of the mappings
-     * @return void
+     * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
+     * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
+     * If you set it to true, don't forget to remove the old index and to switch the alias after the task is gone.
+     * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
      * @throws RuntimeException
      * @throws IndexNotFoundException
      */
-    public function updateMapping($alias, $mapping, $needReindexation = true)
+    public function updateMapping($alias, $mapping, $needReindexation = true, $waitForCompletion = true)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException('$index ' . $alias . ' not found');
         }
 
-        $index_src = $this->findIndexByAlias($alias);
-        $index_dest = $this->getIndexDest($alias, $index_src);
-        if ($this->existsIndex($index_dest)) {
-            $this->deleteIndex($index_dest);
+        $indexSrc = $this->findIndexByAlias($alias);
+        $indexDest = $this->getIndexDest($alias, $indexSrc);
+        if ($this->existsIndex($indexDest)) {
+            $this->deleteIndex($indexDest);
         }
 
-        $settings = $this->getSettingsByIndex($index_src)[$index_src]['settings']['index'];
+        $settings = $this->getSettingsByIndex($indexSrc)[$indexSrc]['settings']['index'];
 
         $params = array(
-            'index' => $index_dest,
+            'index' => $indexDest,
         );
 
         if (count($mapping) > 0) {
@@ -277,11 +315,13 @@ class IndexHelper implements IndexHelperInterface
 
         $this->copySettings($params, $settings);
 
-        $this->client->indices()->create($params);
+        $result = $this->client->indices()->create($params);
 
-        if ($needReindexation) {
-            $this->reindex($alias, false);
+        if ($result['acknowledged'] && $needReindexation) {
+            return $this->reindex($alias, false, $waitForCompletion);
         }
+
+        return "ok";
     }
 
     /**
@@ -310,8 +350,8 @@ class IndexHelper implements IndexHelperInterface
             throw new IndexNotFoundException('$index ' . $alias . ' not found');
         }
 
-        $index_source = $this->findIndexByAlias($alias);
-        return $this->getMappingByIndex($index_source)[$index_source]['mappings'];
+        $indexSource = $this->findIndexByAlias($alias);
+        return $this->getMappingByIndex($indexSource)[$indexSource]['mappings'];
     }
 
     /**
@@ -325,8 +365,8 @@ class IndexHelper implements IndexHelperInterface
             throw new IndexNotFoundException('$index ' . $alias . ' not found');
         }
 
-        $index_source = $this->findIndexByAlias($alias);
-        return $this->getSettingsByIndex($index_source)[$index_source]['settings']['index'];
+        $indexSource = $this->findIndexByAlias($alias);
+        return $this->getSettingsByIndex($indexSource)[$indexSource]['settings']['index'];
     }
 
     /**
@@ -377,8 +417,8 @@ class IndexHelper implements IndexHelperInterface
      * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index
      * @param $id [REQUIRED]
      * @param string $type [REQUIRED]
-     * @param array $body [REQUIRED]
-     * @return boolean
+     * @param array $body [REQUIRED] : actual document to update
+     * @return boolean : true if the document has been updated. Otherwise, the document has been created.
      * @throws IndexNotFoundException
      */
     public function updateDocument($index, $id, $type, $body)
@@ -393,8 +433,8 @@ class IndexHelper implements IndexHelperInterface
      * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index
      * @param $id [REQUIRED]
      * @param string $type [REQUIRED]
-     * @param array $body [REQUIRED]
-     * @return boolean
+     * @param array $body [REQUIRED] : actual document to create
+     * @return boolean : true if the document has been created.
      * @throws IndexNotFoundException
      */
     public function addDocument($index, $id, $type, $body)
@@ -418,18 +458,18 @@ class IndexHelper implements IndexHelperInterface
             throw new IndexNotFoundException('$index ' . $alias . ' not found');
         }
 
-        $index_src = $this->findIndexByAlias($alias);
-        $index_dest = $this->getIndexDest($alias, $index_src);
+        $indexSrc = $this->findIndexByAlias($alias);
+        $indexDest = $this->getIndexDest($alias, $indexSrc);
 
-        if($this->existsIndex($index_dest)){
-            $this->deleteIndex($index_dest);
+        if ($this->existsIndex($indexDest)) {
+            $this->deleteIndex($indexDest);
         }
 
-        $this->copyMappingAndSetting($index_src, $index_dest);
+        $this->copyMappingAndSetting($indexSrc, $indexDest);
 
-        $this->switchIndex($alias, $index_src, $index_dest);
+        $this->switchIndex($alias, $indexSrc, $indexDest);
 
-        $this->deleteIndex($index_src);
+        $this->deleteIndex($indexSrc);
     }
 
     /**
@@ -521,6 +561,15 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param $index
+     * @return bool : true if the index doesn't have any documents. False otherwise.
+     */
+    protected function indexIsEmpty($index)
+    {
+        return $this->countDocuments($index) == 0;
+    }
+
+    /**
+     * @param $index
      * @return int
      */
     protected function countDocuments($index)
@@ -546,26 +595,30 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * @param $index_source
-     * @param $index_dest
+     * @param $indexSource
+     * @param $indexDest
      */
-    protected function copyMappingAndSetting($index_source, $index_dest)
+    protected function copyMappingAndSetting($indexSource, $indexDest)
     {
         $params = array(
-            'index' => $index_dest,
+            'index' => $indexDest,
         );
 
-        $mapping_source = $this->getMappingByIndex($index_source)[$index_source]['mappings'];
+        $mapping = $this->getMappingByIndex($indexSource)[$indexSource];
+        $mappingSource = null;
 
-        $setting_source = $this->getSettingsByIndex($index_source)[$index_source]['settings']['index'];
-
-        $this->copySettings($params, $setting_source);
-
-        if (($mapping_source !== null) && (count($mapping_source) !== 0)) {
-            $params['body'] = array(
-                'mappings' => $mapping_source[$index_source]['mappings']
-            );
+        if ($mapping && is_array($mapping) && array_key_exists('mappings', $mapping)) {
+            $mappingSource = $mapping['mappings'];
         }
+
+        $settingSource = $this->getSettingsByIndex($indexSource)[$indexSource]['settings']['index'];
+
+        if (($mappingSource !== null) && is_array($mappingSource) && (count($mappingSource) !== 0)) {
+            $this->createBody($params);
+            $params['body']['mappings'] = $mappingSource;
+        }
+
+        $this->copySettings($params, $settingSource);
 
 
         $this->client->indices()->create($params);
@@ -573,32 +626,30 @@ class IndexHelper implements IndexHelperInterface
 
     protected function copySettings(&$params, $settings)
     {
-        $number_of_shards = $settings['number_of_shards'];
-        $number_of_replicas = $settings['number_of_replicas'];
+        $numberOfShards = $settings['number_of_shards'];
+        $numberOfReplicas = $settings['number_of_replicas'];
 
-        $analysis_source = $settings['analysis'];
+        $analysisSource = $settings['analysis'];
 
-        if ($number_of_shards !== null) {
-            if ($params['body'] === null) {
-                $params['body'] = array();
-            }
+        if ($numberOfShards !== null) {
+            $this->createBody($params);
 
             $params['body']['settings'] = array(
-                'number_of_shards' => $number_of_shards
+                'number_of_shards' => $numberOfShards
             );
         }
 
-        if ($number_of_replicas !== null) {
+        if ($numberOfReplicas !== null) {
             $this->createBody($params);
 
             if ($params['body']['settings'] === null) {
                 $params['body']['settings'] = array();
             }
 
-            $params['body']['settings']['number_of_replicas'] = $number_of_replicas;
+            $params['body']['settings']['number_of_replicas'] = $numberOfReplicas;
         }
 
-        if (($analysis_source !== null) && (count($analysis_source) !== 0)) {
+        if (($analysisSource !== null) && (count($analysisSource) !== 0)) {
 
             $this->createBody($params);
 
@@ -606,7 +657,7 @@ class IndexHelper implements IndexHelperInterface
                 $params['body']['settings'] = array();
             }
 
-            $params['body']['settings']['analysis'] = $analysis_source;
+            $params['body']['settings']['analysis'] = $analysisSource;
         }
     }
 
@@ -618,26 +669,32 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * @param string $index_src
-     * @param string $index_dest
-     * @return boolean
+     * @param string $indexSrc
+     * @param string $indexDest
+     * @param bool $waitForCompletion
+     * @return boolean | string
      */
-    protected function copyDocuments($index_src, $index_dest)
+    protected function copyDocuments($indexSrc, $indexDest, $waitForCompletion = true)
     {
         $params = array(
             'body' => array(
                 'source' => array(
-                    'index' => $index_src
+                    'index' => $indexSrc
                 ),
                 'dest' => array(
-                    'index' => $index_dest
+                    'index' => $indexDest
                 )
-            )
+            ),
+            'wait_for_completion' => $waitForCompletion
         );
 
         $response = $this->client->reindex($params);
 
-        return count($response['failures']) === 0;
+        if ($waitForCompletion) {
+            return count($response['failures']) === 0;
+        }
+        // return the task ID
+        return $response['task'];
     }
 
     /**
@@ -666,12 +723,12 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param string $alias
-     * @param string $index_src
+     * @param string $indexSrc
      * @return string
      */
-    protected function getIndexDest($alias, $index_src)
+    protected function getIndexDest($alias, $indexSrc)
     {
-        if ($alias . self::$INDEX_NAME_CONVENTION_1 === $index_src) {
+        if ($alias . self::$INDEX_NAME_CONVENTION_1 === $indexSrc) {
             return $alias . self::$INDEX_NAME_CONVENTION_2;
         } else {
             return $alias . self::$INDEX_NAME_CONVENTION_1;
@@ -680,10 +737,10 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param string $alias
-     * @param string $index_src
-     * @param string $index_dest
+     * @param string $indexSrc
+     * @param string $indexDest
      */
-    protected function switchIndex($alias, $index_src, $index_dest)
+    protected function switchIndex($alias, $indexSrc, $indexDest)
     {
 
         $params = array(
@@ -691,12 +748,12 @@ class IndexHelper implements IndexHelperInterface
                 'actions' => array(
                     0 => array(
                         'remove' => array(
-                            'index' => $index_src,
+                            'index' => $indexSrc,
                             'alias' => $alias),
                     ),
                     1 => array(
                         'add' => array(
-                            'index' => $index_dest,
+                            'index' => $indexDest,
                             'alias' => $alias),
                     )
                 ),
