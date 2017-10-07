@@ -90,12 +90,15 @@ class IndexHelper implements IndexHelperInterface
     /**
      * @param string $alias_src [REQUIRED]
      * @param string $alias_dest [REQUIRED]
-     * @return void
+     * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
+     * it is strongly advised to not set this parameter to false with ElasticSearch 2.4. In fact, it would be preferable to create an asynchronous process that executes this task.
+     * If you set it to true, don't forget to put an alias to the new index when the corresponding task is gone.
+     * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
      * @throws RuntimeException
      * @throws IndexNotFoundException
      * @throws BadMethodCallException
      */
-    public function copyIndex($alias_src, $alias_dest)
+    public function copyIndex($alias_src, $alias_dest, $waitForCompletion = true)
     {
         if (!$this->existsAlias($alias_src)) {
             throw new IndexNotFoundException('$index ' . $alias_src . 'not found');
@@ -112,24 +115,37 @@ class IndexHelper implements IndexHelperInterface
         $this->copyMappingAndSetting($index_src, $index_dest);
 
         // currently, the reindex api doesn't work when there are no documents inside the index source
-        //So if there are some documents to copy and if the reindex Api send an error, we throw a RuntimeException
-        if (($this->countDocuments($index_src) !== 0) && !$this->copyDocuments($index_src, $index_dest)) {
-            $this->deleteIndex($index_dest);
-            throw new RuntimeException('reindex failed');
+        // So if there are some documents to copy and if the reindex Api send an error, we throw a RuntimeException
+        if (!$this->indexIsEmpty($index_src)) {
+            $response = $this->copyDocuments($index_src, $index_dest, $waitForCompletion);
+
+            if ($waitForCompletion) {
+                if (!$response) {
+                    $this->deleteIndex($index_dest);
+                    throw new RuntimeException('reindex failed');
+                }
+            } else {
+                // return the task ID
+                return $response;
+            }
         }
 
         $this->putAlias($alias_dest, $index_dest);
 
+        return "ok";
     }
 
     /**
      * @param string $alias [REQUIRED]
      * @param bool $needToCreateIndexDest
-     * @return void
+     * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
+     * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
+     * If you set it to true, don't forget to remove the old index and to switch the alias after the task is gone.
+     * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
      * @throws RuntimeException
      * @throws IndexNotFoundException
      */
-    public function reindex($alias, $needToCreateIndexDest = true)
+    public function reindex($alias, $needToCreateIndexDest = true, $waitForCompletion = true)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException('$index ' . $alias . ' not found');
@@ -149,15 +165,25 @@ class IndexHelper implements IndexHelperInterface
 
         // currently, the reindex api doesn't work when there are no documents inside the index source
         // So if there are some documents to copy and if the reindex Api send an error, we throw a RuntimeException
-        if (($this->countDocuments($index_src) !== 0) && !$this->copyDocuments($index_src, $index_dest)) {
-            $this->deleteIndex($index_dest);
-            throw new RuntimeException('reindex failed');
+
+        if (!$this->indexIsEmpty($index_src)) {
+            $response = $this->copyDocuments($index_src, $index_dest, $waitForCompletion);
+
+            if ($waitForCompletion) {
+                if (!$response) {
+                    $this->deleteIndex($index_dest);
+                    throw new RuntimeException('reindex failed');
+                }
+            } else {
+                // return the task ID
+                return $response;
+            }
         }
 
         $this->switchIndex($alias, $index_src, $index_dest);
-
         $this->deleteIndex($index_src);
 
+        return "ok";
     }
 
     /**
@@ -199,11 +225,14 @@ class IndexHelper implements IndexHelperInterface
      * @param bool $needReindexation : The process of reindexation can be so long, instead of calling reindex method inside this method,
      * you may want to call it in an asynchronous process.
      * But if you pass this parameters to false, don't forget to reindex. If you don't do it, you will not see your modification of the settings
-     * @return void
+     * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
+     * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
+     * If you set it to true, don't forget to remove the old index and to switch the alias after the task is gone.
+     * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
      * @throws RuntimeException
      * @throws IndexNotFoundException
      */
-    public function updateSettings($alias, $settings, $needReindexation = true)
+    public function updateSettings($alias, $settings, $needReindexation = true, $waitForCompletion = true)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException('$index ' . $alias . ' not found');
@@ -237,8 +266,10 @@ class IndexHelper implements IndexHelperInterface
         $this->client->indices()->create($params);
 
         if ($needReindexation) {
-            $this->reindex($alias, false);
+            return $this->reindex($alias, false, $waitForCompletion);
         }
+
+        return "ok";
     }
 
     /**
@@ -247,11 +278,14 @@ class IndexHelper implements IndexHelperInterface
      * @param bool $needReindexation : The process of reindexation can be so long, instead of calling reindex method inside this method,
      * you may want to call it in an asynchronous process.
      * But if you pass this parameters to false, don't forget to reindex. If you don't do it, you will not see your modification of the mappings
-     * @return void
+     * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
+     * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
+     * If you set it to true, don't forget to remove the old index and to switch the alias after the task is gone.
+     * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
      * @throws RuntimeException
      * @throws IndexNotFoundException
      */
-    public function updateMapping($alias, $mapping, $needReindexation = true)
+    public function updateMapping($alias, $mapping, $needReindexation = true, $waitForCompletion = true)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException('$index ' . $alias . ' not found');
@@ -280,8 +314,10 @@ class IndexHelper implements IndexHelperInterface
         $this->client->indices()->create($params);
 
         if ($needReindexation) {
-            $this->reindex($alias, false);
+            return $this->reindex($alias, false, $waitForCompletion);
         }
+
+        return "ok";
     }
 
     /**
@@ -421,7 +457,7 @@ class IndexHelper implements IndexHelperInterface
         $index_src = $this->findIndexByAlias($alias);
         $index_dest = $this->getIndexDest($alias, $index_src);
 
-        if($this->existsIndex($index_dest)){
+        if ($this->existsIndex($index_dest)) {
             $this->deleteIndex($index_dest);
         }
 
