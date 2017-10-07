@@ -521,6 +521,15 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param $index
+     * @return bool : true if the index doesn't have any documents. False otherwise.
+     */
+    protected function indexIsEmpty($index)
+    {
+        return $this->countDocuments($index) == 0;
+    }
+
+    /**
+     * @param $index
      * @return int
      */
     protected function countDocuments($index)
