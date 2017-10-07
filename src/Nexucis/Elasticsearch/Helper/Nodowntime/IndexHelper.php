@@ -7,6 +7,7 @@ use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\RuntimeException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexAlreadyExistException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
+use stdClass;
 
 /**
  * Class IndexHelper : This class can help you to manage your index with the alias management.
@@ -64,7 +65,7 @@ class IndexHelper implements IndexHelperInterface
             'index' => $index,
             'body' => array(
                 'aliases' => array(
-                    $alias => json_decode('{}')
+                    $alias => new stdClass()
                 )),
         );
 
