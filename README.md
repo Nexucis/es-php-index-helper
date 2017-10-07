@@ -59,7 +59,7 @@ where X.Y is the version which fit your need.
 
     $client = ClientBuilder::create()->build();
     $helper = new IndexHelper();
-    $helper.setClient($client);
+    $helper->setClient($client);
 ```
 
 To configure the elasticsearch client, you can read the [associated documentation](https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/_configuration.html)
