@@ -108,7 +108,22 @@ It does a lot of steps to perform, and to check. That's why this Helper comes he
 ```php
  <?php
  $alias = "myIndex";
- $mapping = array();
+ $mapping = [
+    'my_type' => [
+        '_source' => [
+            'enabled' => true
+        ],
+        'properties' => [
+            'first_name' => [
+                'type' => 'string',
+                'analyzer' => 'standard'
+            ],
+            'age' => [
+                'type' => 'integer'
+                ]
+            ]
+    ]
+ ];
  $helper->updateMapping($alias, $mapping);
 ```
 
@@ -117,7 +132,7 @@ You just need to provide the alias name and the new mapping and that's it.
 :warning: With an index with many documents, this kind of method can take a lot of time. That's why it should be better :
 
 * With ElasticSearch `2.4`, if the method call is performed in an asynchronous process.
-* With ElasticSearch `5` or greater, if you set the last parameter `$waitForCompletion`to false. It will give a taskID which can be used with the [_task api](https://www.elastic.co/guide/en/elasticsearch/reference/current/tasks.html)
+* With ElasticSearch `5` or greater, if you set the last parameter `$waitForCompletion`to false. It will give a taskID in return, which can be used with the [_task api](https://www.elastic.co/guide/en/elasticsearch/reference/current/tasks.html)
     
 ### Settings Operation
 The same logic described below can be apply to the settings operation. In this way, you will find the method `updateSettings` which do the same things than the method `updateMapping` if you switch *mapping* by *settings* and vice versa.
