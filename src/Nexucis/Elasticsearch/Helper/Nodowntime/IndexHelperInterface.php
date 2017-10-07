@@ -42,8 +42,8 @@ interface IndexHelperInterface
     public function deleteIndex($index);
 
     /**
-     * @param string $alias_src [REQUIRED]
-     * @param string $alias_dest [REQUIRED]
+     * @param string $aliasSrc [REQUIRED]
+     * @param string $aliasDest [REQUIRED]
      * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4. In fact, it would be preferable to create an asynchronous process that executes this task.
      * If you set it to true, don't forget to put an alias to the new index when the corresponding task is gone.
@@ -52,7 +52,7 @@ interface IndexHelperInterface
      * @throws IndexNotFoundException
      * @throws BadMethodCallException
      */
-    public function copyIndex($alias_src, $alias_dest, $waitForCompletion = true);
+    public function copyIndex($aliasSrc, $aliasDest, $waitForCompletion = true);
 
     /**
      * @param string $alias [REQUIRED]
