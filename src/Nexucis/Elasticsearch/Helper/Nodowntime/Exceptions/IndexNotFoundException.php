@@ -1,4 +1,5 @@
 <?php
+
 namespace Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions;
 
 
@@ -15,4 +16,16 @@ use Elasticsearch\Common\Exceptions\ElasticsearchException;
 class IndexNotFoundException extends \Exception implements ElasticsearchException
 {
 
+
+    private $index;
+
+    /**
+     * IndexNotFoundException constructor.
+     * @param string $alias
+     */
+    public function __construct($alias)
+    {
+        $this->index = $alias;
+        parent::__construct(sprintf('$index %s not found', $this->index));
+    }
 }
