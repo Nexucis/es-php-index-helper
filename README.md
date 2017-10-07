@@ -65,7 +65,7 @@ To configure the elasticsearch client, you can read the [associated documentatio
 
 ## Quickstart
 
-*We encourage users to see the interface in order to have an idea of all available methods. The following description is not exhaustive, so you will miss some method if you don't cast a glance at the code*
+*We encourage users to see [the interface](./src/Nexucis/Elasticsearch/Helper/Nodowntime/IndexHelperInterface.php) in order to have an idea of all available methods. The following description is not exhaustive, so you will miss some method if you don't cast a glance at the code*
 
 ### Index Operations
 
