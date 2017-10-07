@@ -137,6 +137,42 @@ You just need to provide the alias name and the new mapping and that's it.
 ### Settings Operation
 The same logic described below can be apply to the settings operation. In this way, you will find the method `updateSettings` which do the same things than the method `updateMapping` if you switch *mapping* by *settings* and vice versa.
 
+```php
+ <?php
+ $alias = "myIndex";
+ $settings =[ 
+    'number_of_shards' => 1,
+    'number_of_replicas' => 0,
+    'analysis' => [ 
+        'filter' => [
+            'shingle' => [
+                'type' => 'shingle'
+            ]
+        ],
+        'char_filter' => [
+            'pre_negs' => [
+                'type' => 'pattern_replace',
+                'pattern' => '(\\w+)\\s+((?i:never|no|nothing|nowhere|noone|none|not|havent|hasnt|hadnt|cant|couldnt|shouldnt|wont|wouldnt|dont|doesnt|didnt|isnt|arent|aint))\\b',
+                'replacement' => '~$1 $2'
+            ],
+            'post_negs' => [
+                'type' => 'pattern_replace',
+                'pattern' => '\\b((?i:never|no|nothing|nowhere|noone|none|not|havent|hasnt|hadnt|cant|couldnt|shouldnt|wont|wouldnt|dont|doesnt|didnt|isnt|arent|aint))\\s+(\\w+)',
+                'replacement' => '$1 ~$2'
+            ]
+        ],
+        'analyzer' => [
+            'reuters' => [
+                'type' => 'custom',
+                'tokenizer' => 'standard',
+                'filter' => ['lowercase', 'stop', 'kstem']
+            ]
+        ]
+    ]
+ ];
+ $helper->updateSettings($alias, $settings);
+```
+
 ## Contributions
 Any contribution or suggestion would be really appreciated. Feel free to use the Issue section or to send a pull request.
 
