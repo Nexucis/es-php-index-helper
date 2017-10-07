@@ -8,20 +8,20 @@
 
 ## Overview
 
-This project provides an index Helper in order to help you to manage your ES Indices with no downtime. This helper implements the philosophy described in the 
+This project provides an index Helper in order to help you to manage your ES Indices with no downtime. This helper implement the philosophy described in the 
 [official documentation](https://www.elastic.co/guide/en/elasticsearch/guide/master/index-aliases.html) which can be summarized in a few words : *use alias instead of index directly*
 
 ### Versioning
 This project uses the following version rules: 
 
 ```
-X.Y.ZZ
+X.Y.Z
 ```
 
-where : 
-* X is the major version of ElasticSearch support by this project
-* Y is the major version of this Index Helper. Be careful with this rule, you can have some breaking changes between two **Y** number. 
-* ZZ is the minor version of this Index Helper. It will be increased when there are some bug fixes.
+Where : 
+* X is the major version of ElasticSearch supported by this project
+* Y is the major version of this helper. Be careful with this rule, you can have some breaking changes between two **Y** number. 
+* Z is the minor version of this Index Helper. It will be increased when there are some bug fixes.
 
 ## Installation
 
@@ -31,7 +31,7 @@ The recommended method to install this library is through [Composer](https://get
 
 ```json
 {
-  "require":{
+  "require": {
     "nexucis/es-index-helper": "X.Y.*"
   }
 }
@@ -42,17 +42,16 @@ where X.Y is the version which fit your need.
 2. After that you need to install this new dependency : 
 
 ```bash
-    php composer.phar install
+php composer.phar install
 ```
 
 3. To initialize the Index Helper, you need first to instantiate the elasticsearch client : 
 
 ```php
-
 <?php
 
 use Elasticsearch\ClientBuilder;
-    use Nexucis\Elasticsearch\Helper\Nodowntime\IndexHelper;
+use Nexucis\Elasticsearch\Helper\Nodowntime\IndexHelper;
 
 require 'vendor/autoload.php';
 
@@ -65,7 +64,7 @@ To configure the elasticsearch client, you can read the [associated documentatio
 
 ## Quickstart
 
-*We encourage users to see [the interface](./src/Nexucis/Elasticsearch/Helper/Nodowntime/IndexHelperInterface.php) in order to have an idea of all available methods. The following description is not exhaustive, so you will miss some method if you don't cast a glance at the code*
+*We encourage users to take a look at [the interface](./src/Nexucis/Elasticsearch/Helper/Nodowntime/IndexHelperInterface.php) in order to have an idea of all available methods. The following description is not exhaustive, so you will miss some method if you don't cast a glance at the code*
 
 ### Index Operations
 
@@ -93,22 +92,22 @@ myIndex myIndex_v1 -      -            -
 ```
 
 ### Mapping Operation
-This helper proves his existence when you want to change your mapping dynamically and you still want a fully access to your data. 
+This helper proves his existence when you want to change your mapping dynamically and you still want full access to your data. 
 
-So to make this things possibily we need :
+So to make this things possible we need to:
 
-1. to create a second index like `myIndex_v2`
-2. to copy the settings from `myIndex_v1` to `myIndex_v2`
-3. to put the new mapping in `myIndex_v2`
-4. to copy all documents from `myIndex_v1` to `myIndex_v2`.
-5. and finally, we need to remove the old index `myIndex_v1` and put the alias `myIndex` in the new one
+1. create a second index like `myIndex_v2`
+2. copy the settings from `myIndex_v1` to `myIndex_v2`
+3. put the new mapping in `myIndex_v2`
+4. copy all documents from `myIndex_v1` to `myIndex_v2`.
+5. remove the old index `myIndex_v1` and put the alias `myIndex` in the new one
 
 It takes a lot of steps and verifications to check the update is done successfully. That's why this Helper comes here with the following simplify method : 
 
 ```php
- <?php
- $alias = "myIndex";
- $mapping = [
+<?php
+$alias = "myIndex";
+$mapping = [
     'my_type' => [
         '_source' => [
             'enabled' => true
@@ -123,24 +122,24 @@ It takes a lot of steps and verifications to check the update is done successful
                 ]
             ]
     ]
- ];
- $helper->updateMappings($alias, $mapping);
+];
+$helper->updateMapping($alias, $mapping);
 ```
 
 You just need to provide the alias name and the new mapping and that's it.
 
-:warning: With an index with many documents, this kind of method can take a lot of time. That's why it should be better :
+:warning: With an index with many documents, the update can take a lot of time. That's why it's better:
 
-* With ElasticSearch `2.4`, to call this method in an asynchronous process.
-* With ElasticSearch `5` or greater, , to set the parameter `$waitForCompletion` to false. It will give a taskID in return, which can be used with the [_task api](https://www.elastic.co/guide/en/elasticsearch/reference/current/tasks.html)
+* With ElasticSearch `2.4`, to call this method in an asynchronous process..
+* With ElasticSearch `5` or greater, to set the parameter `$waitForCompletion` to false. It will return taskID, which can then be used with the [_task api](https://www.elastic.co/guide/en/elasticsearch/reference/current/tasks.html)
     
 ### Settings Operation
-The same logic described below can be apply to the settings operation. In this way, you will find the method `updateSettings` which do the same things than the method `updateMappings` if you switch *mappings* by *settings* and vice versa.
+Indices settings can be updated the same way as mapping using the `updateSettings` method:
 
 ```php
- <?php
- $alias = "myIndex";
- $settings =[ 
+<?php
+$alias = "myIndex";
+$settings =[ 
     'number_of_shards' => 1,
     'number_of_replicas' => 0,
     'analysis' => [ 
@@ -169,8 +168,8 @@ The same logic described below can be apply to the settings operation. In this w
             ]
         ]
     ]
- ];
- $helper->updateSettings($alias, $settings);
+];
+$helper->updateSettings($alias, $settings);
 ```
 
 ## Contributions
