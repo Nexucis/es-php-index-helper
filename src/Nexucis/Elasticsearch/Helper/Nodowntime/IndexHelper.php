@@ -632,9 +632,7 @@ class IndexHelper implements IndexHelperInterface
         $analysisSource = $settings['analysis'];
 
         if ($numberOfShards !== null) {
-            if ($params['body'] === null) {
-                $params['body'] = array();
-            }
+            $this->createBody($params);
 
             $params['body']['settings'] = array(
                 'number_of_shards' => $numberOfShards
