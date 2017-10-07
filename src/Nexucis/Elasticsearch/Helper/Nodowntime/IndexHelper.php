@@ -10,7 +10,7 @@ use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
 
 /**
  * Class IndexHelper : This class can help you to manage your index with the alias management.
- * According to this link https://www.elastic.co/guide/en/elasticsearch/guide/master/index-aliases.html,
+ * According to the official documentation https://www.elastic.co/guide/en/elasticsearch/guide/master/index-aliases.html,
  * alias management allow to use with no downtime your index.
  *
  * @category Elasticsearch Helper
