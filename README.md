@@ -49,16 +49,16 @@ where X.Y is the version which fit your need.
 
 ```php
 
-    <?php
+<?php
 
-    use Elasticsearch\ClientBuilder;
+use Elasticsearch\ClientBuilder;
     use Nexucis\Elasticsearch\Helper\Nodowntime\IndexHelper;
 
-    require 'vendor/autoload.php';
+require 'vendor/autoload.php';
 
-    $client = ClientBuilder::create()->build();
-    $helper = new IndexHelper();
-    $helper->setClient($client);
+$client = ClientBuilder::create()->build();
+$helper = new IndexHelper();
+$helper->setClient($client);
 ```
 
 To configure the elasticsearch client, you can read the [associated documentation](https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/_configuration.html)
@@ -74,9 +74,9 @@ To configure the elasticsearch client, you can read the [associated documentatio
 It all begins with an index creation :
 
 ```php
-    <?php
-    $alias = "myIndex";
-    $helper->createIndex($alias);
+<?php
+$alias = "myIndex";
+$helper->createIndex($alias);
 ```
 
 As you can see, we pass an alias name and not and index name through the helper. With the Helper, you will see everything through an alias and not the index directly. 
@@ -103,7 +103,7 @@ So to make this things possibily we need :
 4. to copy all documents from `myIndex_v1` to `myIndex_v2`.
 5. and finally, we need to remove the old index `myIndex_v1` and put the alias `myIndex` in the new one
 
-It does a lot of steps to perform, and to check. That's why this Helper comes here with the following simplify method : 
+It takes a lot of steps and verifications to check the update is done successfully. That's why this Helper comes here with the following simplify method : 
 
 ```php
  <?php
@@ -124,18 +124,18 @@ It does a lot of steps to perform, and to check. That's why this Helper comes he
             ]
     ]
  ];
- $helper->updateMapping($alias, $mapping);
+ $helper->updateMappings($alias, $mapping);
 ```
 
 You just need to provide the alias name and the new mapping and that's it.
 
 :warning: With an index with many documents, this kind of method can take a lot of time. That's why it should be better :
 
-* With ElasticSearch `2.4`, if the method call is performed in an asynchronous process.
-* With ElasticSearch `5` or greater, if you set the last parameter `$waitForCompletion`to false. It will give a taskID in return, which can be used with the [_task api](https://www.elastic.co/guide/en/elasticsearch/reference/current/tasks.html)
+* With ElasticSearch `2.4`, to call this method in an asynchronous process.
+* With ElasticSearch `5` or greater, , to set the parameter `$waitForCompletion` to false. It will give a taskID in return, which can be used with the [_task api](https://www.elastic.co/guide/en/elasticsearch/reference/current/tasks.html)
     
 ### Settings Operation
-The same logic described below can be apply to the settings operation. In this way, you will find the method `updateSettings` which do the same things than the method `updateMapping` if you switch *mapping* by *settings* and vice versa.
+The same logic described below can be apply to the settings operation. In this way, you will find the method `updateSettings` which do the same things than the method `updateMappings` if you switch *mappings* by *settings* and vice versa.
 
 ```php
  <?php
