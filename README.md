@@ -93,7 +93,7 @@ myIndex myIndex_v1 -      -            -
 ```
 
 ### Mapping Operation
-This helper prove his existence when you want to change your mapping dynamically and you still want a fully access to your data. 
+This helper proves his existence when you want to change your mapping dynamically and you still want a fully access to your data. 
 
 So to make this things possibily we need :
 
@@ -115,6 +115,7 @@ It does a lot of steps to perform, and to check. That's why this Helper comes he
 You just need to provide the alias name and the new mapping and that's it.
 
 :warning: With an index with many documents, this kind of method can take a lot of time. That's why it should be better :
+
     * With ElasticSearch `2.4`, if the method call is performed in an asynchronous process.
     * With ElasticSearch `5` or greater, if you set the last parameter `$waitForCompletion`to false. It will give a taskID which can be used with the [_task api](https://www.elastic.co/guide/en/elasticsearch/reference/current/tasks.html)
     
