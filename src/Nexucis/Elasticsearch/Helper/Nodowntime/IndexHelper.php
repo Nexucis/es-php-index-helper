@@ -192,7 +192,7 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * This méthod must call when you want to delete something inside the settings.
+     * This method must call when you want to delete something inside the settings.
      *
      * @param string $alias [REQUIRED]
      * @param array $settings [REQUIRED]
@@ -620,9 +620,10 @@ class IndexHelper implements IndexHelperInterface
     /**
      * @param string $index_src
      * @param string $index_dest
-     * @return boolean
+     * @param bool $waitForCompletion
+     * @return boolean | string
      */
-    protected function copyDocuments($index_src, $index_dest)
+    protected function copyDocuments($index_src, $index_dest, $waitForCompletion = true)
     {
         $params = array(
             'body' => array(
@@ -632,12 +633,17 @@ class IndexHelper implements IndexHelperInterface
                 'dest' => array(
                     'index' => $index_dest
                 )
-            )
+            ),
+            'wait_for_completion' => $waitForCompletion
         );
 
         $response = $this->client->reindex($params);
 
-        return count($response['failures']) === 0;
+        if ($waitForCompletion) {
+            return count($response['failures']) === 0;
+        }
+        // return the task ID
+        return $response['task'];
     }
 
     /**
