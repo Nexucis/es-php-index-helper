@@ -73,7 +73,7 @@ interface IndexHelperInterface
     public function addSettings($alias, $settings);
 
     /**
-     * This méthod must call when you want to delete something inside the settings.
+     * This method must call when you want to delete something inside the settings.
      *
      * @param string $alias [REQUIRED]
      * @param array $settings [REQUIRED]
