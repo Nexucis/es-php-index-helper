@@ -20,13 +20,16 @@ use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
  */
 class IndexHelper implements IndexHelperInterface
 {
+
+    const INDEX_NAME_CONVENTION_1 = '_v1';
+    const INDEX_NAME_CONVENTION_2 = '_v2';
+
+    const RETURN_ACKNOWLEDGE = "ok";
+
     /**
      * @var Client
      */
     protected $client;
-
-    const INDEX_NAME_CONVENTION_1 = '_v1';
-    const INDEX_NAME_CONVENTION_2 = '_v2';
 
     /**
      * You can pass an alias name or an index name here.
@@ -132,7 +135,7 @@ class IndexHelper implements IndexHelperInterface
 
         $this->putAlias($aliasDest, $indexDest);
 
-        return "ok";
+        return self::RETURN_ACKNOWLEDGE;
     }
 
     /**
@@ -183,7 +186,7 @@ class IndexHelper implements IndexHelperInterface
         $this->switchIndex($alias, $indexSrc, $indexDest);
         $this->deleteIndex($indexSrc);
 
-        return "ok";
+        return self::RETURN_ACKNOWLEDGE;
     }
 
     /**
@@ -273,7 +276,7 @@ class IndexHelper implements IndexHelperInterface
             return $this->reindex($alias, false, $waitForCompletion);
         }
 
-        return "ok";
+        return self::RETURN_ACKNOWLEDGE;
     }
 
     /**
@@ -321,7 +324,7 @@ class IndexHelper implements IndexHelperInterface
             return $this->reindex($alias, false, $waitForCompletion);
         }
 
-        return "ok";
+        return self::RETURN_ACKNOWLEDGE;
     }
 
     /**
