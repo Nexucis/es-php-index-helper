@@ -4,8 +4,8 @@ namespace Nexucis\Elasticsearch\Helper\Nodowntime;
 
 
 use Elasticsearch\Client;
-use Elasticsearch\Common\Exceptions\BadMethodCallException;
 use Elasticsearch\Common\Exceptions\RuntimeException;
+use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexAlreadyExistException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
 
 /**
@@ -47,14 +47,14 @@ class IndexHelper implements IndexHelperInterface
     /**
      * @param string $alias [REQUIRED]
      * @return void
-     * @throws BadMethodCallException
+     * @throws IndexAlreadyExistException
      */
     public function createIndex($alias)
     {
         $index = $alias . self::INDEX_NAME_CONVENTION_1;
 
         if ($this->existsIndex($index)) {
-            throw new BadMethodCallException('$index ' . $index . ' already exists. Cannot be created again');
+            throw new IndexAlreadyExistException($index);
         }
 
         $params = array(
@@ -81,7 +81,7 @@ class IndexHelper implements IndexHelperInterface
         );
 
         if (!$this->existsIndex($index)) {
-            throw new IndexNotFoundException('$index ' . $index . 'not found');
+            throw new IndexNotFoundException($index);
         }
 
         $this->client->indices()->delete($params);
@@ -96,16 +96,16 @@ class IndexHelper implements IndexHelperInterface
      * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
      * @throws RuntimeException
      * @throws IndexNotFoundException
-     * @throws BadMethodCallException
+     * @throws IndexAlreadyExistException
      */
     public function copyIndex($aliasSrc, $aliasDest, $waitForCompletion = true)
     {
         if (!$this->existsAlias($aliasSrc)) {
-            throw new IndexNotFoundException('$index ' . $aliasSrc . 'not found');
+            throw new IndexNotFoundException($aliasSrc);
         }
 
         if ($this->existsAlias($aliasDest)) {
-            throw new BadMethodCallException('$index ' . $aliasDest . ' must not exist');
+            throw new IndexAlreadyExistException($aliasDest);
         }
 
         $indexSrc = $this->findIndexByAlias($aliasSrc);
@@ -148,7 +148,7 @@ class IndexHelper implements IndexHelperInterface
     public function reindex($alias, $needToCreateIndexDest = true, $waitForCompletion = true)
     {
         if (!$this->existsAlias($alias)) {
-            throw new IndexNotFoundException('$index ' . $alias . ' not found');
+            throw new IndexNotFoundException($alias);
         }
 
         $indexSrc = $this->findIndexByAlias($alias);
@@ -199,7 +199,7 @@ class IndexHelper implements IndexHelperInterface
     public function addSettings($alias, $settings)
     {
         if (!$this->existsAlias($alias)) {
-            throw new IndexNotFoundException('$index ' . $alias . ' not found');
+            throw new IndexNotFoundException($alias);
         }
 
         $indexSource = $this->findIndexByAlias($alias);
@@ -235,7 +235,7 @@ class IndexHelper implements IndexHelperInterface
     public function updateSettings($alias, $settings, $needReindexation = true, $waitForCompletion = true)
     {
         if (!$this->existsAlias($alias)) {
-            throw new IndexNotFoundException('$index ' . $alias . ' not found');
+            throw new IndexNotFoundException($alias);
         }
 
         $indexSrc = $this->findIndexByAlias($alias);
@@ -292,7 +292,7 @@ class IndexHelper implements IndexHelperInterface
     public function updateMapping($alias, $mapping, $needReindexation = true, $waitForCompletion = true)
     {
         if (!$this->existsAlias($alias)) {
-            throw new IndexNotFoundException('$index ' . $alias . ' not found');
+            throw new IndexNotFoundException($alias);
         }
 
         $indexSrc = $this->findIndexByAlias($alias);
@@ -347,7 +347,7 @@ class IndexHelper implements IndexHelperInterface
     public function getMapping($alias)
     {
         if (!$this->existsAlias($alias)) {
-            throw new IndexNotFoundException('$index ' . $alias . ' not found');
+            throw new IndexNotFoundException($alias);
         }
 
         $indexSource = $this->findIndexByAlias($alias);
@@ -362,7 +362,7 @@ class IndexHelper implements IndexHelperInterface
     public function getSetting($alias)
     {
         if (!$this->existsAlias($alias)) {
-            throw new IndexNotFoundException('$index ' . $alias . ' not found');
+            throw new IndexNotFoundException($alias);
         }
 
         $indexSource = $this->findIndexByAlias($alias);
@@ -393,7 +393,7 @@ class IndexHelper implements IndexHelperInterface
     public function searchDocuments($alias, $query, $type = null, $from = 0, $size = 10)
     {
         if (!$this->existsAlias($alias)) {
-            throw new IndexNotFoundException('$index ' . $alias . ' not found');
+            throw new IndexNotFoundException($alias);
         }
 
         $params = array(
@@ -424,7 +424,7 @@ class IndexHelper implements IndexHelperInterface
     public function updateDocument($index, $id, $type, $body)
     {
         if (!$this->existsIndex($index)) {
-            throw new IndexNotFoundException('$index ' . $index . ' not found');
+            throw new IndexNotFoundException($index);
         }
         return $this->indexDocument($index, $id, $body, $type) > 1;
     }
@@ -440,7 +440,7 @@ class IndexHelper implements IndexHelperInterface
     public function addDocument($index, $id, $type, $body)
     {
         if (!$this->existsIndex($index)) {
-            throw new IndexNotFoundException('$index ' . $index . ' not found');
+            throw new IndexNotFoundException($index);
         }
         return $this->indexDocument($index, $id, $body, $type) === 1;
     }
@@ -455,7 +455,7 @@ class IndexHelper implements IndexHelperInterface
     public function deleteAllDocuments($alias)
     {
         if (!$this->existsAlias($alias)) {
-            throw new IndexNotFoundException('$index ' . $alias . ' not found');
+            throw new IndexNotFoundException($alias);
         }
 
         $indexSrc = $this->findIndexByAlias($alias);
@@ -482,7 +482,7 @@ class IndexHelper implements IndexHelperInterface
     public function deleteDocument($alias, $id, $type)
     {
         if (!$this->existsAlias($alias)) {
-            throw new IndexNotFoundException('$index ' . $alias . ' not found');
+            throw new IndexNotFoundException($alias);
         }
 
         $params = array(
