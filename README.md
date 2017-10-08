@@ -177,5 +177,18 @@ $helper->updateSettings($alias, $settings);
 ## Contributions
 Any contribution or suggestion would be really appreciated. Feel free to use the Issue section or to send a pull request.
 
+### Development - Run unit test
+If you want to launch the unit test, you need to have a local elasticsearch instance which must be accessible through the url http://localhost:9200. A simply way to launch it, is to start the [corresponding container](https://hub.docker.com/_/elasticsearch/) : 
+
+```bash
+docker run -d -p 9200:9200 -p 9300:9300 elasticsearch:2.4
+```
+
+Once ElasticSearch is up, you can run the following command :
+
+```bash
+./vendor/bin/phpunit
+```
+
 ## License
 [MIT](./LICENSE)
