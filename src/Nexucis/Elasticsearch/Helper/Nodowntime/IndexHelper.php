@@ -311,7 +311,7 @@ class IndexHelper implements IndexHelperInterface
             'index' => $indexDest,
         );
 
-        if (count($mapping) > 0) {
+        if (($mapping !== null) && is_array($mapping) && count($mapping) > 0) {
             $params['body'] = array(
                 'mappings' => $mapping,
             );
