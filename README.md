@@ -1,6 +1,6 @@
 # Elasticsearch Index Helper for php
 
-[![CircleCI](https://circleci.com/gh/Nexucis/es-php-index-helper.svg?style=svg)](https://circleci.com/gh/Nexucis/es-php-index-helper)
+[![CircleCI](https://circleci.com/gh/Nexucis/es-php-index-helper.svg?style=shield)](https://circleci.com/gh/Nexucis/es-php-index-helper) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
 1. [Overview](#overview) 
 2. [Installation](#installation)
@@ -76,13 +76,13 @@ It all begins with an index creation :
 
 ```php
 <?php
-$alias = "myIndex";
+$alias = "myindex";
 $helper->createIndex($alias);
 ```
 
 As you can see, we pass an alias name and not and index name through the helper. With the Helper, you will see everything through an alias and not the index directly. 
 
-The method below will create an index with the name `myIndex` and with the suffix `_v1`, and put an alias with the name `myIndex`.
+The method below will create an index with the name `myindex` and with the suffix `_v1`, and put an alias with the name `myindex`.
 
 If you request ElasticSearch directly (with [Sense](https://www.elastic.co/guide/en/sense/current/index.html) for example), you could see something like this : 
 
@@ -90,7 +90,7 @@ If you request ElasticSearch directly (with [Sense](https://www.elastic.co/guide
 GET _cat/aliases
 # which can give the following result : 
 alias   index      filter routing.index routing.search
-myIndex myIndex_v1 -      -            -
+myIndex myindex_v1 -      -            -
 ```
 
 ### Mapping Operation
@@ -98,17 +98,17 @@ This helper proves his existence when you want to change your mapping dynamicall
 
 So to make this things possible we need to:
 
-1. create a second index like `myIndex_v2`
-2. copy the settings from `myIndex_v1` to `myIndex_v2`
-3. put the new mapping in `myIndex_v2`
-4. copy all documents from `myIndex_v1` to `myIndex_v2`.
-5. remove the old index `myIndex_v1` and put the alias `myIndex` in the new one
+1. create a second index like `myindex_v2`
+2. copy the settings from `myindex_v1` to `myindex_v2`
+3. put the new mapping in `myindex_v2`
+4. copy all documents from `myindex_v1` to `myIndex_v2`.
+5. remove the old index `myindex_v1` and put the alias `myindex` in the new one
 
 It takes a lot of steps and verifications to check the update is done successfully. That's why this Helper comes here with the following simplify method : 
 
 ```php
 <?php
-$alias = "myIndex";
+$alias = "myindex";
 $mapping = [
     'my_type' => [
         '_source' => [
@@ -140,7 +140,7 @@ Indices settings can be updated the same way as mapping using the `updateSetting
 
 ```php
 <?php
-$alias = "myIndex";
+$alias = "myindex";
 $settings =[ 
     'number_of_shards' => 1,
     'number_of_replicas' => 0,

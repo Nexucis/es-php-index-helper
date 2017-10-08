@@ -26,6 +26,6 @@ class IndexNotFoundException extends \Exception implements ElasticsearchExceptio
     public function __construct($alias)
     {
         $this->index = $alias;
-        parent::__construct(sprintf('$index %s not found', $this->index));
+        parent::__construct(sprintf('index %s not found', $this->index));
     }
 }

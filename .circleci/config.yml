@@ -34,5 +34,8 @@ jobs:
             - ./vendor
           key: v1-dependencies-{{ checksum "composer.json" }}
 
+      # see if the es cluster is available
+      - run: .circleci/wait_es_up.sh
+
       # run tests!
-      - run: phpunit
+      - run: vendor/bin/phpunit
