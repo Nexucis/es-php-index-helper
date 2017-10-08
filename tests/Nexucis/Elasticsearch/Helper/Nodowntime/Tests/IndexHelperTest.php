@@ -47,4 +47,68 @@ class IndexHelperTest extends TestCase
         $this->assertTrue(self::$HELPER->existsIndex($alias . '_v1'));
     }
 
+    /**
+     * @@expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexAlreadyExistException
+     */
+    public function testCreateIndexAlreadyExistsException()
+    {
+        $alias = 'myindextest';
+        self::$HELPER->createIndex($alias);
+        self::$HELPER->createIndex($alias);
+    }
+
+    public function testDeleteIndex()
+    {
+        $alias = 'myindextest';
+        self::$HELPER->createIndex($alias);
+        self::$HELPER->deleteIndex($alias);
+
+        $this->assertFalse(self::$HELPER->existsIndex($alias));
+        $this->assertFalse(self::$HELPER->existsIndex($alias . '_v1'));
+    }
+
+    /**
+     * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
+     */
+    public function testDeleteIndexNotFoundException()
+    {
+        $alias = 'myindextest';
+        self::$HELPER->deleteIndex($alias);
+    }
+
+    public function testCopyEmptyIndex()
+    {
+        $aliasSrc = 'myindextest';
+        self::$HELPER->createIndex($aliasSrc);
+
+        $aliasDest = 'myindextest2';
+
+        self::$HELPER->copyIndex($aliasSrc, $aliasDest);
+
+        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc));
+        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc . '_v1'));
+        $this->assertTrue(self::$HELPER->existsIndex($aliasDest));
+        $this->assertTrue(self::$HELPER->existsIndex($aliasDest . '_v1'));
+    }
+
+    /**
+     * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
+     */
+    public function testCopyIndexNotFoundException()
+    {
+        $aliasSrc = 'myindextest';
+        self::$HELPER->copyIndex($aliasSrc, $aliasSrc);
+    }
+
+    /**
+     * @@expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexAlreadyExistException
+     */
+    public function testCopyIndexAlreadyExistsException()
+    {
+        $aliasSrc = 'myindextest';
+        self::$HELPER->createIndex($aliasSrc);
+
+        self::$HELPER->copyIndex($aliasSrc, $aliasSrc);
+    }
+
 }
