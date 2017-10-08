@@ -1,7 +1,7 @@
 {
   "name": "nexucis/es-index-helper",
-  "description": "Elasticsearch Index Helper for php",
-  "keywords": ["index","helper", "elasticsearch"],
+  "description": "Elasticsearch Index Helper for php, which allow you to manage your indices without any downtime",
+  "keywords": ["index", "no downtime", "helper", "elasticsearch"],
   "type": "library",
   "license": "MIT",
   "authors": [
