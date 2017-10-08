@@ -73,6 +73,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
 
         // we need to wait a moment because ElasticSearch need to synchronize something before we can close a creating index.
         // ElasticSearch Issue  : https://github.com/elastic/elasticsearch/issues/3313
+        // Idea to improve this workaround : use _cat/shards endpoint to get the shard status
         sleep(2);
         self::$HELPER->addSettings($aliasSrc, $settings);
 
