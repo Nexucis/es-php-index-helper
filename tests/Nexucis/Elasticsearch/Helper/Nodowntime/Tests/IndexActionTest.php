@@ -2,7 +2,7 @@
 
 namespace Nexucis\Elasticsearch\Helper\Nodowntime\Tests;
 
-class IndexHelperTest extends AbstractIndexHelperTest
+class IndexActionTest extends AbstractIndexHelperTest
 {
 
     public function testCreateIndex()
