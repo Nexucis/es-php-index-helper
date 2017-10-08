@@ -35,7 +35,7 @@ jobs:
           key: v1-dependencies-{{ checksum "composer.json" }}
 
       # see if the es cluster is available
-      - run: curl -s -XGET http://localhost:9200
+      - run: sleep 3 && curl -s -XGET http://localhost:9200
 
       # run tests!
       - run: vendor/bin/phpunit
