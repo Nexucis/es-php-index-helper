@@ -111,9 +111,6 @@ It takes a lot of steps and verifications to check the update is done successful
 $alias = "myindex";
 $mapping = [
     'my_type' => [
-        '_source' => [
-            'enabled' => true
-        ],
         'properties' => [
             'first_name' => [
                 'type' => 'string',
