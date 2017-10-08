@@ -5,13 +5,12 @@ namespace Nexucis\Elasticsearch\Helper\Nodowntime\Tests;
 use Elasticsearch\Client;
 use Elasticsearch\ClientBuilder;
 use Nexucis\Elasticsearch\Helper\Nodowntime\IndexHelper;
-use Nexucis\Elasticsearch\Helper\Nodowntime\IndexHelperInterface;
 use PHPUnit\Framework\TestCase;
 
 class IndexHelperTest extends TestCase
 {
     /**
-     * @var $helper IndexHelperInterface
+     * @var $helper IndexHelper
      */
     private static $HELPER;
 
@@ -44,7 +43,7 @@ class IndexHelperTest extends TestCase
         $alias = 'myindextest';
         self::$HELPER->createIndex($alias);
         $this->assertTrue(self::$HELPER->existsIndex($alias));
-        $this->assertTrue(self::$HELPER->existsIndex($alias . '_v1'));
+        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
     }
 
     /**
@@ -64,7 +63,7 @@ class IndexHelperTest extends TestCase
         self::$HELPER->deleteIndex($alias);
 
         $this->assertFalse(self::$HELPER->existsIndex($alias));
-        $this->assertFalse(self::$HELPER->existsIndex($alias . '_v1'));
+        $this->assertFalse(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
     }
 
     /**
@@ -86,9 +85,9 @@ class IndexHelperTest extends TestCase
         self::$HELPER->copyIndex($aliasSrc, $aliasDest);
 
         $this->assertTrue(self::$HELPER->existsIndex($aliasSrc));
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc . '_v1'));
+        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc . self::$HELPER::INDEX_NAME_CONVENTION_1));
         $this->assertTrue(self::$HELPER->existsIndex($aliasDest));
-        $this->assertTrue(self::$HELPER->existsIndex($aliasDest . '_v1'));
+        $this->assertTrue(self::$HELPER->existsIndex($aliasDest . self::$HELPER::INDEX_NAME_CONVENTION_1));
     }
 
     /**
