@@ -4,6 +4,7 @@ namespace Nexucis\Elasticsearch\Helper\Nodowntime;
 
 
 use Elasticsearch\Client;
+use Elasticsearch\Common\Exceptions\InvalidArgumentException;
 use Elasticsearch\Common\Exceptions\RuntimeException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexAlreadyExistException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
@@ -199,11 +200,16 @@ class IndexHelper implements IndexHelperInterface
      * @param array $settings [REQUIRED]
      * @return void
      * @throws IndexNotFoundException
+     * @throws InvalidArgumentException
      */
     public function addSettings($alias, $settings)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException($alias);
+        }
+
+        if ($settings === null || !is_array($settings) || count($settings) === 0) {
+            throw new InvalidArgumentException("settings are empty, you are not allowed to add an empty array as the settings.");
         }
 
         $indexSource = $this->findIndexByAlias($alias);
@@ -260,7 +266,7 @@ class IndexHelper implements IndexHelperInterface
             'index' => $indexDest,
         );
 
-        if (is_array($settings) && count($settings) > 0) {
+        if ($settings != null && is_array($settings) && count($settings) > 0) {
             $params['body'] = array(
                 'settings' => $settings
             );
@@ -311,7 +317,7 @@ class IndexHelper implements IndexHelperInterface
             'index' => $indexDest,
         );
 
-        if (count($mapping) > 0) {
+        if (($mapping !== null) && is_array($mapping) && count($mapping) > 0) {
             $params['body'] = array(
                 'mappings' => $mapping,
             );

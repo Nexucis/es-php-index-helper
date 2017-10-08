@@ -4,6 +4,7 @@
 namespace Nexucis\Elasticsearch\Helper\Nodowntime;
 
 use Elasticsearch\Client;
+use Elasticsearch\Common\Exceptions\InvalidArgumentException;
 use Elasticsearch\Common\Exceptions\RuntimeException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexAlreadyExistException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
@@ -75,6 +76,7 @@ interface IndexHelperInterface
      * @param array $settings [REQUIRED]
      * @return void
      * @throws IndexNotFoundException
+     * @throws InvalidArgumentException
      */
     public function addSettings($alias, $settings);
 
