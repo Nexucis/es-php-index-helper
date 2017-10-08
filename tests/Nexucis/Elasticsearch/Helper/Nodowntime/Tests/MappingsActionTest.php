@@ -39,4 +39,29 @@ class MappingsActionTest extends AbstractIndexHelperTest
         self::$HELPER->updateMappings($aliasSrc, array());
     }
 
+    public function testUpdateMappingsBasicData()
+    {
+        $mapping = [
+            'my_type' => [
+                'properties' => [
+                    'first_name' => [
+                        'type' => 'string',
+                        'analyzer' => 'standard'
+                    ],
+                    'age' => [
+                        'type' => 'integer'
+                    ]
+                ]
+            ]
+        ];
+
+        $aliasSrc = 'myindextest';
+        self::$HELPER->createIndex($aliasSrc);
+
+        self::$HELPER->updateMappings($aliasSrc, $mapping);
+        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc));
+        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc . self::$HELPER::INDEX_NAME_CONVENTION_2));
+        $this->assertEquals($mapping, self::$HELPER->getMappings($aliasSrc));
+    }
+
 }
