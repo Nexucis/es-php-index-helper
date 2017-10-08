@@ -639,8 +639,6 @@ class IndexHelper implements IndexHelperInterface
         $numberOfShards = $settings['number_of_shards'];
         $numberOfReplicas = $settings['number_of_replicas'];
 
-        $analysisSource = $settings['analysis'];
-
         if ($numberOfShards !== null) {
             $this->createBody($params);
 
@@ -659,6 +657,12 @@ class IndexHelper implements IndexHelperInterface
             $params['body']['settings']['number_of_replicas'] = $numberOfReplicas;
         }
 
+        $analysisSource = null;
+
+        if (array_key_exists('analysis', $settings)) {
+            $analysisSource = $settings['analysis'];
+        }
+
         if (($analysisSource !== null) && (count($analysisSource) !== 0)) {
 
             $this->createBody($params);
@@ -673,7 +677,7 @@ class IndexHelper implements IndexHelperInterface
 
     private function createBody(&$params)
     {
-        if ($params['body'] === null) {
+        if (!array_key_exists('body', $params)) {
             $params['body'] = array();
         }
     }
