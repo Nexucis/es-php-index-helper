@@ -650,7 +650,7 @@ class IndexHelper implements IndexHelperInterface
         if ($numberOfReplicas !== null) {
             $this->createBody($params);
 
-            if ($params['body']['settings'] === null) {
+            if (!array_key_exists('settings', $params['body'])) {
                 $params['body']['settings'] = array();
             }
 
@@ -667,7 +667,7 @@ class IndexHelper implements IndexHelperInterface
 
             $this->createBody($params);
 
-            if ($params['body']['settings'] === null) {
+            if (!array_key_exists('settings', $params['body'])) {
                 $params['body']['settings'] = array();
             }
 
