@@ -110,4 +110,25 @@ class IndexHelperTest extends TestCase
         self::$HELPER->copyIndex($aliasSrc, $aliasSrc);
     }
 
+    public function testReindexEmptyIndex()
+    {
+        $aliasSrc = 'myindextest';
+        self::$HELPER->createIndex($aliasSrc);
+
+        self::$HELPER->reindex($aliasSrc);
+
+        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc));
+        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc . self::$HELPER::INDEX_NAME_CONVENTION_2));
+    }
+
+    /**
+     * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
+     */
+    public function testReindexIndexNotFoundException()
+    {
+        $aliasSrc = 'myindextest';
+
+        self::$HELPER->reindex($aliasSrc);
+    }
+
 }
