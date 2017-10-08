@@ -1,5 +1,7 @@
 # Elasticsearch Index Helper for php
 
+[![CircleCI](https://circleci.com/gh/Nexucis/es-php-index-helper.svg?style=svg)](https://circleci.com/gh/Nexucis/es-php-index-helper)
+
 1. [Overview](#overview) 
 2. [Installation](#installation)
 3. [Quickstart](#quickstart)
