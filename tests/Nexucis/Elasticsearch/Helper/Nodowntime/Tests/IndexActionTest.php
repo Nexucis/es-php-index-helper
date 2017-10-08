@@ -13,6 +13,15 @@ class IndexActionTest extends AbstractIndexHelperTest
         $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
     }
 
+    public function testCreateIndexUTF8()
+    {
+        $alias = '⿇⽸⾽';
+        self::$HELPER->createIndex($alias);
+        $this->assertTrue(self::$HELPER->existsIndex($alias));
+        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
+        $this->assertEquals([$alias], self::$HELPER->getListAlias());
+    }
+
     /**
      * @@expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexAlreadyExistException
      */
