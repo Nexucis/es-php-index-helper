@@ -5,21 +5,14 @@ namespace Nexucis\Elasticsearch\Helper\Nodowntime\Tests;
 class IndexActionTest extends AbstractIndexHelperTest
 {
 
-    public function testCreateIndex()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testCreateIndex($alias)
     {
-        $alias = 'myindextest';
         self::$HELPER->createIndex($alias);
         $this->assertTrue(self::$HELPER->existsIndex($alias));
         $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
-    }
-
-    public function testCreateIndexUTF8()
-    {
-        $alias = '⿇⽸⾽';
-        self::$HELPER->createIndex($alias);
-        $this->assertTrue(self::$HELPER->existsIndex($alias));
-        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
-        $this->assertEquals([$alias], self::$HELPER->getListAlias());
     }
 
     /**
@@ -32,9 +25,11 @@ class IndexActionTest extends AbstractIndexHelperTest
         self::$HELPER->createIndex($alias);
     }
 
-    public function testDeleteIndex()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testDeleteIndex($alias)
     {
-        $alias = 'myindextest';
         self::$HELPER->createIndex($alias);
         self::$HELPER->deleteIndex($alias);
 
@@ -51,17 +46,19 @@ class IndexActionTest extends AbstractIndexHelperTest
         self::$HELPER->deleteIndex($alias);
     }
 
-    public function testCopyEmptyIndex()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testCopyEmptyIndex($alias)
     {
-        $aliasSrc = 'myindextest';
-        self::$HELPER->createIndex($aliasSrc);
+        self::$HELPER->createIndex($alias);
 
-        $aliasDest = 'myindextest2';
+        $aliasDest = $alias . '2';
 
-        self::$HELPER->copyIndex($aliasSrc, $aliasDest);
+        self::$HELPER->copyIndex($alias, $aliasDest);
 
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc));
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc . self::$HELPER::INDEX_NAME_CONVENTION_1));
+        $this->assertTrue(self::$HELPER->existsIndex($alias));
+        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
         $this->assertTrue(self::$HELPER->existsIndex($aliasDest));
         $this->assertTrue(self::$HELPER->existsIndex($aliasDest . self::$HELPER::INDEX_NAME_CONVENTION_1));
     }
@@ -86,15 +83,17 @@ class IndexActionTest extends AbstractIndexHelperTest
         self::$HELPER->copyIndex($aliasSrc, $aliasSrc);
     }
 
-    public function testReindexEmptyIndex()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testReindexEmptyIndex($alias)
     {
-        $aliasSrc = 'myindextest';
-        self::$HELPER->createIndex($aliasSrc);
+        self::$HELPER->createIndex($alias);
 
-        self::$HELPER->reindex($aliasSrc);
+        self::$HELPER->reindex($alias);
 
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc));
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc . self::$HELPER::INDEX_NAME_CONVENTION_2));
+        $this->assertTrue(self::$HELPER->existsIndex($alias));
+        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
     }
 
     /**

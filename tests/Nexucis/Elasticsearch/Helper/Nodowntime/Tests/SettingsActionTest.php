@@ -38,10 +38,12 @@ class SettingsActionTest extends AbstractIndexHelperTest
         self::$HELPER->addSettings($aliasSrc, null);
     }
 
-    public function testAddSettingsBasicData()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testAddSettingsBasicData($alias)
     {
-        $aliasSrc = 'myindextest';
-        self::$HELPER->createIndex($aliasSrc);
+        self::$HELPER->createIndex($alias);
         $settings = [
             'analysis' => [
                 'filter' => [
@@ -75,37 +77,42 @@ class SettingsActionTest extends AbstractIndexHelperTest
         // ElasticSearch Issue  : https://github.com/elastic/elasticsearch/issues/3313
         // Idea to improve this workaround : use _cat/shards endpoint to get the shard status
         sleep(2);
-        self::$HELPER->addSettings($aliasSrc, $settings);
+        self::$HELPER->addSettings($alias, $settings);
 
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc));
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc . self::$HELPER::INDEX_NAME_CONVENTION_1));
-        $resultSettings = self::$HELPER->getSettings($aliasSrc);
+        $this->assertTrue(self::$HELPER->existsIndex($alias));
+        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
+
+        $resultSettings = self::$HELPER->getSettings($alias);
         $this->assertTrue(array_key_exists('analysis', $resultSettings));
         $this->assertEquals($settings['analysis'], $resultSettings['analysis']);
     }
 
-    public function testUpdateSettingsEmpty()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateSettingsEmpty($alias)
     {
-        $aliasSrc = 'myindextest';
-        self::$HELPER->createIndex($aliasSrc);
+        self::$HELPER->createIndex($alias);
 
-        self::$HELPER->updateSettings($aliasSrc, array());
+        self::$HELPER->updateSettings($alias, array());
 
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc));
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc . self::$HELPER::INDEX_NAME_CONVENTION_2));
-        $this->assertFalse(array_key_exists('analysis', self::$HELPER->getSettings($aliasSrc)));
+        $this->assertTrue(self::$HELPER->existsIndex($alias));
+        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
+        $this->assertFalse(array_key_exists('analysis', self::$HELPER->getSettings($alias)));
     }
 
-    public function testUpdateSettingsNull()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateSettingsNull($alias)
     {
-        $aliasSrc = 'myindextest';
-        self::$HELPER->createIndex($aliasSrc);
+        self::$HELPER->createIndex($alias);
 
-        self::$HELPER->updateSettings($aliasSrc, null);
+        self::$HELPER->updateSettings($alias, null);
 
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc));
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc . self::$HELPER::INDEX_NAME_CONVENTION_2));
-        $this->assertFalse(array_key_exists('analysis', self::$HELPER->getSettings($aliasSrc)));
+        $this->assertTrue(self::$HELPER->existsIndex($alias));
+        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
+        $this->assertFalse(array_key_exists('analysis', self::$HELPER->getSettings($alias)));
     }
 
     /**
@@ -117,9 +124,11 @@ class SettingsActionTest extends AbstractIndexHelperTest
         self::$HELPER->updateSettings($aliasSrc, array());
     }
 
-    public function testUpdateSettingsBasicData()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateSettingsBasicData($alias)
     {
-        $aliasSrc = 'myindextest';
         $settings = [
             'number_of_shards' => 1,
             'number_of_replicas' => 0,
@@ -150,13 +159,14 @@ class SettingsActionTest extends AbstractIndexHelperTest
                 ]
             ]
         ];
-        self::$HELPER->createIndex($aliasSrc);
+        self::$HELPER->createIndex($alias);
 
-        self::$HELPER->updateSettings($aliasSrc, $settings);
+        self::$HELPER->updateSettings($alias, $settings);
 
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc));
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc . self::$HELPER::INDEX_NAME_CONVENTION_2));
-        $resultSettings = self::$HELPER->getSettings($aliasSrc);
+        $this->assertTrue(self::$HELPER->existsIndex($alias));
+        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
+
+        $resultSettings = self::$HELPER->getSettings($alias);
         $this->assertTrue(array_key_exists('analysis', $resultSettings));
         $this->assertEquals($settings['analysis'], $resultSettings['analysis']);
         $this->assertEquals($settings['number_of_shards'], $resultSettings['number_of_shards']);

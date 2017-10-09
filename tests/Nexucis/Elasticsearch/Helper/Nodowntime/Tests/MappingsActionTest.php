@@ -5,28 +5,32 @@ namespace Nexucis\Elasticsearch\Helper\Nodowntime\Tests;
 class MappingsActionTest extends AbstractIndexHelperTest
 {
 
-    public function testUpdateMappingsEmpty()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateMappingsEmpty($alias)
     {
-        $aliasSrc = 'myindextest';
-        self::$HELPER->createIndex($aliasSrc);
+        self::$HELPER->createIndex($alias);
 
-        self::$HELPER->updateMappings($aliasSrc, array());
+        self::$HELPER->updateMappings($alias, array());
 
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc));
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc . self::$HELPER::INDEX_NAME_CONVENTION_2));
-        $this->assertEquals(array(), self::$HELPER->getMappings($aliasSrc));
+        $this->assertTrue(self::$HELPER->existsIndex($alias));
+        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
+        $this->assertEquals(array(), self::$HELPER->getMappings($alias));
     }
 
-    public function testUpdateMappingsNull()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateMappingsNull($alias)
     {
-        $aliasSrc = 'myindextest';
-        self::$HELPER->createIndex($aliasSrc);
+        self::$HELPER->createIndex($alias);
 
-        self::$HELPER->updateMappings($aliasSrc, null);
+        self::$HELPER->updateMappings($alias, null);
 
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc));
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc . self::$HELPER::INDEX_NAME_CONVENTION_2));
-        $this->assertEquals(array(), self::$HELPER->getMappings($aliasSrc));
+        $this->assertTrue(self::$HELPER->existsIndex($alias));
+        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
+        $this->assertEquals(array(), self::$HELPER->getMappings($alias));
     }
 
     /**
@@ -39,7 +43,10 @@ class MappingsActionTest extends AbstractIndexHelperTest
         self::$HELPER->updateMappings($aliasSrc, array());
     }
 
-    public function testUpdateMappingsBasicData()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateMappingsBasicData($alias)
     {
         $mapping = [
             'my_type' => [
@@ -55,13 +62,12 @@ class MappingsActionTest extends AbstractIndexHelperTest
             ]
         ];
 
-        $aliasSrc = 'myindextest';
-        self::$HELPER->createIndex($aliasSrc);
+        self::$HELPER->createIndex($alias);
 
-        self::$HELPER->updateMappings($aliasSrc, $mapping);
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc));
-        $this->assertTrue(self::$HELPER->existsIndex($aliasSrc . self::$HELPER::INDEX_NAME_CONVENTION_2));
-        $this->assertEquals($mapping, self::$HELPER->getMappings($aliasSrc));
+        self::$HELPER->updateMappings($alias, $mapping);
+        $this->assertTrue(self::$HELPER->existsIndex($alias));
+        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
+        $this->assertEquals($mapping, self::$HELPER->getMappings($alias));
     }
 
 }

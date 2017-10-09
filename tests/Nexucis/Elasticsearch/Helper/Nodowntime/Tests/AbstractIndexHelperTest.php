@@ -45,4 +45,12 @@ abstract class AbstractIndexHelperTest extends TestCase
         self::$client->indices()->delete($param);
     }
 
+    public function aliasDataProvider()
+    {
+        return [
+            'latin-char' => ['myindextest'],
+            'utf-8-char' => ['⿇⽸⾽']
+        ];
+    }
+
 }
