@@ -570,7 +570,7 @@ class IndexHelper implements IndexHelperInterface
     protected function findIndexByAlias($alias)
     {
         $params = array(
-            'name' => $alias
+            'name' => urlencode($alias)
         );
         return array_keys($this->client->indices()->getAlias($params))[0];
     }
@@ -604,7 +604,7 @@ class IndexHelper implements IndexHelperInterface
     protected function existsAlias($alias)
     {
         $params = array(
-            'name' => $alias
+            'name' => urlencode($alias)
         );
 
         return $this->client->indices()->existsAlias($params);
@@ -791,7 +791,7 @@ class IndexHelper implements IndexHelperInterface
     {
         $params = array(
             'index' => $index,
-            'name' => $alias
+            'name' => urlencode($alias)
         );
 
         $this->client->indices()->putAlias($params);
