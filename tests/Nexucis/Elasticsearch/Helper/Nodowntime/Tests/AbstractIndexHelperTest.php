@@ -51,11 +51,11 @@ abstract class AbstractIndexHelperTest extends TestCase
         ];
     }
 
-    protected function loadFinancialIndex($alias)
+    protected function loadFinancialIndex($alias, $type = 'complains')
     {
         self::$HELPER->createIndex($alias);
 
-        $this->addBulkDocuments($this->jsonArrayToBulkArray(self::$documents, $alias, 'complains'));
+        $this->addBulkDocuments($this->jsonArrayToBulkArray(self::$documents, $alias, $type));
         // wait that all documents are effectively send to es;
         sleep(3);
     }

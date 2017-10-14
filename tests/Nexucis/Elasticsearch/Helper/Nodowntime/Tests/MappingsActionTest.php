@@ -70,4 +70,30 @@ class MappingsActionTest extends AbstractIndexHelperTest
         $this->assertEquals($mapping, self::$HELPER->getMappings($alias));
     }
 
+    public function testUpdateMappingsWithIndexNotEmpty()
+    {
+        $type = 'complains';
+        $alias = 'financial';
+        // create index with some contents
+        $this->loadFinancialIndex($alias, $type);
+
+        $mapping = [
+            $type => [
+                'properties' => [
+                    'viewType' => [
+                        'type' => 'string',
+                        'index' => 'no'
+                    ]
+                ]
+            ]
+        ];
+
+        self::$HELPER->updateMappings($alias, $mapping, true);
+        $this->assertTrue(self::$HELPER->existsIndex($alias));
+        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
+        $this->assertEquals($mapping[$type]['properties']['viewType']['index'], self::$HELPER->getMappings($alias)[$type]['properties']['viewType']['index']);
+
+        $this->assertTrue($this->countDocuments($alias) > 0);
+    }
+
 }
