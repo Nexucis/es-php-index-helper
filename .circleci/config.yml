@@ -37,6 +37,9 @@ jobs:
       # see if the es cluster is available
       - run: .circleci/wait_es_up.sh
 
+      # enable xdebug
+      - run: sed -i 's/^;//' ~/.phpenv/versions/$(phpenv global)/etc/conf.d/xdebug.ini
+
       # run tests!
       - run: vendor/bin/phpunit
 
