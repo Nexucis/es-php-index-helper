@@ -39,3 +39,6 @@ jobs:
 
       # run tests!
       - run: vendor/bin/phpunit
+
+      # run coverage
+      - run: vendor/bin/coveralls
