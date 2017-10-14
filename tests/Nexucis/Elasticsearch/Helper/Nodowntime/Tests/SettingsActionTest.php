@@ -2,7 +2,6 @@
 
 namespace Nexucis\Elasticsearch\Helper\Nodowntime\Tests;
 
-
 class SettingsActionTest extends AbstractIndexHelperTest
 {
 

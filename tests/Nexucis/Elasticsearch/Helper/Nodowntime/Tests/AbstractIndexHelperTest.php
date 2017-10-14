@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: Augustin
- * Date: 08/10/2017
- * Time: 17:11
- */
 
 namespace Nexucis\Elasticsearch\Helper\Nodowntime\Tests;
-
 
 use Elasticsearch\ClientBuilder;
 use Nexucis\Elasticsearch\Helper\Nodowntime\IndexHelper;
