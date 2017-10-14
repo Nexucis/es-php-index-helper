@@ -15,9 +15,11 @@ abstract class AbstractIndexHelperTest extends TestCase
     protected static $HELPER;
 
     /**
-     * @var $client Client
+     * @var $client \Elasticsearch\Client
      */
     protected static $client;
+
+    protected static $documents;
 
     /**
      * initialize elasticsearch client and index Helper
@@ -27,6 +29,9 @@ abstract class AbstractIndexHelperTest extends TestCase
         self::$client = ClientBuilder::create()->setHosts([$_SERVER['ES_TEST_HOST']])->build();
         self::$HELPER = new IndexHelper();
         self::$HELPER->setClient(self::$client);
+
+        // load static data
+        self::$documents = json_decode(file_get_contents('http://data.consumerfinance.gov/api/views.json'));
     }
 
     public function tearDown()
@@ -44,6 +49,49 @@ abstract class AbstractIndexHelperTest extends TestCase
             'latin-char' => ['myindextest'],
             'utf-8-char' => ['⿇⽸⾽']
         ];
+    }
+
+    protected function loadFinancialIndex($alias)
+    {
+        self::$HELPER->createIndex($alias);
+
+        $this->addBulkDocuments($this->jsonArrayToBulkArray(self::$documents, $alias, 'complains'));
+        // wait that all documents are effectively send to es;
+        sleep(3);
+    }
+
+    /**
+     * @param $index
+     * @return int
+     */
+    protected function countDocuments($index)
+    {
+        $params = array(
+            'index' => $index,
+        );
+        return self::$client->count($params)['count'];
+    }
+
+    private function addBulkDocuments($params)
+    {
+        self::$client->bulk($params);
+    }
+
+    private function jsonArrayToBulkArray($documents, $index, $type)
+    {
+        $params = array();
+        foreach ($documents as $document) {
+            $params['body'][] = [
+                'index' => [
+                    '_index' => $index,
+                    '_type' => $type,
+                ]
+            ];
+            $params['body'][] = $document;
+        }
+        // wait until the result are visible to search
+        $params['refresh'] = true;
+        return $params;
     }
 
 }
