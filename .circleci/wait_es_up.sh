@@ -1,16 +1,19 @@
 #!/bin/bash
 
 loop=0
+endLoop=4
 response=7 # node not available
+wait=1
 
-while [ $response != 0 ] && [ $loop != 5 ]; do
+while [ ${response} != 0 ] && [ ${loop} != ${endLoop} ]; do
     curl -s -XHEAD http://localhost:9200
     response=$?
-    loop=$(expr $loop + 1)
-    sleep 1
+    loop=$(( $loop + 1))
+    wait=$(( $wait*2))
+    sleep ${wait}
 done
 
-if [ $loop == 5 ]; then
+if [ ${loop} == ${endLoop} ]; then
     echo "elasticsearch is not available"
     exit 1;
 else

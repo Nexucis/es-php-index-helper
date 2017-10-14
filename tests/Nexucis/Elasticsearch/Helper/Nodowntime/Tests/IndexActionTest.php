@@ -63,6 +63,22 @@ class IndexActionTest extends AbstractIndexHelperTest
         $this->assertTrue(self::$HELPER->existsIndex($aliasDest . self::$HELPER::INDEX_NAME_CONVENTION_1));
     }
 
+    public function testCopyIndex()
+    {
+        $alias = 'financial';
+        // create index with some contents
+        $this->loadFinancialIndex($alias);
+
+        $aliasDest = "indexcopy";
+        self::$HELPER->copyIndex($alias, $aliasDest, true);
+
+        $this->assertTrue(self::$HELPER->existsIndex($alias));
+        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
+        $this->assertTrue(self::$HELPER->existsIndex($aliasDest));
+        $this->assertTrue(self::$HELPER->existsIndex($aliasDest . self::$HELPER::INDEX_NAME_CONVENTION_1));
+        $this->assertEquals($this->countDocuments($alias), $this->countDocuments($aliasDest));
+    }
+
     /**
      * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
      */
@@ -94,6 +110,19 @@ class IndexActionTest extends AbstractIndexHelperTest
 
         $this->assertTrue(self::$HELPER->existsIndex($alias));
         $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
+    }
+
+    public function testReindex()
+    {
+        $alias = 'financial';
+        // create index with some contents
+        $this->loadFinancialIndex($alias);
+
+        self::$HELPER->reindex($alias, true);
+
+        $this->assertTrue(self::$HELPER->existsIndex($alias));
+        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
+        $this->assertTrue($this->countDocuments($alias) > 0);
     }
 
     /**

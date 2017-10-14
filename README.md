@@ -10,7 +10,7 @@
 
 ## Overview
 
-This project provides an index Helper in order to help you to manage your ES Indices with no downtime. This helper implement the philosophy described in the 
+This project provides an index Helper in order to help you to manage your ES Indices with no downtime. This helper implements the philosophy described in the 
 [official documentation](https://www.elastic.co/guide/en/elasticsearch/guide/master/index-aliases.html) which can be summarized in a few words : *use alias instead of index directly*
 
 ### Versioning

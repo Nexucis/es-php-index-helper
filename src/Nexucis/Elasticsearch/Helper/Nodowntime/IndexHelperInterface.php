@@ -45,6 +45,7 @@ interface IndexHelperInterface
     /**
      * @param string $aliasSrc [REQUIRED]
      * @param string $aliasDest [REQUIRED]
+     * @param string|bool $refresh wait until the result are visible to search
      * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4. In fact, it would be preferable to create an asynchronous process that executes this task.
      * If you set it to true, don't forget to put an alias to the new index when the corresponding task is gone.
@@ -53,10 +54,11 @@ interface IndexHelperInterface
      * @throws IndexNotFoundException
      * @throws IndexAlreadyExistException
      */
-    public function copyIndex($aliasSrc, $aliasDest, $waitForCompletion = true);
+    public function copyIndex($aliasSrc, $aliasDest, $refresh = false, $waitForCompletion = true);
 
     /**
      * @param string $alias [REQUIRED]
+     * @param string|bool $refresh wait until the result are visible to search
      * @param bool $needToCreateIndexDest
      * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
@@ -65,7 +67,7 @@ interface IndexHelperInterface
      * @throws RuntimeException
      * @throws IndexNotFoundException
      */
-    public function reindex($alias, $needToCreateIndexDest = true, $waitForCompletion = true);
+    public function reindex($alias, $refresh = false, $needToCreateIndexDest = true, $waitForCompletion = true);
 
     /**
      * This method must call when you want to add something inside the settings. Because the reindexation is a long task,
@@ -85,6 +87,7 @@ interface IndexHelperInterface
      *
      * @param string $alias [REQUIRED]
      * @param array $settings [REQUIRED]
+     * @param string|bool $refresh wait until the result are visible to search
      * @param bool $needReindexation : The process of reindexation can be so long, instead of calling reindex method inside this method,
      * you may want to call it in an asynchronous process.
      * But if you pass this parameters to false, don't forget to reindex. If you don't do it, you will not see your modification of the settings
@@ -95,11 +98,14 @@ interface IndexHelperInterface
      * @throws RuntimeException
      * @throws IndexNotFoundException
      */
-    public function updateSettings($alias, $settings, $needReindexation = true, $waitForCompletion = true);
+    public function updateSettings($alias, $settings, $refresh = false, $needReindexation = true, $waitForCompletion = true);
 
     /**
+     * This method must call whenever you want to add or delete something inside the mappings
+     *
      * @param string $alias [REQUIRED]
      * @param array $mapping [REQUIRED]
+     * @param string|bool $refresh wait until the result are visible to search
      * @param bool $needReindexation : The process of reindexation can be so long, instead of calling reindex method inside this method,
      * you may want to call it in an asynchronous process.
      * But if you pass this parameters to false, don't forget to reindex. If you don't do it, you will not see your modification of the mappings
@@ -110,7 +116,7 @@ interface IndexHelperInterface
      * @throws RuntimeException
      * @throws IndexNotFoundException
      */
-    public function updateMappings($alias, $mapping, $needReindexation = true, $waitForCompletion = true);
+    public function updateMappings($alias, $mapping, $refresh = false, $needReindexation = true, $waitForCompletion = true);
 
     /**
      * @return array
