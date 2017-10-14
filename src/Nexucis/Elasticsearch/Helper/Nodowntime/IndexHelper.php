@@ -95,6 +95,7 @@ class IndexHelper implements IndexHelperInterface
     /**
      * @param string $aliasSrc [REQUIRED]
      * @param string $aliasDest [REQUIRED]
+     * @param string|bool $refresh wait until the result are visible to search
      * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4. In fact, it would be preferable to create an asynchronous process that executes this task.
      * If you set it to true, don't forget to put an alias to the new index when the corresponding task is gone.
@@ -103,7 +104,7 @@ class IndexHelper implements IndexHelperInterface
      * @throws IndexNotFoundException
      * @throws IndexAlreadyExistException
      */
-    public function copyIndex($aliasSrc, $aliasDest, $waitForCompletion = true)
+    public function copyIndex($aliasSrc, $aliasDest, $refresh = false, $waitForCompletion = true)
     {
         if (!$this->existsAlias($aliasSrc)) {
             throw new IndexNotFoundException($aliasSrc);
@@ -122,7 +123,7 @@ class IndexHelper implements IndexHelperInterface
         // currently, the reindex api doesn't work when there are no documents inside the index source
         // So if there are some documents to copy and if the reindex Api send an error, we throw a RuntimeException
         if (!$this->indexIsEmpty($indexSrc)) {
-            $response = $this->copyDocuments($indexSrc, $indexDest, $waitForCompletion);
+            $response = $this->copyDocuments($indexSrc, $indexDest, $refresh, $waitForCompletion);
 
             if ($waitForCompletion) {
                 if (!$response) {
@@ -142,6 +143,7 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param string $alias [REQUIRED]
+     * @param string|bool $refresh wait until the result are visible to search
      * @param bool $needToCreateIndexDest
      * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
@@ -150,7 +152,7 @@ class IndexHelper implements IndexHelperInterface
      * @throws RuntimeException
      * @throws IndexNotFoundException
      */
-    public function reindex($alias, $needToCreateIndexDest = true, $waitForCompletion = true)
+    public function reindex($alias, $refresh = false, $needToCreateIndexDest = true, $waitForCompletion = true)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException($alias);
@@ -172,7 +174,7 @@ class IndexHelper implements IndexHelperInterface
         // So if there are some documents to copy and if the reindex Api send an error, we throw a RuntimeException
 
         if (!$this->indexIsEmpty($indexSrc)) {
-            $response = $this->copyDocuments($indexSrc, $indexDest, $waitForCompletion);
+            $response = $this->copyDocuments($indexSrc, $indexDest, $refresh, $waitForCompletion);
 
             if ($waitForCompletion) {
                 if (!$response) {
@@ -232,6 +234,7 @@ class IndexHelper implements IndexHelperInterface
      *
      * @param string $alias [REQUIRED]
      * @param array $settings [REQUIRED]
+     * @param string|bool $refresh wait until the result are visible to search
      * @param bool $needReindexation : The process of reindexation can be so long, instead of calling reindex method inside this method,
      * you may want to call it in an asynchronous process.
      * But if you pass this parameters to false, don't forget to reindex. If you don't do it, you will not see your modification of the settings
@@ -242,7 +245,7 @@ class IndexHelper implements IndexHelperInterface
      * @throws RuntimeException
      * @throws IndexNotFoundException
      */
-    public function updateSettings($alias, $settings, $needReindexation = true, $waitForCompletion = true)
+    public function updateSettings($alias, $settings, $refresh = false, $needReindexation = true, $waitForCompletion = true)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException($alias);
@@ -280,15 +283,18 @@ class IndexHelper implements IndexHelperInterface
         $result = $this->client->indices()->create($params);
 
         if ($result['acknowledged'] && $needReindexation) {
-            return $this->reindex($alias, false, $waitForCompletion);
+            return $this->reindex($alias, $refresh, false, $waitForCompletion);
         }
 
         return self::RETURN_ACKNOWLEDGE;
     }
 
     /**
+     * This method must call whenever you want to add or delete something inside the mappings
+     *
      * @param string $alias [REQUIRED]
      * @param array $mapping [REQUIRED]
+     * @param string|bool $refresh wait until the result are visible to search
      * @param bool $needReindexation : The process of reindexation can be so long, instead of calling reindex method inside this method,
      * you may want to call it in an asynchronous process.
      * But if you pass this parameters to false, don't forget to reindex. If you don't do it, you will not see your modification of the mappings
@@ -299,7 +305,7 @@ class IndexHelper implements IndexHelperInterface
      * @throws RuntimeException
      * @throws IndexNotFoundException
      */
-    public function updateMappings($alias, $mapping, $needReindexation = true, $waitForCompletion = true)
+    public function updateMappings($alias, $mapping, $refresh = false, $needReindexation = true, $waitForCompletion = true)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException($alias);
@@ -328,7 +334,7 @@ class IndexHelper implements IndexHelperInterface
         $result = $this->client->indices()->create($params);
 
         if ($result['acknowledged'] && $needReindexation) {
-            return $this->reindex($alias, false, $waitForCompletion);
+            return $this->reindex($alias, $refresh, false, $waitForCompletion);
         }
 
         return self::RETURN_ACKNOWLEDGE;
@@ -691,10 +697,11 @@ class IndexHelper implements IndexHelperInterface
     /**
      * @param string $indexSrc
      * @param string $indexDest
+     * @param string|bool $refresh wait until the result are visible to search
      * @param bool $waitForCompletion
      * @return boolean | string
      */
-    protected function copyDocuments($indexSrc, $indexDest, $waitForCompletion = true)
+    protected function copyDocuments($indexSrc, $indexDest, $refresh = false, $waitForCompletion = true)
     {
         $params = array(
             'body' => array(
@@ -705,7 +712,8 @@ class IndexHelper implements IndexHelperInterface
                     'index' => $indexDest
                 )
             ),
-            'wait_for_completion' => $waitForCompletion
+            'wait_for_completion' => $waitForCompletion,
+            'refresh' => $refresh
         );
 
         $response = $this->client->reindex($params);
