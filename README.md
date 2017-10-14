@@ -2,6 +2,8 @@
 
 [![CircleCI](https://circleci.com/gh/Nexucis/es-php-index-helper.svg?style=shield)](https://circleci.com/gh/Nexucis/es-php-index-helper) [![codecov](https://codecov.io/gh/Nexucis/es-php-index-helper/branch/master/graph/badge.svg)](https://codecov.io/gh/Nexucis/es-php-index-helper) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
+[![Latest Stable Version](https://poser.pugx.org/nexucis/es-index-helper/v/stable)](https://packagist.org/packages/nexucis/es-index-helper)
+
 1. [Overview](#overview) 
 2. [Installation](#installation)
 3. [Quickstart](#quickstart)
