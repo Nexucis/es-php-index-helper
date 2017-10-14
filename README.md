@@ -1,6 +1,6 @@
 # Elasticsearch Index Helper for php
 
-[![CircleCI](https://circleci.com/gh/Nexucis/es-php-index-helper.svg?style=shield)](https://circleci.com/gh/Nexucis/es-php-index-helper) [![Coverage Status](https://coveralls.io/repos/github/Nexucis/es-php-index-helper/badge.svg?branch=master)](https://coveralls.io/github/Nexucis/es-php-index-helper?branch=master) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![CircleCI](https://circleci.com/gh/Nexucis/es-php-index-helper.svg?style=shield)](https://circleci.com/gh/Nexucis/es-php-index-helper) [![codecov](https://codecov.io/gh/Nexucis/es-php-index-helper/branch/master/graph/badge.svg)](https://codecov.io/gh/Nexucis/es-php-index-helper) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
 1. [Overview](#overview) 
 2. [Installation](#installation)
