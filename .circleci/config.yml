@@ -38,7 +38,8 @@ jobs:
       - run: .circleci/wait_es_up.sh
 
       # enable xdebug
-      - run: sed -i 's/^;//' ~/.phpenv/versions/$(phpenv global)/etc/conf.d/xdebug.ini
+      - run: sudo ln -s /etc/php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+      - run: php --ini
 
       # run tests!
       - run: vendor/bin/phpunit
