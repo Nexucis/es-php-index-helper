@@ -6,4 +6,4 @@ composer.lock
 
 # intelliJ files
 .idea/
-
+/**/clover.xml
