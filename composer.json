@@ -20,5 +20,10 @@
     "psr-4": {
       "Nexucis\\": "src/Nexucis/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Nexucis\\Tests\\": "tests/Nexucis/Tests"
+    }
   }
 }

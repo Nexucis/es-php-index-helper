@@ -1,6 +1,6 @@
 <?php
 
-namespace Nexucis\Elasticsearch\Helper\Nodowntime\Tests;
+namespace Nexucis\Tests\Elasticsearch\Helper\Nodowntime;
 
 use Elasticsearch\ClientBuilder;
 use Nexucis\Elasticsearch\Helper\Nodowntime\IndexHelper;
