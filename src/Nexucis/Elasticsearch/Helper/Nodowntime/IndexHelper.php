@@ -448,7 +448,7 @@ class IndexHelper implements IndexHelperInterface
         if (!$this->existsIndex($index)) {
             throw new IndexNotFoundException($index);
         }
-        return $this->indexDocument($index, $id, $body, $type) > 1;
+        return $this->indexDocument($index, $body, $type, $id) > 1;
     }
 
     /**
@@ -459,12 +459,12 @@ class IndexHelper implements IndexHelperInterface
      * @return boolean : true if the document has been created.
      * @throws IndexNotFoundException
      */
-    public function addDocument($index, $id, $type, $body)
+    public function addDocument($index, $type, $body, $id = null)
     {
         if (!$this->existsIndex($index)) {
             throw new IndexNotFoundException($index);
         }
-        return $this->indexDocument($index, $id, $body, $type) === 1;
+        return $this->indexDocument($index, $body, $type, $id) === 1;
     }
 
     /**
@@ -532,7 +532,7 @@ class IndexHelper implements IndexHelperInterface
      * @param string $type
      * @return mixed
      */
-    protected function indexDocument($index, $id, $body, $type)
+    protected function indexDocument($index, $body, $type, $id = null)
     {
 
         $params = array(
@@ -541,6 +541,10 @@ class IndexHelper implements IndexHelperInterface
             'id' => $id,
             'body' => $body
         );
+
+        if ($id != null) {
+            $params['id'] = $id;
+        }
 
         $response = $this->client->index($params);
 
