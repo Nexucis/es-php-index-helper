@@ -538,11 +538,10 @@ class IndexHelper implements IndexHelperInterface
         $params = array(
             'index' => $index,
             'type' => $type,
-            'id' => $id,
             'body' => $body
         );
 
-        if ($id != null) {
+        if ($id !== null) {
             $params['id'] = $id;
         }
 
