@@ -145,8 +145,8 @@ interface IndexHelperInterface
 
     /**
      * @param string $alias [REQUIRED]
-     * @param array $query [REQUIRED]
-     * @param null|string $type
+     * @param array $query
+     * @param string $type
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
      * @return array
