@@ -55,7 +55,7 @@ class IndexActionTest extends AbstractIndexHelperTest
 
         $aliasDest = $alias . '2';
 
-        self::$HELPER->copyIndex($alias, $aliasDest);
+        $this->assertEquals(self::$HELPER::RETURN_ACKNOWLEDGE, self::$HELPER->copyIndex($alias, $aliasDest));
 
         $this->assertTrue(self::$HELPER->existsIndex($alias));
         $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
@@ -70,13 +70,25 @@ class IndexActionTest extends AbstractIndexHelperTest
         $this->loadFinancialIndex($alias);
 
         $aliasDest = "indexcopy";
-        self::$HELPER->copyIndex($alias, $aliasDest, true);
+        $this->assertEquals(self::$HELPER::RETURN_ACKNOWLEDGE, self::$HELPER->copyIndex($alias, $aliasDest, true));
 
         $this->assertTrue(self::$HELPER->existsIndex($alias));
         $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
         $this->assertTrue(self::$HELPER->existsIndex($aliasDest));
         $this->assertTrue(self::$HELPER->existsIndex($aliasDest . self::$HELPER::INDEX_NAME_CONVENTION_1));
         $this->assertEquals($this->countDocuments($alias), $this->countDocuments($aliasDest));
+    }
+
+    public function testCopyIndexAsynchronusByTask()
+    {
+        $alias = 'financial';
+        // create index with some contents
+        $this->loadFinancialIndex($alias);
+
+        $aliasDest = "indexcopy";
+
+        $result = self::$HELPER->copyIndex($alias, $aliasDest, false, false);
+        $this->assertRegExp('/\w+:\d+/i', $result);
     }
 
     /**
@@ -106,7 +118,7 @@ class IndexActionTest extends AbstractIndexHelperTest
     {
         self::$HELPER->createIndex($alias);
 
-        self::$HELPER->reindex($alias);
+        $this->assertEquals(self::$HELPER::RETURN_ACKNOWLEDGE, self::$HELPER->reindex($alias));
 
         $this->assertTrue(self::$HELPER->existsIndex($alias));
         $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
@@ -118,11 +130,22 @@ class IndexActionTest extends AbstractIndexHelperTest
         // create index with some contents
         $this->loadFinancialIndex($alias);
 
-        self::$HELPER->reindex($alias, true);
+        $this->assertEquals(self::$HELPER::RETURN_ACKNOWLEDGE, self::$HELPER->reindex($alias, true));
 
         $this->assertTrue(self::$HELPER->existsIndex($alias));
         $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
         $this->assertTrue($this->countDocuments($alias) > 0);
+    }
+
+    public function testReindexAsynchronusByTask()
+    {
+        $alias = 'financial';
+        // create index with some contents
+        $this->loadFinancialIndex($alias);
+
+        $result = self::$HELPER->reindex($alias, false, true, false);
+
+        $this->assertRegExp('/\w+:\d+/i', $result);
     }
 
     /**
@@ -134,5 +157,4 @@ class IndexActionTest extends AbstractIndexHelperTest
 
         self::$HELPER->reindex($aliasSrc);
     }
-
 }
