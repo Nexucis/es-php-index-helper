@@ -51,7 +51,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
     /**
      * @expectedException  \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
      */
-    public function addDocumentIndexNotFound()
+    public function testAddDocumentIndexNotFound()
     {
         $alias = 'myindex';
         self::$HELPER->addDocument($alias, 'test', []);
@@ -60,19 +60,22 @@ class DocumentActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function addDocument($alias)
+    public function testAddDocument($alias)
     {
         $type = 'test';
         $body = [
             'test' => 'Palatii dicto sciens venit contumaciter'
         ];
+
+        self::$HELPER->createIndex($alias);
+
         $this->assertTrue(self::$HELPER->addDocument($alias, $type, $body));
     }
 
     /**
      * @expectedException  \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
      */
-    public function updateDocumentIndexNotFound()
+    public function testUpdateDocumentIndexNotFound()
     {
         $alias = 'myindex';
         self::$HELPER->updateDocument($alias, 0, 'test', []);
@@ -81,12 +84,14 @@ class DocumentActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function updateDocument($alias)
+    public function testUpdateDocument($alias)
     {
         $type = 'test';
         $body = [
             'test' => 'Palatii dicto sciens venit contumaciter'
         ];
+
+        self::$HELPER->createIndex($alias);
 
         $this->assertTrue(self::$HELPER->addDocument($alias, $type, $body, 1));
 
@@ -94,5 +99,4 @@ class DocumentActionTest extends AbstractIndexHelperTest
 
         $this->assertTrue(self::$HELPER->updateDocument($alias, 1, $type, $body));
     }
-
 }
