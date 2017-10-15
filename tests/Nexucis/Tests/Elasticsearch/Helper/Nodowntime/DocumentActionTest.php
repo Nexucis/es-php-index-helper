@@ -87,16 +87,44 @@ class DocumentActionTest extends AbstractIndexHelperTest
     public function testUpdateDocument($alias)
     {
         $type = 'test';
+        $id = 1;
         $body = [
             'test' => 'Palatii dicto sciens venit contumaciter'
         ];
 
         self::$HELPER->createIndex($alias);
 
-        $this->assertTrue(self::$HELPER->addDocument($alias, $type, $body, 1));
+        $this->assertTrue(self::$HELPER->addDocument($alias, $type, $body, $id));
 
         $body['test2'] = 'Tandem culpa in coalitos innocentium saltem malivolus pro parceretur ut';
 
-        $this->assertTrue(self::$HELPER->updateDocument($alias, 1, $type, $body));
+        $this->assertTrue(self::$HELPER->updateDocument($alias, $id, $type, $body));
+    }
+
+    /**
+     * @expectedException  \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
+     */
+    public function testDeleteDocumentIndexNotFound()
+    {
+        $alias = 'myindex';
+        self::$HELPER->deleteDocument($alias, 0, 'test');
+    }
+
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testDeleteDocument($alias)
+    {
+        $type = 'test';
+        $id = 0;
+        $body = [
+            'test' => 'Palatii dicto sciens venit contumaciter'
+        ];
+
+        self::$HELPER->createIndex($alias);
+
+        $this->assertTrue(self::$HELPER->addDocument($alias, $type, $body, $id));
+
+        $this->assertTrue(self::$HELPER->deleteDocument($alias, $id, $type));
     }
 }
