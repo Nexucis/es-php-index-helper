@@ -96,4 +96,22 @@ class MappingsActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->countDocuments($alias) > 0);
     }
 
+    /**
+     * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
+     */
+    public function testGetMappingsIndexNotFound()
+    {
+        $alias = 'myindex';
+        self::$HELPER->getMappings($alias);
+    }
+
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testGetMappingsEmptyIndex($alias)
+    {
+        self::$HELPER->createIndex($alias);
+
+        $this->assertEquals([], self::$HELPER->getMappings($alias));
+    }
 }
