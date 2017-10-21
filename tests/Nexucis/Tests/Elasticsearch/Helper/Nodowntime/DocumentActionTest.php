@@ -128,6 +128,17 @@ class DocumentActionTest extends AbstractIndexHelperTest
     }
 
     /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testDocumentNotExist($alias)
+    {
+        $type = 'test';
+        $id = 0;
+        self::$HELPER->createIndex($alias);
+        $this->assertFalse(self::$HELPER->deleteDocument($alias, $id, $type));
+    }
+
+    /**
      * @expectedException  \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
      */
     public function testGetAllDocumentIndexNotFound()
