@@ -124,18 +124,19 @@ class DocumentActionTest extends AbstractIndexHelperTest
 
         $this->assertTrue(self::$HELPER->addDocument($alias, $type, $body, $id));
 
-        $this->assertTrue(self::$HELPER->deleteDocument($alias, $id, $type));
+        self::$HELPER->deleteDocument($alias, $id, $type);
     }
 
     /**
      * @dataProvider aliasDataProvider
+     * @expectedException \Elasticsearch\Common\Exceptions\Missing404Exception
      */
     public function testDocumentNotExist($alias)
     {
         $type = 'test';
         $id = 0;
         self::$HELPER->createIndex($alias);
-        $this->assertFalse(self::$HELPER->deleteDocument($alias, $id, $type));
+        self::$HELPER->deleteDocument($alias, $id, $type);
     }
 
     /**

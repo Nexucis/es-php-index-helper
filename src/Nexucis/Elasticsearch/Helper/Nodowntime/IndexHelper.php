@@ -498,7 +498,7 @@ class IndexHelper implements IndexHelperInterface
      * @param $alias [REQUIRED]
      * @param $id [REQUIRED]
      * @param string $type [REQUIRED]
-     * @return boolean
+     * @return void
      * @throws IndexNotFoundException
      */
     public function deleteDocument($alias, $id, $type)
@@ -513,8 +513,7 @@ class IndexHelper implements IndexHelperInterface
             'id' => $id,
         );
 
-        $response = $this->client->delete($params);
-        return $response['found'] > 0;
+        $this->client->delete($params);
     }
 
     /**

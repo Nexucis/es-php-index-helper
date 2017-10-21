@@ -186,7 +186,7 @@ interface IndexHelperInterface
      * @param $alias [REQUIRED]
      * @param $id [REQUIRED]
      * @param string $type [REQUIRED]
-     * @return bool
+     * @return void
      * @throws IndexNotFoundException
      */
     public function deleteDocument($alias, $id, $type);
