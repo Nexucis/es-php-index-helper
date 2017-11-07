@@ -41,6 +41,10 @@ jobs:
       - run: sudo ln -s /etc/php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
       - run: php --ini
 
+      # run code analyzer
+      - run: vendor/bin/phpcs --extensions=php --encoding=utf-8 --tab-width=4 src
+      - run: vendor/bin/phpcs --extensions=php --encoding=utf-8 --tab-width=4 tests
+
       # run tests!
       - run: vendor/bin/phpunit
 
