@@ -2,7 +2,6 @@
 
 namespace Nexucis\Elasticsearch\Helper\Nodowntime;
 
-
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\InvalidArgumentException;
 use Elasticsearch\Common\Exceptions\RuntimeException;

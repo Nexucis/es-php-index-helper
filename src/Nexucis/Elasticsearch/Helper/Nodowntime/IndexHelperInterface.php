@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Nexucis\Elasticsearch\Helper\Nodowntime;
 
 use Elasticsearch\Client;
