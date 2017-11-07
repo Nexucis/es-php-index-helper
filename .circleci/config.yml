@@ -68,8 +68,8 @@ jobs:
           key: v1-dependencies-{{ checksum "composer.json" }}
 
       # run code analyzer
-      - run: vendor/bin/phpcs --standard=PSR2 --extensions=php --encoding=utf-8 --tab-width=4 src
-      - run: vendor/bin/phpcs --standard=PSR2 --extensions=php --encoding=utf-8 --tab-width=4 tests
+      - run: vendor/bin/phpcs --standard=ruleset.xml --extensions=php --encoding=utf-8 --tab-width=4 src
+      - run: vendor/bin/phpcs --standard=ruleset.xml --extensions=php --encoding=utf-8 --tab-width=4 tests
 
 workflows:
   version: 2
