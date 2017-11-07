@@ -195,5 +195,4 @@ interface IndexHelperInterface
      * @param Client $client
      */
     public function setClient($client);
-
 }

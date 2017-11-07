@@ -71,7 +71,6 @@ class IndexHelper implements IndexHelperInterface
         );
 
         $this->client->indices()->create($params);
-
     }
 
     /**
@@ -678,7 +677,6 @@ class IndexHelper implements IndexHelperInterface
         }
 
         if (($analysisSource !== null) && (count($analysisSource) !== 0)) {
-
             $this->createBody($params);
 
             if (!array_key_exists('settings', $params['body'])) {
