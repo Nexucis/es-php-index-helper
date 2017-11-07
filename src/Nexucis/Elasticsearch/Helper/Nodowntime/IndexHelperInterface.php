@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Nexucis\Elasticsearch\Helper\Nodowntime;
 
 use Elasticsearch\Client;
@@ -195,5 +194,4 @@ interface IndexHelperInterface
      * @param Client $client
      */
     public function setClient($client);
-
 }

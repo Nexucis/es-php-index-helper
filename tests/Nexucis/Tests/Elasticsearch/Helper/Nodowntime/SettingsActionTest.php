@@ -223,5 +223,4 @@ class SettingsActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->countDocuments($alias) > 0);
         $this->assertEquals($mappings, self::$HELPER->getMappings($alias));
     }
-
 }

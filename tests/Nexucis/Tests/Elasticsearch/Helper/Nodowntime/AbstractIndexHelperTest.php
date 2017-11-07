@@ -93,5 +93,4 @@ abstract class AbstractIndexHelperTest extends TestCase
         $params['refresh'] = true;
         return $params;
     }
-
 }

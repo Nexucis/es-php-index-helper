@@ -2,7 +2,6 @@
 
 namespace Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions;
 
-
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 
 /**

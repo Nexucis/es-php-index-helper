@@ -2,7 +2,6 @@
 
 namespace Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions;
 
-
 use Elasticsearch\Common\Exceptions\ElasticsearchException;
 
 /**
@@ -27,5 +26,4 @@ class IndexAlreadyExistException extends \Exception implements ElasticsearchExce
         $this->index = $alias;
         parent::__construct(sprintf('index %s already exists', $this->index));
     }
-
 }

@@ -46,3 +46,34 @@ jobs:
 
       # run coverage
       - run: bash <(curl -s https://codecov.io/bash)
+
+  analyze:
+    docker:
+      - image: circleci/php:7.1.8-browsers
+    working_directory: ~/repo
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "composer.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: composer install -n --prefer-dist
+
+      - save_cache:
+          paths:
+            - ./vendor
+          key: v1-dependencies-{{ checksum "composer.json" }}
+
+      # run code analyzer
+      - run: vendor/bin/phpcs --standard=ruleset.xml --extensions=php --encoding=utf-8 --tab-width=4 src
+      - run: vendor/bin/phpcs --standard=ruleset.xml --extensions=php --encoding=utf-8 --tab-width=4 tests
+
+workflows:
+  version: 2
+  build_and_analyze:
+    jobs:
+      - build
+      - analyze
