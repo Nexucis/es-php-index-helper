@@ -26,5 +26,4 @@ class IndexAlreadyExistException extends \Exception implements ElasticsearchExce
         $this->index = $alias;
         parent::__construct(sprintf('index %s already exists', $this->index));
     }
-
 }
