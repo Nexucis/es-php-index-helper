@@ -1,0 +1,4 @@
+parameters:
+    ignoreErrors:
+        - '#Method Nexucis\\Elasticsearch\\Helper\\Nodowntime\\IndexHelper::copyIndex\(\) should return string but returns bool\|string#'
+        - '#Method Nexucis\\Elasticsearch\\Helper\\Nodowntime\\IndexHelper::reindex\(\) should return string but returns bool\|string#'
