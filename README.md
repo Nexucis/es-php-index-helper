@@ -32,7 +32,7 @@ Where :
 
 The recommended method to install this library is through [Composer](https://getcomposer.org/).
 
-1. In your `composer.json` file put the following dependency : 
+* In your `composer.json` file put the following dependency : 
 
 ```json
 {
@@ -44,13 +44,18 @@ The recommended method to install this library is through [Composer](https://get
 
 where X.Y is the version which fit your need. 
 
-2. After that you need to install this new dependency : 
+* After that you need to install this new dependency : 
 
 ```bash
 php composer.phar install
 ```
 
-3. To initialize the Index Helper, you need first to instantiate the elasticsearch client : 
+> Or you can just use the composer command to modify your `composer.json` and update your dependencies : 
+>```bash
+>php composer.phar require nexucis/es-index-helper
+>```
+
+* To initialize the Index Helper, you need first to instantiate the elasticsearch client : 
 
 ```php
 <?php
