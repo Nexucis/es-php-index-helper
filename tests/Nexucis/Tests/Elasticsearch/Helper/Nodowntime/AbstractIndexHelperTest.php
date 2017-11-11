@@ -28,6 +28,7 @@ abstract class AbstractIndexHelperTest extends TestCase
     {
         // load static data
         self::$documents = json_decode(file_get_contents('http://data.consumerfinance.gov/api/views.json'));
+        parent::setUpBeforeClass();
     }
 
     /**
@@ -47,6 +48,7 @@ abstract class AbstractIndexHelperTest extends TestCase
             'index' => '_all'
         ];
         $this->client->indices()->delete($param);
+        parent::tearDown();
     }
 
     public function aliasDataProvider()
