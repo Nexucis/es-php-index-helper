@@ -23,6 +23,7 @@ abstract class AbstractIndexHelperTest extends TestCase
 
     /**
      * initialize elasticsearch client and index Helper
+     * @covers IndexHelper::__construct
      */
     public static function setUpBeforeClass()
     {
