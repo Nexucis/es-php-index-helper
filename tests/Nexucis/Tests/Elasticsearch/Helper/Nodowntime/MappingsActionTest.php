@@ -52,7 +52,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
             'my_type' => [
                 'properties' => [
                     'first_name' => [
-                        'type' => 'string',
+                        'type' => 'text',
                         'analyzer' => 'standard'
                     ],
                     'age' => [
@@ -81,8 +81,8 @@ class MappingsActionTest extends AbstractIndexHelperTest
             $type => [
                 'properties' => [
                     'viewType' => [
-                        'type' => 'string',
-                        'index' => 'no'
+                        'type' => 'text',
+                        'index' => false
                     ]
                 ]
             ]
@@ -136,7 +136,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
             'my_type' => [
                 'properties' => [
                     'first_name' => [
-                        'type' => 'string',
+                        'type' => 'text',
                         'analyzer' => 'standard'
                     ],
                     'age' => [

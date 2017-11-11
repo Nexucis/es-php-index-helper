@@ -131,7 +131,7 @@ $mappings = [
     'my_type' => [
         'properties' => [
             'first_name' => [
-                'type' => 'string',
+                'type' => 'text',
                 'analyzer' => 'standard'
             ],
             'age' => [
