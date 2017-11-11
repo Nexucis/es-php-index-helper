@@ -92,7 +92,7 @@ jobs:
           key: v1-dependencies-{{ checksum "composer.json" }}
 
       # run code analyzer
-      - run: vendor/bin/phpstan analyse --level 7 src tests
+      - run: vendor/bin/phpstan analyse --level 7 -c phpstan.neon src tests
 
 workflows:
   version: 2
