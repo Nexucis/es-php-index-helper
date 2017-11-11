@@ -8,7 +8,8 @@
 2. [Installation](#installation)
 3. [Quickstart](#quickstart)
 3. [Contributions](#contributions)
-4. [License](#license)
+4. [Development](#development)
+5. [License](#license)
 
 ## Overview
 
@@ -176,10 +177,10 @@ $helper->updateSettings($alias, $settings);
 ## Contributions
 Any contribution or suggestion would be really appreciated. Feel free to use the Issue section or to send a pull request.
 
-### Development
+## Development
 All following tools are running by [circleci](https://circleci.com/gh/Nexucis/es-php-index-helper), so in order to help you to improve your code and make easier your life, here it is how you can launch the tools with the correct parameter.
  
-#### Run unit test
+### Run unit test
 If you want to launch the unit test, you need to have a local elasticsearch instance which must be accessible through the url http://localhost:9200. A simply way to launch it, is to start the [corresponding container](https://hub.docker.com/_/elasticsearch/) : 
 
 ```bash
@@ -192,7 +193,7 @@ Once ElasticSearch is up, you can run the following command :
 ./vendor/bin/phpunit
 ```
 
-#### Run PHP_CodeSniffer
+### Run PHP_CodeSniffer
 
 This tool will check if the code respects some coding rules. In this project, we just respect for the moment the **PSR-2** coding rules.
 
@@ -205,7 +206,7 @@ To launch it, run the following command :
 
 If you are interesting by this tool, you can learn about it [here](https://github.com/squizlabs/PHP_CodeSniffer)
 
-#### Run PHPStan analyzer
+### Run PHPStan analyzer
 This tool wiil find some errors in the code without running it.
 
 To launch it, run the following command :
