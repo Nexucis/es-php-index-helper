@@ -683,7 +683,7 @@ class IndexHelper implements IndexHelperInterface
             $analysisSource = $settings['analysis'];
         }
 
-        if (($analysisSource !== null) && (count($analysisSource) !== 0)) {
+        if (is_array($analysisSource) && (count($analysisSource) !== 0)) {
             $this->createBody($params);
 
             if (!array_key_exists('settings', $params['body'])) {
