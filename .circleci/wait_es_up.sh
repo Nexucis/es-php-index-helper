@@ -2,12 +2,15 @@
 
 loop=0
 endLoop=4
-response=7 # node not available
 wait=1
+
+# for some strange reason, HEAD request go in infinity loop ...
+curl -s -XGET http://localhost:9200 > /dev/null
+response=$?
 
 while [ ${response} != 0 ] && [ ${loop} != ${endLoop} ]; do
     sleep ${wait}
-    curl -s -XHEAD http://localhost:9200
+    curl -s -XGET http://localhost:9200 > /dev/null
     response=$?
     loop=$(( $loop + 1))
     wait=$(( $wait*2))
