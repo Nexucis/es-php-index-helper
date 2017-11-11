@@ -56,8 +56,6 @@ abstract class AbstractIndexHelperTest extends TestCase
         self::$HELPER->createIndex($alias);
 
         $this->addBulkDocuments($this->jsonArrayToBulkArray(self::$documents, $alias, $type));
-        // wait that all documents are effectively send to es;
-        sleep(3);
     }
 
     /**

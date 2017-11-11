@@ -6,14 +6,14 @@ response=7 # node not available
 wait=1
 
 while [ ${response} != 0 ] && [ ${loop} != ${endLoop} ]; do
+    sleep ${wait}
     curl -s -XHEAD http://localhost:9200
     response=$?
     loop=$(( $loop + 1))
     wait=$(( $wait*2))
-    sleep ${wait}
 done
 
-if [ ${loop} == ${endLoop} ]; then
+if [ ${response} != 0 ]; then
     echo "elasticsearch is not available"
     exit 1;
 else
