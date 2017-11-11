@@ -47,7 +47,7 @@ jobs:
       # run coverage
       - run: bash <(curl -s https://codecov.io/bash)
 
-  analyze:
+  analyze_phpcs:
     docker:
       - image: circleci/php:7.1.8-browsers
     working_directory: ~/repo
@@ -71,9 +71,37 @@ jobs:
       - run: vendor/bin/phpcs --standard=ruleset.xml --extensions=php --encoding=utf-8 --tab-width=4 src
       - run: vendor/bin/phpcs --standard=ruleset.xml --extensions=php --encoding=utf-8 --tab-width=4 tests
 
+  analyze_phpstan:
+    docker:
+      - image: circleci/php:7.1.8-browsers
+    working_directory: ~/repo
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "composer.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: composer install -n --prefer-dist
+
+      - save_cache:
+          paths:
+            - ./vendor
+          key: v1-dependencies-{{ checksum "composer.json" }}
+
+      # run code analyzer
+      - run: vendor/bin/phpstan analyse --level 7 src tests
+
 workflows:
   version: 2
   build_and_analyze:
     jobs:
       - build
-      - analyze
+      - analyze_phpcs:
+          requires:
+            - build
+      - analyze_phpstan:
+          requires:
+            - build
