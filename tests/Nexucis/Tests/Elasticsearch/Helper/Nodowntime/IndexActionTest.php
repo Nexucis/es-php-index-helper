@@ -10,9 +10,9 @@ class IndexActionTest extends AbstractIndexHelperTest
      */
     public function testCreateIndex($alias)
     {
-        self::$HELPER->createIndex($alias);
-        $this->assertTrue(self::$HELPER->existsIndex($alias));
-        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
+        $this->helper->createIndex($alias);
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
     }
 
     /**
@@ -21,8 +21,8 @@ class IndexActionTest extends AbstractIndexHelperTest
     public function testCreateIndexAlreadyExistsException()
     {
         $alias = 'myindextest';
-        self::$HELPER->createIndex($alias);
-        self::$HELPER->createIndex($alias);
+        $this->helper->createIndex($alias);
+        $this->helper->createIndex($alias);
     }
 
     /**
@@ -30,11 +30,11 @@ class IndexActionTest extends AbstractIndexHelperTest
      */
     public function testDeleteIndex($alias)
     {
-        self::$HELPER->createIndex($alias);
-        self::$HELPER->deleteIndex($alias);
+        $this->helper->createIndex($alias);
+        $this->helper->deleteIndex($alias);
 
-        $this->assertFalse(self::$HELPER->existsIndex($alias));
-        $this->assertFalse(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
+        $this->assertFalse($this->helper->existsIndex($alias));
+        $this->assertFalse($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
     }
 
     /**
@@ -43,7 +43,7 @@ class IndexActionTest extends AbstractIndexHelperTest
     public function testDeleteIndexNotFoundException()
     {
         $alias = 'myindextest';
-        self::$HELPER->deleteIndex($alias);
+        $this->helper->deleteIndex($alias);
     }
 
     /**
@@ -51,16 +51,16 @@ class IndexActionTest extends AbstractIndexHelperTest
      */
     public function testCopyEmptyIndex($alias)
     {
-        self::$HELPER->createIndex($alias);
+        $this->helper->createIndex($alias);
 
         $aliasDest = $alias . '2';
 
-        $this->assertEquals(self::$HELPER::RETURN_ACKNOWLEDGE, self::$HELPER->copyIndex($alias, $aliasDest));
+        $this->assertEquals($this->helper::RETURN_ACKNOWLEDGE, $this->helper->copyIndex($alias, $aliasDest));
 
-        $this->assertTrue(self::$HELPER->existsIndex($alias));
-        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
-        $this->assertTrue(self::$HELPER->existsIndex($aliasDest));
-        $this->assertTrue(self::$HELPER->existsIndex($aliasDest . self::$HELPER::INDEX_NAME_CONVENTION_1));
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
+        $this->assertTrue($this->helper->existsIndex($aliasDest));
+        $this->assertTrue($this->helper->existsIndex($aliasDest . $this->helper::INDEX_NAME_CONVENTION_1));
     }
 
     public function testCopyIndex()
@@ -70,12 +70,12 @@ class IndexActionTest extends AbstractIndexHelperTest
         $this->loadFinancialIndex($alias);
 
         $aliasDest = "indexcopy";
-        $this->assertEquals(self::$HELPER::RETURN_ACKNOWLEDGE, self::$HELPER->copyIndex($alias, $aliasDest, true));
+        $this->assertEquals($this->helper::RETURN_ACKNOWLEDGE, $this->helper->copyIndex($alias, $aliasDest, true));
 
-        $this->assertTrue(self::$HELPER->existsIndex($alias));
-        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
-        $this->assertTrue(self::$HELPER->existsIndex($aliasDest));
-        $this->assertTrue(self::$HELPER->existsIndex($aliasDest . self::$HELPER::INDEX_NAME_CONVENTION_1));
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
+        $this->assertTrue($this->helper->existsIndex($aliasDest));
+        $this->assertTrue($this->helper->existsIndex($aliasDest . $this->helper::INDEX_NAME_CONVENTION_1));
         $this->assertEquals($this->countDocuments($alias), $this->countDocuments($aliasDest));
     }
 
@@ -87,7 +87,7 @@ class IndexActionTest extends AbstractIndexHelperTest
 
         $aliasDest = "indexcopy";
 
-        $result = self::$HELPER->copyIndex($alias, $aliasDest, false, false);
+        $result = $this->helper->copyIndex($alias, $aliasDest, false, false);
         $this->assertRegExp('/\w+:\d+/i', $result);
     }
 
@@ -97,7 +97,7 @@ class IndexActionTest extends AbstractIndexHelperTest
     public function testCopyIndexNotFoundException()
     {
         $aliasSrc = 'myindextest';
-        self::$HELPER->copyIndex($aliasSrc, $aliasSrc);
+        $this->helper->copyIndex($aliasSrc, $aliasSrc);
     }
 
     /**
@@ -106,9 +106,9 @@ class IndexActionTest extends AbstractIndexHelperTest
     public function testCopyIndexAlreadyExistsException()
     {
         $aliasSrc = 'myindextest';
-        self::$HELPER->createIndex($aliasSrc);
+        $this->helper->createIndex($aliasSrc);
 
-        self::$HELPER->copyIndex($aliasSrc, $aliasSrc);
+        $this->helper->copyIndex($aliasSrc, $aliasSrc);
     }
 
     /**
@@ -116,12 +116,12 @@ class IndexActionTest extends AbstractIndexHelperTest
      */
     public function testReindexEmptyIndex($alias)
     {
-        self::$HELPER->createIndex($alias);
+        $this->helper->createIndex($alias);
 
-        $this->assertEquals(self::$HELPER::RETURN_ACKNOWLEDGE, self::$HELPER->reindex($alias));
+        $this->assertEquals($this->helper::RETURN_ACKNOWLEDGE, $this->helper->reindex($alias));
 
-        $this->assertTrue(self::$HELPER->existsIndex($alias));
-        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
     }
 
     public function testReindex()
@@ -130,10 +130,10 @@ class IndexActionTest extends AbstractIndexHelperTest
         // create index with some contents
         $this->loadFinancialIndex($alias);
 
-        $this->assertEquals(self::$HELPER::RETURN_ACKNOWLEDGE, self::$HELPER->reindex($alias, true));
+        $this->assertEquals($this->helper::RETURN_ACKNOWLEDGE, $this->helper->reindex($alias, true));
 
-        $this->assertTrue(self::$HELPER->existsIndex($alias));
-        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
         $this->assertTrue($this->countDocuments($alias) > 0);
     }
 
@@ -143,7 +143,7 @@ class IndexActionTest extends AbstractIndexHelperTest
         // create index with some contents
         $this->loadFinancialIndex($alias);
 
-        $result = self::$HELPER->reindex($alias, false, true, false);
+        $result = $this->helper->reindex($alias, false, true, false);
 
         $this->assertRegExp('/\w+:\d+/i', $result);
     }
@@ -155,6 +155,6 @@ class IndexActionTest extends AbstractIndexHelperTest
     {
         $aliasSrc = 'myindextest';
 
-        self::$HELPER->reindex($aliasSrc);
+        $this->helper->reindex($aliasSrc);
     }
 }

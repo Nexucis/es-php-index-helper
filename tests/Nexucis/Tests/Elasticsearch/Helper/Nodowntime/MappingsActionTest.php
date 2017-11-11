@@ -10,13 +10,13 @@ class MappingsActionTest extends AbstractIndexHelperTest
      */
     public function testUpdateMappingsEmpty($alias)
     {
-        self::$HELPER->createIndex($alias);
+        $this->helper->createIndex($alias);
 
-        self::$HELPER->updateMappings($alias, array());
+        $this->helper->updateMappings($alias, array());
 
-        $this->assertTrue(self::$HELPER->existsIndex($alias));
-        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
-        $this->assertEquals(array(), self::$HELPER->getMappings($alias));
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
+        $this->assertEquals(array(), $this->helper->getMappings($alias));
     }
 
     /**
@@ -24,13 +24,13 @@ class MappingsActionTest extends AbstractIndexHelperTest
      */
     public function testUpdateMappingsNull($alias)
     {
-        self::$HELPER->createIndex($alias);
+        $this->helper->createIndex($alias);
 
-        self::$HELPER->updateMappings($alias, null);
+        $this->helper->updateMappings($alias, null);
 
-        $this->assertTrue(self::$HELPER->existsIndex($alias));
-        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
-        $this->assertEquals(array(), self::$HELPER->getMappings($alias));
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
+        $this->assertEquals(array(), $this->helper->getMappings($alias));
     }
 
     /**
@@ -40,7 +40,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
     {
         $aliasSrc = 'myindextest';
 
-        self::$HELPER->updateMappings($aliasSrc, array());
+        $this->helper->updateMappings($aliasSrc, array());
     }
 
     /**
@@ -62,12 +62,12 @@ class MappingsActionTest extends AbstractIndexHelperTest
             ]
         ];
 
-        self::$HELPER->createIndex($alias);
+        $this->helper->createIndex($alias);
 
-        self::$HELPER->updateMappings($alias, $mapping);
-        $this->assertTrue(self::$HELPER->existsIndex($alias));
-        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
-        $this->assertEquals($mapping, self::$HELPER->getMappings($alias));
+        $this->helper->updateMappings($alias, $mapping);
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
+        $this->assertEquals($mapping, $this->helper->getMappings($alias));
     }
 
     public function testUpdateMappingsWithIndexNotEmpty()
@@ -88,10 +88,10 @@ class MappingsActionTest extends AbstractIndexHelperTest
             ]
         ];
 
-        self::$HELPER->updateMappings($alias, $mapping, true);
-        $this->assertTrue(self::$HELPER->existsIndex($alias));
-        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
-        $this->assertEquals($mapping[$type]['properties']['viewType']['index'], self::$HELPER->getMappings($alias)[$type]['properties']['viewType']['index']);
+        $this->helper->updateMappings($alias, $mapping, true);
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
+        $this->assertEquals($mapping[$type]['properties']['viewType']['index'], $this->helper->getMappings($alias)[$type]['properties']['viewType']['index']);
 
         $this->assertTrue($this->countDocuments($alias) > 0);
     }
@@ -146,15 +146,15 @@ class MappingsActionTest extends AbstractIndexHelperTest
             ]
         ];
 
-        self::$HELPER->createIndex($alias);
-        self::$HELPER->updateSettings($alias, $settings);
+        $this->helper->createIndex($alias);
+        $this->helper->updateSettings($alias, $settings);
 
-        self::$HELPER->updateMappings($alias, $mapping);
-        $this->assertTrue(self::$HELPER->existsIndex($alias));
-        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
-        $this->assertEquals($mapping, self::$HELPER->getMappings($alias));
+        $this->helper->updateMappings($alias, $mapping);
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
+        $this->assertEquals($mapping, $this->helper->getMappings($alias));
 
-        $resultSettings = self::$HELPER->getSettings($alias);
+        $resultSettings = $this->helper->getSettings($alias);
         $this->assertTrue(array_key_exists('analysis', $resultSettings));
         $this->assertEquals($settings['analysis'], $resultSettings['analysis']);
         $this->assertEquals($settings['number_of_shards'], $resultSettings['number_of_shards']);
@@ -167,7 +167,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
     public function testGetMappingsIndexNotFound()
     {
         $alias = 'myindex';
-        self::$HELPER->getMappings($alias);
+        $this->helper->getMappings($alias);
     }
 
     /**
@@ -175,8 +175,8 @@ class MappingsActionTest extends AbstractIndexHelperTest
      */
     public function testGetMappingsEmptyIndex($alias)
     {
-        self::$HELPER->createIndex($alias);
+        $this->helper->createIndex($alias);
 
-        $this->assertEquals([], self::$HELPER->getMappings($alias));
+        $this->assertEquals([], $this->helper->getMappings($alias));
     }
 }

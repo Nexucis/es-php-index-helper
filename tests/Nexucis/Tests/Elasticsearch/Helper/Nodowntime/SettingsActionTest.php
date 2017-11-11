@@ -12,9 +12,9 @@ class SettingsActionTest extends AbstractIndexHelperTest
     public function testAddSettingsEmpty()
     {
         $aliasSrc = 'myindextest';
-        self::$HELPER->createIndex($aliasSrc);
+        $this->helper->createIndex($aliasSrc);
 
-        self::$HELPER->addSettings($aliasSrc, array());
+        $this->helper->addSettings($aliasSrc, array());
     }
 
     /**
@@ -23,9 +23,9 @@ class SettingsActionTest extends AbstractIndexHelperTest
     public function testAddSettingsNull()
     {
         $aliasSrc = 'myindextest';
-        self::$HELPER->createIndex($aliasSrc);
+        $this->helper->createIndex($aliasSrc);
 
-        self::$HELPER->addSettings($aliasSrc, null);
+        $this->helper->addSettings($aliasSrc, null);
     }
 
     /**
@@ -34,7 +34,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
     public function testAddSettingsIndexNotFoundException()
     {
         $aliasSrc = 'myindextest';
-        self::$HELPER->addSettings($aliasSrc, null);
+        $this->helper->addSettings($aliasSrc, null);
     }
 
     /**
@@ -42,7 +42,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
      */
     public function testAddSettingsBasicData($alias)
     {
-        self::$HELPER->createIndex($alias);
+        $this->helper->createIndex($alias);
         $settings = [
             'analysis' => [
                 'filter' => [
@@ -76,12 +76,12 @@ class SettingsActionTest extends AbstractIndexHelperTest
         // ElasticSearch Issue  : https://github.com/elastic/elasticsearch/issues/3313
         // Idea to improve this workaround : use _cat/shards endpoint to get the shard status
         sleep(2);
-        self::$HELPER->addSettings($alias, $settings);
+        $this->helper->addSettings($alias, $settings);
 
-        $this->assertTrue(self::$HELPER->existsIndex($alias));
-        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
 
-        $resultSettings = self::$HELPER->getSettings($alias);
+        $resultSettings = $this->helper->getSettings($alias);
         $this->assertTrue(array_key_exists('analysis', $resultSettings));
         $this->assertEquals($settings['analysis'], $resultSettings['analysis']);
     }
@@ -91,13 +91,13 @@ class SettingsActionTest extends AbstractIndexHelperTest
      */
     public function testUpdateSettingsEmpty($alias)
     {
-        self::$HELPER->createIndex($alias);
+        $this->helper->createIndex($alias);
 
-        self::$HELPER->updateSettings($alias, array());
+        $this->helper->updateSettings($alias, array());
 
-        $this->assertTrue(self::$HELPER->existsIndex($alias));
-        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
-        $this->assertFalse(array_key_exists('analysis', self::$HELPER->getSettings($alias)));
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
+        $this->assertFalse(array_key_exists('analysis', $this->helper->getSettings($alias)));
     }
 
     /**
@@ -105,13 +105,13 @@ class SettingsActionTest extends AbstractIndexHelperTest
      */
     public function testUpdateSettingsNull($alias)
     {
-        self::$HELPER->createIndex($alias);
+        $this->helper->createIndex($alias);
 
-        self::$HELPER->updateSettings($alias, null);
+        $this->helper->updateSettings($alias, null);
 
-        $this->assertTrue(self::$HELPER->existsIndex($alias));
-        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
-        $this->assertFalse(array_key_exists('analysis', self::$HELPER->getSettings($alias)));
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
+        $this->assertFalse(array_key_exists('analysis', $this->helper->getSettings($alias)));
     }
 
     /**
@@ -120,7 +120,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
     public function testUpdateSettingsIndexNotFound()
     {
         $aliasSrc = 'myindextest';
-        self::$HELPER->updateSettings($aliasSrc, array());
+        $this->helper->updateSettings($aliasSrc, array());
     }
 
     /**
@@ -158,14 +158,14 @@ class SettingsActionTest extends AbstractIndexHelperTest
                 ]
             ]
         ];
-        self::$HELPER->createIndex($alias);
+        $this->helper->createIndex($alias);
 
-        self::$HELPER->updateSettings($alias, $settings);
+        $this->helper->updateSettings($alias, $settings);
 
-        $this->assertTrue(self::$HELPER->existsIndex($alias));
-        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
 
-        $resultSettings = self::$HELPER->getSettings($alias);
+        $resultSettings = $this->helper->getSettings($alias);
         $this->assertTrue(array_key_exists('analysis', $resultSettings));
         $this->assertEquals($settings['analysis'], $resultSettings['analysis']);
         $this->assertEquals($settings['number_of_shards'], $resultSettings['number_of_shards']);
@@ -208,19 +208,19 @@ class SettingsActionTest extends AbstractIndexHelperTest
         $alias = 'financial';
         // create index with some contents
         $this->loadFinancialIndex($alias);
-        $mappings = self::$HELPER->getMappings($alias);
+        $mappings = $this->helper->getMappings($alias);
 
-        self::$HELPER->updateSettings($alias, $settings, true);
-        $this->assertTrue(self::$HELPER->existsIndex($alias));
-        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_2));
+        $this->helper->updateSettings($alias, $settings, true);
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
 
-        $resultSettings = self::$HELPER->getSettings($alias);
+        $resultSettings = $this->helper->getSettings($alias);
         $this->assertTrue(array_key_exists('analysis', $resultSettings));
         $this->assertEquals($settings['analysis'], $resultSettings['analysis']);
         $this->assertEquals($settings['number_of_shards'], $resultSettings['number_of_shards']);
         $this->assertEquals($settings['number_of_replicas'], $resultSettings['number_of_replicas']);
 
         $this->assertTrue($this->countDocuments($alias) > 0);
-        $this->assertEquals($mappings, self::$HELPER->getMappings($alias));
+        $this->assertEquals($mappings, $this->helper->getMappings($alias));
     }
 }

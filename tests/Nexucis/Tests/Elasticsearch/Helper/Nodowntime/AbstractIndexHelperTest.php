@@ -12,26 +12,32 @@ abstract class AbstractIndexHelperTest extends TestCase
     /**
      * @var $helper IndexHelper
      */
-    protected static $HELPER;
+    protected $helper;
 
     /**
      * @var $client \Elasticsearch\Client
      */
-    protected static $client;
+    protected $client;
 
     protected static $documents;
 
     /**
-     * initialize elasticsearch client and index Helper
-     * @covers IndexHelper::__construct
+     * initialize static data
      */
     public static function setUpBeforeClass()
     {
-        self::$client = ClientBuilder::create()->setHosts([$_SERVER['ES_TEST_HOST']])->build();
-        self::$HELPER = new IndexHelper(self::$client);
-
         // load static data
         self::$documents = json_decode(file_get_contents('http://data.consumerfinance.gov/api/views.json'));
+    }
+
+    /**
+     * initialize elasticsearch client and index Helper
+     */
+    public function setUp()
+    {
+        $this->client = ClientBuilder::create()->setHosts([$_SERVER['ES_TEST_HOST']])->build();
+        $this->helper = new IndexHelper($this->client);
+        parent::setUp();
     }
 
     public function tearDown()
@@ -40,7 +46,7 @@ abstract class AbstractIndexHelperTest extends TestCase
         $param = [
             'index' => '_all'
         ];
-        self::$client->indices()->delete($param);
+        $this->client->indices()->delete($param);
     }
 
     public function aliasDataProvider()
@@ -53,7 +59,7 @@ abstract class AbstractIndexHelperTest extends TestCase
 
     protected function loadFinancialIndex($alias, $type = 'complains')
     {
-        self::$HELPER->createIndex($alias);
+        $this->helper->createIndex($alias);
 
         $this->addBulkDocuments($this->jsonArrayToBulkArray(self::$documents, $alias, $type));
     }
@@ -67,12 +73,12 @@ abstract class AbstractIndexHelperTest extends TestCase
         $params = array(
             'index' => $index,
         );
-        return self::$client->count($params)['count'];
+        return $this->client->count($params)['count'];
     }
 
     private function addBulkDocuments($params)
     {
-        self::$client->bulk($params);
+        $this->client->bulk($params);
     }
 
     private function jsonArrayToBulkArray($documents, $index, $type)

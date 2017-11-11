@@ -10,7 +10,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
     public function testDeleteAllDocumentsIndexNotFound()
     {
         $alias = 'myindex';
-        self::$HELPER->deleteAllDocuments($alias);
+        $this->helper->deleteAllDocuments($alias);
     }
 
     public function testDeleteAllDocuments()
@@ -18,29 +18,29 @@ class DocumentActionTest extends AbstractIndexHelperTest
         $alias = 'financial';
         $this->loadFinancialIndex($alias);
 
-        $mappings = self::$HELPER->getMappings($alias);
+        $mappings = $this->helper->getMappings($alias);
 
         $this->assertTrue($this->countDocuments($alias) > 0);
 
-        self::$HELPER->deleteAllDocuments($alias);
+        $this->helper->deleteAllDocuments($alias);
 
         $this->assertTrue($this->countDocuments($alias) == 0);
-        $this->assertEquals($mappings, self::$HELPER->getMappings($alias));
+        $this->assertEquals($mappings, $this->helper->getMappings($alias));
     }
 
     public function testGetListAliasEmpty()
     {
-        $this->assertEquals([], self::$HELPER->getListAlias());
+        $this->assertEquals([], $this->helper->getListAlias());
     }
 
     public function testGetListAlias()
     {
         $alias1 = 'financial';
         $alias2 = 'football';
-        self::$HELPER->createIndex($alias1);
-        self::$HELPER->createIndex($alias2);
+        $this->helper->createIndex($alias1);
+        $this->helper->createIndex($alias2);
 
-        $aliases = self::$HELPER->getListAlias();
+        $aliases = $this->helper->getListAlias();
 
         $this->assertTrue(in_array($alias1, $aliases));
         $this->assertTrue(in_array($alias2, $aliases));
@@ -53,7 +53,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
     public function testAddDocumentIndexNotFound()
     {
         $alias = 'myindex';
-        self::$HELPER->addDocument($alias, 'test', []);
+        $this->helper->addDocument($alias, 'test', []);
     }
 
     /**
@@ -66,9 +66,9 @@ class DocumentActionTest extends AbstractIndexHelperTest
             'test' => 'Palatii dicto sciens venit contumaciter'
         ];
 
-        self::$HELPER->createIndex($alias);
+        $this->helper->createIndex($alias);
 
-        $this->assertTrue(self::$HELPER->addDocument($alias, $type, $body));
+        $this->assertTrue($this->helper->addDocument($alias, $type, $body));
     }
 
     /**
@@ -77,7 +77,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
     public function testUpdateDocumentIndexNotFound()
     {
         $alias = 'myindex';
-        self::$HELPER->updateDocument($alias, 0, 'test', []);
+        $this->helper->updateDocument($alias, 0, 'test', []);
     }
 
     /**
@@ -91,13 +91,13 @@ class DocumentActionTest extends AbstractIndexHelperTest
             'test' => 'Palatii dicto sciens venit contumaciter'
         ];
 
-        self::$HELPER->createIndex($alias);
+        $this->helper->createIndex($alias);
 
-        $this->assertTrue(self::$HELPER->addDocument($alias, $type, $body, $id));
+        $this->assertTrue($this->helper->addDocument($alias, $type, $body, $id));
 
         $body['test2'] = 'Tandem culpa in coalitos innocentium saltem malivolus pro parceretur ut';
 
-        $this->assertTrue(self::$HELPER->updateDocument($alias, $id, $type, $body));
+        $this->assertTrue($this->helper->updateDocument($alias, $id, $type, $body));
     }
 
     /**
@@ -106,7 +106,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
     public function testDeleteDocumentIndexNotFound()
     {
         $alias = 'myindex';
-        self::$HELPER->deleteDocument($alias, 0, 'test');
+        $this->helper->deleteDocument($alias, 0, 'test');
     }
 
     /**
@@ -120,11 +120,11 @@ class DocumentActionTest extends AbstractIndexHelperTest
             'test' => 'Palatii dicto sciens venit contumaciter'
         ];
 
-        self::$HELPER->createIndex($alias);
+        $this->helper->createIndex($alias);
 
-        $this->assertTrue(self::$HELPER->addDocument($alias, $type, $body, $id));
+        $this->assertTrue($this->helper->addDocument($alias, $type, $body, $id));
 
-        self::$HELPER->deleteDocument($alias, $id, $type);
+        $this->helper->deleteDocument($alias, $id, $type);
     }
 
     /**
@@ -135,8 +135,8 @@ class DocumentActionTest extends AbstractIndexHelperTest
     {
         $type = 'test';
         $id = 0;
-        self::$HELPER->createIndex($alias);
-        self::$HELPER->deleteDocument($alias, $id, $type);
+        $this->helper->createIndex($alias);
+        $this->helper->deleteDocument($alias, $id, $type);
     }
 
     /**
@@ -145,7 +145,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
     public function testGetAllDocumentIndexNotFound()
     {
         $alias = 'myindex';
-        self::$HELPER->getAllDocuments($alias);
+        $this->helper->getAllDocuments($alias);
     }
 
     /**
@@ -153,8 +153,8 @@ class DocumentActionTest extends AbstractIndexHelperTest
      */
     public function testGetAllDocumentIndexEmpty($alias)
     {
-        self::$HELPER->createIndex($alias);
-        $result = self::$HELPER->getAllDocuments($alias);
+        $this->helper->createIndex($alias);
+        $result = $this->helper->getAllDocuments($alias);
 
         $this->assertTrue($result['hits']['total'] === 0);
         $this->assertTrue(count($result['hits']['hits']) === 0);
@@ -166,7 +166,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
         // create index with some contents
         $this->loadFinancialIndex($alias);
 
-        $result = self::$HELPER->getAllDocuments($alias);
+        $result = $this->helper->getAllDocuments($alias);
 
         $this->assertTrue($result['hits']['total'] > 10);
         $this->assertTrue(count($result['hits']['hits']) === 10);
