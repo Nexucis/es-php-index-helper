@@ -125,6 +125,14 @@ class DocumentActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->helper->addDocument($alias, $type, $body, $id));
 
         $this->helper->deleteDocument($alias, $id, $type);
+        $param = array(
+            'id' => $id,
+            'type' => $type,
+            'index' => $alias
+        );
+
+        $this->expectException(\Elasticsearch\Common\Exceptions\Missing404Exception::class);
+        $this->client->get($param);
     }
 
     /**
