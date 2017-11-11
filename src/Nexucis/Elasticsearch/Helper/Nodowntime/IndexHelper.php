@@ -208,7 +208,7 @@ class IndexHelper implements IndexHelperInterface
             throw new IndexNotFoundException($alias);
         }
 
-        if ($settings === null || !is_array($settings) || count($settings) === 0) {
+        if (!is_array($settings) || count($settings) === 0) {
             throw new InvalidArgumentException("settings are empty, you are not allowed to add an empty array as the settings.");
         }
 
@@ -259,7 +259,7 @@ class IndexHelper implements IndexHelperInterface
         $mapping = $this->getMappingsByIndex($indexSrc)[$indexSrc];
         $mappingSource = null;
 
-        if ($mapping && is_array($mapping) && array_key_exists('mappings', $mapping)) {
+        if (is_array($mapping) && array_key_exists('mappings', $mapping)) {
             $mappingSource = $mapping['mappings'];
         }
 
@@ -267,13 +267,13 @@ class IndexHelper implements IndexHelperInterface
             'index' => $indexDest,
         );
 
-        if ($settings != null && is_array($settings) && count($settings) > 0) {
+        if (is_array($settings) && count($settings) > 0) {
             $params['body'] = array(
                 'settings' => $settings
             );
         }
 
-        if (($mappingSource !== null) && is_array($mappingSource) && (count($mappingSource) !== 0)) {
+        if (is_array($mappingSource) && (count($mappingSource) !== 0)) {
             $this->createBody($params);
             $params['body']['mappings'] = $mappingSource;
         }
@@ -321,7 +321,7 @@ class IndexHelper implements IndexHelperInterface
             'index' => $indexDest,
         );
 
-        if (($mapping !== null) && is_array($mapping) && count($mapping) > 0) {
+        if (is_array($mapping) && count($mapping) > 0) {
             $params['body'] = array(
                 'mappings' => $mapping,
             );
@@ -367,7 +367,7 @@ class IndexHelper implements IndexHelperInterface
         $indexSource = $this->findIndexByAlias($alias);
         $mapping = $this->getMappingsByIndex($indexSource)[$indexSource];
 
-        if ($mapping && is_array($mapping) && array_key_exists('mappings', $mapping)) {
+        if (is_array($mapping) && array_key_exists('mappings', $mapping)) {
             return $mapping['mappings'];
         }
 
@@ -422,7 +422,7 @@ class IndexHelper implements IndexHelperInterface
             'from' => $from,
         );
 
-        if ($query !== null && is_array($query)) {
+        if (is_array($query)) {
             $params['body'] = array('query' => $query);
         }
 
@@ -629,13 +629,13 @@ class IndexHelper implements IndexHelperInterface
         $mapping = $this->getMappingsByIndex($indexSource)[$indexSource];
         $mappingSource = null;
 
-        if ($mapping && is_array($mapping) && array_key_exists('mappings', $mapping)) {
+        if (is_array($mapping) && array_key_exists('mappings', $mapping)) {
             $mappingSource = $mapping['mappings'];
         }
 
         $settingSource = $this->getSettingsByIndex($indexSource)[$indexSource]['settings']['index'];
 
-        if (($mappingSource !== null) && is_array($mappingSource) && (count($mappingSource) !== 0)) {
+        if (is_array($mappingSource) && (count($mappingSource) !== 0)) {
             $this->createBody($params);
             $params['body']['mappings'] = $mappingSource;
         }
