@@ -192,7 +192,7 @@ Once ElasticSearch is up, you can run the following command :
 ./vendor/bin/phpunit
 ```
 
-### Run PHP_CodeSniffer
+#### Run PHP_CodeSniffer
 
 This tool will check if the code respects some coding rules. In this project, we just respect for the moment the **PSR-2** coding rules.
 
