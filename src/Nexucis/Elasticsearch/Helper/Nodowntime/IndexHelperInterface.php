@@ -191,7 +191,7 @@ interface IndexHelperInterface
     public function deleteDocument($alias, $id, $type);
 
     /**
-     * @param Client $client
+     * @return Client
      */
-    public function setClient($client);
+    public function getClient();
 }

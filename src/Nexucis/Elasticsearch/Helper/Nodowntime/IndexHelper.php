@@ -33,6 +33,16 @@ class IndexHelper implements IndexHelperInterface
     protected $client;
 
     /**
+     * IndexHelper constructor.
+     * @param Client $client
+     */
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+    }
+
+
+    /**
      * You can pass an alias name or an index name here.
      *
      * @param string $index [REQUIRED]
@@ -515,11 +525,11 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * @param Client $client
+     * @return Client
      */
-    public function setClient($client)
+    public function getClient()
     {
-        $this->client = $client;
+        return $this->client;
     }
 
     /**
