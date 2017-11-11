@@ -28,6 +28,13 @@ Where :
 * Y is the major version of this helper. Be careful with this rule, you can have some breaking changes between two **Y** number. 
 * Z is the minor version of this Index Helper. It will be increased when there are some bug fixes.
 
+### Supported Version
+
+| Elasticsearch Version | Support Branch  |
+| --------------------- | --------------- |
+| >= 5.0, < 6.0         | support/5.0     |
+| >= 2.0, < 5.0         | support/2.0     |
+
 ## Installation
 
 The recommended method to install this library is through [Composer](https://getcomposer.org/).
@@ -131,7 +138,7 @@ $mappings = [
     'my_type' => [
         'properties' => [
             'first_name' => [
-                'type' => 'string',
+                'type' => 'text',
                 'analyzer' => 'standard'
             ],
             'age' => [
