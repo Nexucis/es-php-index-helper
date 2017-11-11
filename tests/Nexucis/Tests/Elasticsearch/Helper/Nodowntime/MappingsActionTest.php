@@ -97,6 +97,71 @@ class MappingsActionTest extends AbstractIndexHelperTest
     }
 
     /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateMappingWithSettingsNotEmpty($alias)
+    {
+        $settings = [
+            'number_of_shards' => 1,
+            'number_of_replicas' => 0,
+            'analysis' => [
+                'filter' => [
+                    'shingle' => [
+                        'type' => 'shingle'
+                    ]
+                ],
+                'char_filter' => [
+                    'pre_negs' => [
+                        'type' => 'pattern_replace',
+                        'pattern' => '(\\w+)\\s+((?i:never|no|nothing|nowhere|noone|none|not|havent|hasnt|hadnt|cant|couldnt|shouldnt|wont|wouldnt|dont|doesnt|didnt|isnt|arent|aint))\\b',
+                        'replacement' => '~$1 $2'
+                    ],
+                    'post_negs' => [
+                        'type' => 'pattern_replace',
+                        'pattern' => '\\b((?i:never|no|nothing|nowhere|noone|none|not|havent|hasnt|hadnt|cant|couldnt|shouldnt|wont|wouldnt|dont|doesnt|didnt|isnt|arent|aint))\\s+(\\w+)',
+                        'replacement' => '$1 ~$2'
+                    ]
+                ],
+                'analyzer' => [
+                    'reuters' => [
+                        'type' => 'custom',
+                        'tokenizer' => 'standard',
+                        'filter' => ['lowercase', 'stop', 'kstem']
+                    ]
+                ]
+            ]
+        ];
+
+        $mapping = [
+            'my_type' => [
+                'properties' => [
+                    'first_name' => [
+                        'type' => 'string',
+                        'analyzer' => 'standard'
+                    ],
+                    'age' => [
+                        'type' => 'integer'
+                    ]
+                ]
+            ]
+        ];
+
+        self::$HELPER->createIndex($alias);
+        self::$HELPER->updateSettings($alias, $settings);
+
+        self::$HELPER->updateMappings($alias, $mapping);
+        $this->assertTrue(self::$HELPER->existsIndex($alias));
+        $this->assertTrue(self::$HELPER->existsIndex($alias . self::$HELPER::INDEX_NAME_CONVENTION_1));
+        $this->assertEquals($mapping, self::$HELPER->getMappings($alias));
+
+        $resultSettings = self::$HELPER->getSettings($alias);
+        $this->assertTrue(array_key_exists('analysis', $resultSettings));
+        $this->assertEquals($settings['analysis'], $resultSettings['analysis']);
+        $this->assertEquals($settings['number_of_shards'], $resultSettings['number_of_shards']);
+        $this->assertEquals($settings['number_of_replicas'], $resultSettings['number_of_replicas']);
+    }
+
+    /**
      * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
      */
     public function testGetMappingsIndexNotFound()
