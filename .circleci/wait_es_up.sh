@@ -6,7 +6,7 @@ response=7 # node not available
 wait=1
 
 while [ ${response} != 0 ] && [ ${loop} != ${endLoop} ]; do
-    sleep $(wait)
+    sleep ${wait}
     curl -s -XHEAD http://localhost:9200
     response=$?
     loop=$(( $loop + 1))
