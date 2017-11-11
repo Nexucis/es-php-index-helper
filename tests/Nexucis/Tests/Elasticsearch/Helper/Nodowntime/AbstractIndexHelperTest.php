@@ -27,8 +27,7 @@ abstract class AbstractIndexHelperTest extends TestCase
     public static function setUpBeforeClass()
     {
         self::$client = ClientBuilder::create()->setHosts([$_SERVER['ES_TEST_HOST']])->build();
-        self::$HELPER = new IndexHelper();
-        self::$HELPER->setClient(self::$client);
+        self::$HELPER = new IndexHelper(self::$client);
 
         // load static data
         self::$documents = json_decode(file_get_contents('http://data.consumerfinance.gov/api/views.json'));

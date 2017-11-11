@@ -61,8 +61,7 @@ use Nexucis\Elasticsearch\Helper\Nodowntime\IndexHelper;
 require 'vendor/autoload.php';
 
 $client = ClientBuilder::create()->build();
-$helper = new IndexHelper();
-$helper->setClient($client);
+$helper = new IndexHelper($client);
 ```
 
 To configure the elasticsearch client, you can read the [associated documentation](https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/_configuration.html)
