@@ -96,7 +96,18 @@ alias   index      filter routing.index routing.search
 myIndex myindex_v1 -      -            -
 ```
 
-### Mapping Operation
+#### Delete an index
+As we say, with this helper, you will see everything through an alias. So if you want to delete and index, just pass the alias like this : 
+
+```php
+<?php
+$alias= 'myindex';
+$helper->deleteIndex($alias);
+```
+
+And if you perform the previous HTTP request, you will see that there is nothing left. The alias AND the index has been removed. 
+
+### Mappings Operation
 This helper proves his existence when you want to change your mapping dynamically and you still want full access to your data. 
 
 So to make this things possible we need to:
@@ -112,7 +123,7 @@ It takes a lot of steps and verifications to check the update is done successful
 ```php
 <?php
 $alias = "myindex";
-$mapping = [
+$mappings = [
     'my_type' => [
         'properties' => [
             'first_name' => [
@@ -125,7 +136,7 @@ $mapping = [
             ]
     ]
 ];
-$helper->updateMapping($alias, $mapping);
+$helper->updateMappings($alias, $mappings);
 ```
 
 You just need to provide the alias name and the new mapping and that's it.
