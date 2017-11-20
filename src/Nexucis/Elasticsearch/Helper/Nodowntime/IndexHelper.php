@@ -448,10 +448,11 @@ class IndexHelper implements IndexHelperInterface
      * @param $id [REQUIRED]
      * @param string $type [REQUIRED]
      * @param array $body [REQUIRED] : actual document to update
+     * @param bool $refresh wait until the result are visible to search
      * @return boolean : true if the document has been updated. Otherwise, the document has been created.
      * @throws IndexNotFoundException
      */
-    public function updateDocument($index, $id, $type, $body)
+    public function updateDocument($index, $id, $type, $body, $refresh = false)
     {
         if (!$this->existsIndex($index)) {
             throw new IndexNotFoundException($index);
@@ -464,15 +465,16 @@ class IndexHelper implements IndexHelperInterface
      * @param $id [REQUIRED]
      * @param string $type [REQUIRED]
      * @param array $body [REQUIRED] : actual document to create
+     * @param bool $refresh wait until the result are visible to search
      * @return boolean : true if the document has been created.
      * @throws IndexNotFoundException
      */
-    public function addDocument($index, $type, $body, $id = null)
+    public function addDocument($index, $type, $body, $id = null, $refresh = false)
     {
         if (!$this->existsIndex($index)) {
             throw new IndexNotFoundException($index);
         }
-        return $this->indexDocument($index, $body, $type, $id) === 1;
+        return $this->indexDocument($index, $body, $type, $id, $refresh) === 1;
     }
 
     /**
@@ -537,15 +539,17 @@ class IndexHelper implements IndexHelperInterface
      * @param string|integer $id
      * @param array $body
      * @param string $type
+     * @param bool $refresh
      * @return mixed
      */
-    protected function indexDocument($index, $body, $type, $id = null)
+    protected function indexDocument($index, $body, $type, $id = null, $refresh = false)
     {
 
         $params = array(
             'index' => $index,
             'type' => $type,
-            'body' => $body
+            'body' => $body,
+            'refresh' => $refresh
         );
 
         if ($id !== null) {

@@ -157,20 +157,22 @@ interface IndexHelperInterface
      * @param $id [REQUIRED]
      * @param string $type [REQUIRED]
      * @param array $body [REQUIRED] : actual document to update
+     * @param bool $refresh wait until the result are visible to search
      * @return boolean : true if the document has been updated. Otherwise, the document has been created.
      * @throws IndexNotFoundException
      */
-    public function updateDocument($index, $id, $type, $body);
+    public function updateDocument($index, $id, $type, $body, $refresh = false);
 
     /**
      * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index
      * @param $id [REQUIRED]
      * @param string $type [REQUIRED]
      * @param array $body [REQUIRED] : actual document to create
+     * @param bool $refresh wait until the result are visible to search
      * @return boolean : true if the document has been created.
      * @throws IndexNotFoundException
      */
-    public function addDocument($index, $id, $type, $body);
+    public function addDocument($index, $type, $body, $id = null, $refresh = false);
 
     /**
      * Remove all documents from the given index seen through its alias
