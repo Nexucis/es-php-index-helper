@@ -135,6 +135,16 @@ interface IndexHelperInterface
     public function getSettings($alias);
 
     /**
+     * @param $alias string [REQUIRED] the name of the index or the name of the alias
+     * @param $type string [REQUIRED] the type of the document
+     * @param $id string|int [REQUIRED] the document ID
+     * @param $refresh bool
+     * @return array
+     * @throws IndexNotFoundException
+     */
+    public function getDocument($alias, $type, $id, $refresh = false);
+
+    /**
      * @param string $alias [REQUIRED]
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
