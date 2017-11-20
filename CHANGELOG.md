@@ -8,6 +8,7 @@ Changelog
 * **[Public]** Add **refresh** parameter to the following methods : 
      * addDocument
      * updateDocument
+     * updateDocument
 * **[Internal]** Add some verification in protected method **copySettings**
 * **[Test]** Improve test on method : **addDocument**
 
@@ -23,6 +24,7 @@ Changelog
 * **[Public]** Add public method : **getDocument**
 * **[Public]** Add **refresh** parameter to the following methods : 
      * addDocument
+     * updateDocument
      * updateDocument
 * **[Internal]** Add some verification in protected method **copySettings**
 * **[Test]** Improve test on method : **addDocument**
