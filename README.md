@@ -32,7 +32,7 @@ Where :
 
 | Elasticsearch Version | Support Branch  |
 | --------------------- | --------------- |
-| >= 5.0, < 6.0         | support/5.0     |
+| >= 5.0, < 6.0         | master          |
 | >= 2.0, < 5.0         | support/2.0     |
 
 ## Installation
