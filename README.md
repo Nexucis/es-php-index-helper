@@ -196,6 +196,26 @@ $settings =[
 $helper->updateSettings($alias, $settings);
 ```
 
+### Document Operations
+Some document operations are also available with this helper. For example, you can add a document and retrieve it:
+
+```php
+<?php
+$alias= "myindex";
+$type = 'test';
+$id='randomId';
+
+$body = [
+    'latinField' => 'Palatii dicto sciens venit contumaciter'
+];
+
+if($helper->addDocument($alias, $type, $body)){
+    $document = $helper->getDocument($alias, $type, $id);
+    
+    // do something with this document
+}
+```
+
 ## Contributions
 Any contribution or suggestion would be really appreciated. Feel free to use the Issue section or to send a pull request.
 
