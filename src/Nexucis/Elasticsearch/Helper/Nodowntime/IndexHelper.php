@@ -666,8 +666,23 @@ class IndexHelper implements IndexHelperInterface
 
     protected function copySettings(&$params, $settings)
     {
-        $numberOfShards = $settings['number_of_shards'];
-        $numberOfReplicas = $settings['number_of_replicas'];
+        $numberOfShards = null;
+        $numberOfReplicas = null;
+        $analysisSource = null;
+
+        if (is_array($settings)) {
+            if (array_key_exists('number_of_shards', $settings)) {
+                $numberOfShards = $settings['number_of_shards'];
+            }
+
+            if (array_key_exists('number_of_replicas', $settings)) {
+                $numberOfReplicas = $settings['number_of_replicas'];
+            }
+
+            if (array_key_exists('analysis', $settings)) {
+                $analysisSource = $settings['analysis'];
+            }
+        }
 
         if ($numberOfShards !== null) {
             $this->createBody($params);
@@ -685,12 +700,6 @@ class IndexHelper implements IndexHelperInterface
             }
 
             $params['body']['settings']['number_of_replicas'] = $numberOfReplicas;
-        }
-
-        $analysisSource = null;
-
-        if (array_key_exists('analysis', $settings)) {
-            $analysisSource = $settings['analysis'];
         }
 
         if (is_array($analysisSource) && (count($analysisSource) !== 0)) {
