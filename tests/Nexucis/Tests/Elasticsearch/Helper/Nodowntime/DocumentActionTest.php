@@ -50,6 +50,15 @@ class DocumentActionTest extends AbstractIndexHelperTest
     /**
      * @expectedException  \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
      */
+    public function testGetDocumentIndexNotFound()
+    {
+        $alias = 'myindex';
+        $this->helper->getDocument($alias, 'test', 'id');
+    }
+
+    /**
+     * @expectedException  \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
+     */
     public function testAddDocumentIndexNotFound()
     {
         $alias = 'myindex';
@@ -59,16 +68,20 @@ class DocumentActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testAddDocument($alias)
+    public function testAddAndGetDocument($alias)
     {
         $type = 'test';
         $body = [
             'test' => 'Palatii dicto sciens venit contumaciter'
         ];
+        $id = 'randomId';
 
         $this->helper->createIndex($alias);
 
-        $this->assertTrue($this->helper->addDocument($alias, $type, $body));
+        $this->assertTrue($this->helper->addDocument($alias, $type, $body, $id, true));
+
+        $document = $this->helper->getDocument($alias, $type, $id);
+        $this->assertSame($body['test'], $document['_source']['test']);
     }
 
     /**
