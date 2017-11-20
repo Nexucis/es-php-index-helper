@@ -197,10 +197,11 @@ interface IndexHelperInterface
      * @param $alias [REQUIRED]
      * @param $id [REQUIRED]
      * @param string $type [REQUIRED]
+     * @param refresh boolean Refresh the index after performing the operation
      * @return void
      * @throws IndexNotFoundException
      */
-    public function deleteDocument($alias, $id, $type);
+    public function deleteDocument($alias, $id, $type, $refresh = false);
 
     /**
      * @return Client
