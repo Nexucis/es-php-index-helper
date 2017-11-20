@@ -135,9 +135,9 @@ class DocumentActionTest extends AbstractIndexHelperTest
 
         $this->helper->createIndex($alias);
 
-        $this->assertTrue($this->helper->addDocument($alias, $type, $body, $id));
+        $this->assertTrue($this->helper->addDocument($alias, $type, $body, $id, true));
 
-        $this->helper->deleteDocument($alias, $id, $type);
+        $this->helper->deleteDocument($alias, $id, $type, true);
         $param = array(
             'id' => $id,
             'type' => $type,

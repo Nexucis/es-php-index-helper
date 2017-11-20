@@ -197,7 +197,7 @@ interface IndexHelperInterface
      * @param $alias [REQUIRED]
      * @param $id [REQUIRED]
      * @param string $type [REQUIRED]
-     * @param boolean $refresh, Refresh the index after performing the operation
+     * @param boolean $refresh , Refresh the index after performing the operation
      * @return void
      * @throws IndexNotFoundException
      */
