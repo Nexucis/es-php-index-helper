@@ -35,7 +35,7 @@ interface IndexHelperInterface
     public function createIndexByAlias($alias);
 
     /**
-     * @param $alias : alias can put here [REQUIRED]
+     * @param string $alias [REQUIRED]
      * @return void
      * @throws IndexNotFoundException
      */

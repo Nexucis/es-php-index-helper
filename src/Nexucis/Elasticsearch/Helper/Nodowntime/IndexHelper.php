@@ -83,7 +83,7 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * @param $alias : alias can put here [REQUIRED]
+     * @param $alias : alias [REQUIRED]
      * @return void
      * @throws IndexNotFoundException
      */
