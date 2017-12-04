@@ -31,7 +31,7 @@ class IndexActionTest extends AbstractIndexHelperTest
     public function testDeleteIndex($alias)
     {
         $this->helper->createIndexByAlias($alias);
-        $this->helper->deleteIndex($alias);
+        $this->helper->deleteIndexByAlias($alias);
 
         $this->assertFalse($this->helper->existsIndex($alias));
         $this->assertFalse($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
@@ -43,7 +43,7 @@ class IndexActionTest extends AbstractIndexHelperTest
     public function testDeleteIndexNotFoundException()
     {
         $alias = 'myindextest';
-        $this->helper->deleteIndex($alias);
+        $this->helper->deleteIndexByAlias($alias);
     }
 
     /**
