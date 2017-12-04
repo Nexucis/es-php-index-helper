@@ -63,7 +63,7 @@ class IndexHelper implements IndexHelperInterface
      * @return void
      * @throws IndexAlreadyExistException
      */
-    public function createIndex($alias)
+    public function createIndexByAlias($alias)
     {
         $index = $alias . self::INDEX_NAME_CONVENTION_1;
 
@@ -83,19 +83,19 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * @param $index : index or alias can put here [REQUIRED]
+     * @param $alias : alias can put here [REQUIRED]
      * @return void
      * @throws IndexNotFoundException
      */
-    public function deleteIndex($index)
+    public function deleteIndexByAlias($alias)
     {
-        $params = array(
-            'index' => $index
-        );
-
-        if (!$this->existsIndex($index)) {
-            throw new IndexNotFoundException($index);
+        if (!$this->existsIndex($alias)) {
+            throw new IndexNotFoundException($alias);
         }
+
+        $params = array(
+            'index' => $this->findIndexByAlias($alias)
+        );
 
         $this->client->indices()->delete($params);
     }
@@ -585,6 +585,24 @@ class IndexHelper implements IndexHelperInterface
         $response = $this->client->index($params);
 
         return $response['_version'];
+    }
+
+    /**
+     * @param $index : index can put here [REQUIRED]
+     * @return void
+     * @throws IndexNotFoundException
+     */
+    protected function deleteIndex($index)
+    {
+        $params = array(
+            'index' => $index
+        );
+
+        if (!$this->existsIndex($index)) {
+            throw new IndexNotFoundException($index);
+        }
+
+        $this->client->indices()->delete($params);
     }
 
     /**

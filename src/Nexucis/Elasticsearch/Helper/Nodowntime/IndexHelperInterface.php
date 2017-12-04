@@ -32,14 +32,14 @@ interface IndexHelperInterface
      * @return void
      * @throws IndexAlreadyExistException
      */
-    public function createIndex($alias);
+    public function createIndexByAlias($alias);
 
     /**
-     * @param $index : index or alias can put here [REQUIRED]
+     * @param $alias : alias can put here [REQUIRED]
      * @return void
      * @throws IndexNotFoundException
      */
-    public function deleteIndex($index);
+    public function deleteIndexByAlias($alias);
 
     /**
      * @param string $aliasSrc [REQUIRED]

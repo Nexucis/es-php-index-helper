@@ -37,8 +37,8 @@ class DocumentActionTest extends AbstractIndexHelperTest
     {
         $alias1 = 'financial';
         $alias2 = 'football';
-        $this->helper->createIndex($alias1);
-        $this->helper->createIndex($alias2);
+        $this->helper->createIndexByAlias($alias1);
+        $this->helper->createIndexByAlias($alias2);
 
         $aliases = $this->helper->getListAlias();
 
@@ -76,7 +76,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
         ];
         $id = 'randomId';
 
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
 
         $this->assertTrue($this->helper->addDocument($alias, $type, $body, $id, true));
 
@@ -104,7 +104,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
             'test' => 'Palatii dicto sciens venit contumaciter'
         ];
 
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
 
         $this->assertTrue($this->helper->addDocument($alias, $type, $body, $id));
 
@@ -133,7 +133,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
             'test' => 'Palatii dicto sciens venit contumaciter'
         ];
 
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
 
         $this->assertTrue($this->helper->addDocument($alias, $type, $body, $id, true));
 
@@ -156,7 +156,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
     {
         $type = 'test';
         $id = 0;
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
         $this->helper->deleteDocument($alias, $id, $type);
     }
 
@@ -174,7 +174,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
      */
     public function testGetAllDocumentIndexEmpty($alias)
     {
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
         $result = $this->helper->getAllDocuments($alias);
 
         $this->assertTrue($result['hits']['total'] === 0);

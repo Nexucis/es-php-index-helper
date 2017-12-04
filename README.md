@@ -91,7 +91,7 @@ It all begins with an index creation :
 ```php
 <?php
 $alias = "myindex";
-$helper->createIndex($alias);
+$helper->createIndexByAlias($alias);
 ```
 
 As you can see, we pass an alias name and not and index name through the helper. With the Helper, you will see everything through an alias and not the index directly. 
@@ -113,7 +113,7 @@ As we say, with this helper, you will see everything through an alias. So if you
 ```php
 <?php
 $alias= 'myindex';
-$helper->deleteIndex($alias);
+$helper->deleteIndexByAlias($alias);
 ```
 
 And if you perform the previous HTTP request, you will see that there is nothing left. The alias AND the index has been removed. 
@@ -226,7 +226,7 @@ All following tools are running by [circleci](https://circleci.com/gh/Nexucis/es
 If you want to launch the unit test, you need to have a local elasticsearch instance which must be accessible through the url http://localhost:9200. A simply way to launch it, is to start the [corresponding container](https://hub.docker.com/_/elasticsearch/) : 
 
 ```bash
-docker run -d -p 9200:9200 -p 9300:9300 elasticsearch:5.5.2
+docker run -d -p 9200:9200 docker.elastic.co/elasticsearch/elasticsearch:6.0.0
 ```
 
 Once ElasticSearch is up, you can run the following command :

@@ -61,7 +61,7 @@ abstract class AbstractIndexHelperTest extends TestCase
 
     protected function loadFinancialIndex($alias, $type = 'complains')
     {
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
 
         $this->addBulkDocuments($this->jsonArrayToBulkArray(self::$documents, $alias, $type));
     }
