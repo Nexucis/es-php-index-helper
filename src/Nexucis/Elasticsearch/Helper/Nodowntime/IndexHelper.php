@@ -83,24 +83,6 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * @param $index : index or alias can put here [REQUIRED]
-     * @return void
-     * @throws IndexNotFoundException
-     */
-    public function deleteIndex($index)
-    {
-        $params = array(
-            'index' => $index
-        );
-
-        if (!$this->existsIndex($index)) {
-            throw new IndexNotFoundException($index);
-        }
-
-        $this->client->indices()->delete($params);
-    }
-
-    /**
      * @param $alias : alias can put here [REQUIRED]
      * @return void
      * @throws IndexNotFoundException
@@ -603,6 +585,24 @@ class IndexHelper implements IndexHelperInterface
         $response = $this->client->index($params);
 
         return $response['_version'];
+    }
+
+    /**
+     * @param $index : index can put here [REQUIRED]
+     * @return void
+     * @throws IndexNotFoundException
+     */
+    protected function deleteIndex($index)
+    {
+        $params = array(
+            'index' => $index
+        );
+
+        if (!$this->existsIndex($index)) {
+            throw new IndexNotFoundException($index);
+        }
+
+        $this->client->indices()->delete($params);
     }
 
     /**

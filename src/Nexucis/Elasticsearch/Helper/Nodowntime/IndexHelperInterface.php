@@ -35,13 +35,6 @@ interface IndexHelperInterface
     public function createIndexByAlias($alias);
 
     /**
-     * @param $index : index or alias can put here [REQUIRED]
-     * @return void
-     * @throws IndexNotFoundException
-     */
-    public function deleteIndex($index);
-
-    /**
      * @param $alias : alias can put here [REQUIRED]
      * @return void
      * @throws IndexNotFoundException
