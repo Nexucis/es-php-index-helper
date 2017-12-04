@@ -42,6 +42,13 @@ interface IndexHelperInterface
     public function deleteIndex($index);
 
     /**
+     * @param $alias : alias can put here [REQUIRED]
+     * @return void
+     * @throws IndexNotFoundException
+     */
+    public function deleteIndexByAlias($alias);
+
+    /**
      * @param string $aliasSrc [REQUIRED]
      * @param string $aliasDest [REQUIRED]
      * @param string|bool $refresh wait until the result are visible to search

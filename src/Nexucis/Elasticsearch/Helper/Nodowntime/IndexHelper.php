@@ -101,6 +101,24 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
+     * @param $alias : alias can put here [REQUIRED]
+     * @return void
+     * @throws IndexNotFoundException
+     */
+    public function deleteIndexByAlias($alias)
+    {
+        if (!$this->existsIndex($alias)) {
+            throw new IndexNotFoundException($alias);
+        }
+
+        $params = array(
+            'index' => $this->findIndexByAlias($alias)
+        );
+
+        $this->client->indices()->delete($params);
+    }
+
+    /**
      * @param string $aliasSrc [REQUIRED]
      * @param string $aliasDest [REQUIRED]
      * @param string|bool $refresh wait until the result are visible to search
