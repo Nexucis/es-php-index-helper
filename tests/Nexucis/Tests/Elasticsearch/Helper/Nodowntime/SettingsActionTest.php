@@ -12,7 +12,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
     public function testAddSettingsEmpty()
     {
         $aliasSrc = 'myindextest';
-        $this->helper->createIndex($aliasSrc);
+        $this->helper->createIndexByAlias($aliasSrc);
 
         $this->helper->addSettings($aliasSrc, array());
     }
@@ -23,7 +23,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
     public function testAddSettingsNull()
     {
         $aliasSrc = 'myindextest';
-        $this->helper->createIndex($aliasSrc);
+        $this->helper->createIndexByAlias($aliasSrc);
 
         $this->helper->addSettings($aliasSrc, null);
     }
@@ -42,7 +42,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
      */
     public function testAddSettingsBasicData($alias)
     {
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
         $settings = [
             'analysis' => [
                 'filter' => [
@@ -91,7 +91,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
      */
     public function testUpdateSettingsEmpty($alias)
     {
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
 
         $this->helper->updateSettings($alias, array());
 
@@ -105,7 +105,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
      */
     public function testUpdateSettingsNull($alias)
     {
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
 
         $this->helper->updateSettings($alias, null);
 
@@ -158,7 +158,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
                 ]
             ]
         ];
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
 
         $this->helper->updateSettings($alias, $settings);
 

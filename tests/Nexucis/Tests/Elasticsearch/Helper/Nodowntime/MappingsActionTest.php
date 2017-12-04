@@ -10,7 +10,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
      */
     public function testUpdateMappingsEmpty($alias)
     {
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
 
         $this->helper->updateMappings($alias, array());
 
@@ -24,7 +24,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
      */
     public function testUpdateMappingsNull($alias)
     {
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
 
         $this->helper->updateMappings($alias, null);
 
@@ -62,7 +62,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
             ]
         ];
 
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
 
         $this->helper->updateMappings($alias, $mapping);
         $this->assertTrue($this->helper->existsIndex($alias));
@@ -146,7 +146,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
             ]
         ];
 
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
         $this->helper->updateSettings($alias, $settings);
 
         $this->helper->updateMappings($alias, $mapping);
@@ -175,7 +175,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
      */
     public function testGetMappingsEmptyIndex($alias)
     {
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
 
         $this->assertEquals([], $this->helper->getMappings($alias));
     }

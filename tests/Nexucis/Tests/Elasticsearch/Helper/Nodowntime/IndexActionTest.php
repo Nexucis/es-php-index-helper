@@ -10,7 +10,7 @@ class IndexActionTest extends AbstractIndexHelperTest
      */
     public function testCreateIndex($alias)
     {
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
         $this->assertTrue($this->helper->existsIndex($alias));
         $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
     }
@@ -21,8 +21,8 @@ class IndexActionTest extends AbstractIndexHelperTest
     public function testCreateIndexAlreadyExistsException()
     {
         $alias = 'myindextest';
-        $this->helper->createIndex($alias);
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
+        $this->helper->createIndexByAlias($alias);
     }
 
     /**
@@ -30,7 +30,7 @@ class IndexActionTest extends AbstractIndexHelperTest
      */
     public function testDeleteIndex($alias)
     {
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
         $this->helper->deleteIndex($alias);
 
         $this->assertFalse($this->helper->existsIndex($alias));
@@ -51,7 +51,7 @@ class IndexActionTest extends AbstractIndexHelperTest
      */
     public function testCopyEmptyIndex($alias)
     {
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
 
         $aliasDest = $alias . '2';
 
@@ -106,7 +106,7 @@ class IndexActionTest extends AbstractIndexHelperTest
     public function testCopyIndexAlreadyExistsException()
     {
         $aliasSrc = 'myindextest';
-        $this->helper->createIndex($aliasSrc);
+        $this->helper->createIndexByAlias($aliasSrc);
 
         $this->helper->copyIndex($aliasSrc, $aliasSrc);
     }
@@ -116,7 +116,7 @@ class IndexActionTest extends AbstractIndexHelperTest
      */
     public function testReindexEmptyIndex($alias)
     {
-        $this->helper->createIndex($alias);
+        $this->helper->createIndexByAlias($alias);
 
         $this->assertEquals($this->helper::RETURN_ACKNOWLEDGE, $this->helper->reindex($alias));
 

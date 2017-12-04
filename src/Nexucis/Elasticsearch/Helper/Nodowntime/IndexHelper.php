@@ -63,7 +63,7 @@ class IndexHelper implements IndexHelperInterface
      * @return void
      * @throws IndexAlreadyExistException
      */
-    public function createIndex($alias)
+    public function createIndexByAlias($alias)
     {
         $index = $alias . self::INDEX_NAME_CONVENTION_1;
 
