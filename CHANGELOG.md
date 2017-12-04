@@ -4,6 +4,7 @@ Changelog
 ## [v6.0.0](https://github.com/Nexucis/es-php-index-helper/tree/6.0.0)
 
 ### Feature
+* Upgrade elasticsearch-php dependencie version from 5.3.1 to 6.0.0
 * **[Public]** Add new method `deleteIndexByAlias` which cannot be taken an index as parameter
 
 ### Breaking Changes
