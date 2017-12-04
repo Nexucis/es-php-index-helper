@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## [v6.0.0](https://github.com/Nexucis/es-php-index-helper/tree/6.0.0)
+
+### Feature
+* **[Public]** Add new method `deleteIndexByAlias` which cannot be taken an index as parameter
+
+### Breaking Changes
+
+* **[Public]** Make `deleteIndex `protected
+* **[Public]** Rename `createIndex `by `createIndexByAlias`
+
 ## [v5.1.0](https://github.com/Nexucis/es-php-index-helper/tree/5.1.0)
 *All modifications below are exactly the same that in the version 2.1.0*
 
