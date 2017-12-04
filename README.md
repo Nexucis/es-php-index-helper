@@ -91,7 +91,7 @@ It all begins with an index creation :
 ```php
 <?php
 $alias = "myindex";
-$helper->createIndex($alias);
+$helper->createIndexByAlias($alias);
 ```
 
 As you can see, we pass an alias name and not and index name through the helper. With the Helper, you will see everything through an alias and not the index directly. 
@@ -113,7 +113,7 @@ As we say, with this helper, you will see everything through an alias. So if you
 ```php
 <?php
 $alias= 'myindex';
-$helper->deleteIndex($alias);
+$helper->deleteIndexByAlias($alias);
 ```
 
 And if you perform the previous HTTP request, you will see that there is nothing left. The alias AND the index has been removed. 
