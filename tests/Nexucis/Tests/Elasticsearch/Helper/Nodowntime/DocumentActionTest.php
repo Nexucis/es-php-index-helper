@@ -2,6 +2,8 @@
 
 namespace Nexucis\Tests\Elasticsearch\Helper\Nodowntime;
 
+use stdClass;
+
 class DocumentActionTest extends AbstractIndexHelperTest
 {
     /**
@@ -188,6 +190,44 @@ class DocumentActionTest extends AbstractIndexHelperTest
         $this->loadFinancialIndex($alias);
 
         $result = $this->helper->getAllDocuments($alias);
+
+        $this->assertTrue($result['hits']['total'] > 10);
+        $this->assertTrue(count($result['hits']['hits']) === 10);
+    }
+
+    /**
+     * @expectedException  \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
+     */
+    public function testSearchDocumentsIndexNotFound()
+    {
+        $alias = 'myindex';
+        $this->helper->searchDocuments($alias);
+    }
+
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testSearchDocumentsIndexEmpty($alias)
+    {
+        $this->helper->createIndexByAlias($alias);
+        $result = $this->helper->searchDocuments($alias);
+
+        $this->assertTrue($result['hits']['total'] === 0);
+        $this->assertTrue(count($result['hits']['hits']) === 0);
+    }
+
+    public function testSearchDocuments()
+    {
+        $alias = 'financial';
+        $type = 'complains';
+        // create index with some contents
+        $this->loadFinancialIndex($alias, $type);
+
+        $query = array(
+            'match_all' => new stdClass()
+        );
+
+        $result = $this->helper->searchDocuments($alias, $query, $type);
 
         $this->assertTrue($result['hits']['total'] > 10);
         $this->assertTrue(count($result['hits']['hits']) === 10);
