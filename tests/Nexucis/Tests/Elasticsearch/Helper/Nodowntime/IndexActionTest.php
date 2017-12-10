@@ -8,7 +8,7 @@ class IndexActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testCreateIndex($alias)
+    public function testCreateIndex(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
         $this->assertTrue($this->helper->existsIndex($alias));
@@ -28,7 +28,7 @@ class IndexActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testDeleteIndex($alias)
+    public function testDeleteIndex(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
         $this->helper->deleteIndexByAlias($alias);
@@ -49,7 +49,7 @@ class IndexActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testCopyEmptyIndex($alias)
+    public function testCopyEmptyIndex(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
 
@@ -114,7 +114,7 @@ class IndexActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testReindexEmptyIndex($alias)
+    public function testReindexEmptyIndex(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
 

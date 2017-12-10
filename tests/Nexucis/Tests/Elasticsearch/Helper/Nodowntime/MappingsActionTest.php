@@ -8,7 +8,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testUpdateMappingsEmpty($alias)
+    public function testUpdateMappingsEmpty(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
 
@@ -22,7 +22,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testUpdateMappingsNull($alias)
+    public function testUpdateMappingsNull(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
 
@@ -46,7 +46,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testUpdateMappingsBasicData($alias)
+    public function testUpdateMappingsBasicData(string $alias)
     {
         $mapping = [
             'my_type' => [
@@ -99,7 +99,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testUpdateMappingWithSettingsNotEmpty($alias)
+    public function testUpdateMappingWithSettingsNotEmpty(string $alias)
     {
         $settings = [
             'number_of_shards' => 1,
@@ -201,7 +201,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testGetMappingsEmptyIndex($alias)
+    public function testGetMappingsEmptyIndex(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
 

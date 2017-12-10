@@ -40,7 +40,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testAddSettingsBasicData($alias)
+    public function testAddSettingsBasicData(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
         $settings = [
@@ -89,7 +89,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testUpdateSettingsEmpty($alias)
+    public function testUpdateSettingsEmpty(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
 
@@ -103,7 +103,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testUpdateSettingsNull($alias)
+    public function testUpdateSettingsNull(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
 
@@ -126,7 +126,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testUpdateSettingsBasicData($alias)
+    public function testUpdateSettingsBasicData(string $alias)
     {
         $settings = [
             'number_of_shards' => 1,

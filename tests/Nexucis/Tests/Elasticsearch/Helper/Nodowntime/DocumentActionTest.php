@@ -88,7 +88,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testAddAndGetDocument($alias)
+    public function testAddAndGetDocument(string $alias)
     {
         $type = 'test';
         $body = [
@@ -116,7 +116,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testUpdateDocument($alias)
+    public function testUpdateDocument(string $alias)
     {
         $type = 'test';
         $id = 1;
@@ -145,7 +145,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testDeleteDocument($alias)
+    public function testDeleteDocument(string $alias)
     {
         $type = 'test';
         $id = 0;
@@ -172,7 +172,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
      * @dataProvider aliasDataProvider
      * @expectedException \Elasticsearch\Common\Exceptions\Missing404Exception
      */
-    public function testDocumentNotExist($alias)
+    public function testDocumentNotExist(string $alias)
     {
         $type = 'test';
         $id = 0;
@@ -192,7 +192,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testGetAllDocumentIndexEmpty($alias)
+    public function testGetAllDocumentIndexEmpty(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
         $result = $this->helper->getAllDocuments($alias);
@@ -225,7 +225,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testSearchDocumentsIndexEmpty($alias)
+    public function testSearchDocumentsIndexEmpty(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
         $result = $this->helper->searchDocuments($alias);
