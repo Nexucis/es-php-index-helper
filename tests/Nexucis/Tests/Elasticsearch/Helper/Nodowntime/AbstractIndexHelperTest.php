@@ -36,8 +36,10 @@ abstract class AbstractIndexHelperTest extends TestCase
      */
     public function setUp()
     {
-        $this->client = ClientBuilder::create()->setHosts([$_SERVER['ES_TEST_HOST']])->build();
-        $this->helper = new IndexHelper($this->client);
+        $client = ClientBuilder::create()->setHosts([$_SERVER['ES_TEST_HOST']])->build();
+        $this->helper = new IndexHelper($client);
+        // in order to cover the getter
+        $this->client = $this->helper->getClient();
         parent::setUp();
     }
 
