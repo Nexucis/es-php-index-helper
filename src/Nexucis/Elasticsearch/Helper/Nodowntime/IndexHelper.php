@@ -590,17 +590,12 @@ class IndexHelper implements IndexHelperInterface
     /**
      * @param $index : index can put here [REQUIRED]
      * @return void
-     * @throws IndexNotFoundException
      */
     protected function deleteIndex($index)
     {
         $params = array(
             'index' => $index
         );
-
-        if (!$this->existsIndex($index)) {
-            throw new IndexNotFoundException($index);
-        }
 
         $this->client->indices()->delete($params);
     }
