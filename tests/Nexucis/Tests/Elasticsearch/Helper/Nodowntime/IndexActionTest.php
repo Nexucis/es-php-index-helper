@@ -137,6 +137,22 @@ class IndexActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->countDocuments($alias) > 0);
     }
 
+    public function testReindexWithIndexAlreadyExists()
+    {
+        $alias = 'financial';
+        // create index with some contents
+        $this->loadFinancialIndex($alias);
+
+        // create index 2 in order to check if it will be deleted by the reindex process
+        $this->createIndex2($alias);
+
+        $this->assertEquals($this->helper::RETURN_ACKNOWLEDGE, $this->helper->reindex($alias, true));
+
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
+        $this->assertTrue($this->countDocuments($alias) > 0);
+    }
+
     public function testReindexAsynchronusByTask()
     {
         $alias = 'financial';
