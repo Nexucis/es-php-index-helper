@@ -30,6 +30,24 @@ class DocumentActionTest extends AbstractIndexHelperTest
         $this->assertEquals($mappings, $this->helper->getMappings($alias));
     }
 
+    public function testDeleteAllDocumentsIndexAlreadyExists()
+    {
+        $alias = 'financial';
+        $this->loadFinancialIndex($alias);
+
+        $mappings = $this->helper->getMappings($alias);
+
+        $this->assertTrue($this->countDocuments($alias) > 0);
+
+        // create the target index in order to check if the method will delete it
+        $this->createIndex2($alias);
+
+        $this->helper->deleteAllDocuments($alias);
+
+        $this->assertTrue($this->countDocuments($alias) == 0);
+        $this->assertEquals($mappings, $this->helper->getMappings($alias));
+    }
+
     public function testGetListAliasEmpty()
     {
         $this->assertEquals([], $this->helper->getListAlias());
