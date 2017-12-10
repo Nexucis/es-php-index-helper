@@ -308,7 +308,7 @@ class IndexHelper implements IndexHelperInterface
      * But if you pass this parameters to false, don't forget to reindex. If you don't do it, you will not see your modification of the mappings
      * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
-     * If you set it to true, don't forget to remove the old index and to switch the alias after the task is gone.
+     * If you set it to false, don't forget to remove the old index and to switch the alias after the task is gone.
      * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
      * @throws RuntimeException
      * @throws IndexNotFoundException
