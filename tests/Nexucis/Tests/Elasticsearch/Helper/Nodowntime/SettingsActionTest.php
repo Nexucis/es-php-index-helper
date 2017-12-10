@@ -238,4 +238,17 @@ class SettingsActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
         $this->assertFalse(array_key_exists('analysis', $this->helper->getSettings($alias)));
     }
+
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateSettingsWithoutReindexation(string $alias)
+    {
+        $this->helper->createIndexByAlias($alias);
+
+        $this->assertEquals($this->helper::RETURN_ACKNOWLEDGE, $this->helper->updateSettings($alias, null, false, false));
+
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
+    }
 }

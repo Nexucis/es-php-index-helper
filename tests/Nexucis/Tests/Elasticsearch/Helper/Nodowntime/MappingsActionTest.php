@@ -164,7 +164,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testUpdateMappingIndexAlreadyExists(string $alias)
+    public function testUpdateMappingsIndexAlreadyExists(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
         $this->createIndex2($alias);
@@ -174,6 +174,19 @@ class MappingsActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->helper->existsIndex($alias));
         $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
         $this->assertEquals(array(), $this->helper->getMappings($alias));
+    }
+
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateMappingsWithoutReindexation(string $alias)
+    {
+        $this->helper->createIndexByAlias($alias);
+
+        $this->assertEquals($this->helper::RETURN_ACKNOWLEDGE, $this->helper->updateMappings($alias, null, false, false));
+
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
     }
 
     /**
