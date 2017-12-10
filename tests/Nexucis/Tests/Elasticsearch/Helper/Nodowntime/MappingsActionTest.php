@@ -8,7 +8,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testUpdateMappingsEmpty($alias)
+    public function testUpdateMappingsEmpty(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
 
@@ -22,7 +22,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testUpdateMappingsNull($alias)
+    public function testUpdateMappingsNull(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
 
@@ -46,7 +46,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testUpdateMappingsBasicData($alias)
+    public function testUpdateMappingsBasicData(string $alias)
     {
         $mapping = [
             'my_type' => [
@@ -70,10 +70,12 @@ class MappingsActionTest extends AbstractIndexHelperTest
         $this->assertEquals($mapping, $this->helper->getMappings($alias));
     }
 
-    public function testUpdateMappingsWithIndexNotEmpty()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateMappingsWithIndexNotEmpty(string $alias)
     {
         $type = 'complains';
-        $alias = 'financial';
         // create index with some contents
         $this->loadFinancialIndex($alias, $type);
 
@@ -99,7 +101,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testUpdateMappingWithSettingsNotEmpty($alias)
+    public function testUpdateMappingWithSettingsNotEmpty(string $alias)
     {
         $settings = [
             'number_of_shards' => 1,
@@ -162,6 +164,34 @@ class MappingsActionTest extends AbstractIndexHelperTest
     }
 
     /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateMappingsIndexAlreadyExists(string $alias)
+    {
+        $this->helper->createIndexByAlias($alias);
+        $this->createIndex2($alias);
+
+        $this->helper->updateMappings($alias, null);
+
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
+        $this->assertEquals(array(), $this->helper->getMappings($alias));
+    }
+
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateMappingsWithoutReindexation(string $alias)
+    {
+        $this->helper->createIndexByAlias($alias);
+
+        $this->assertEquals($this->helper::RETURN_ACKNOWLEDGE, $this->helper->updateMappings($alias, null, false, false));
+
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
+    }
+
+    /**
      * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
      */
     public function testGetMappingsIndexNotFound()
@@ -173,7 +203,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testGetMappingsEmptyIndex($alias)
+    public function testGetMappingsEmptyIndex(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
 

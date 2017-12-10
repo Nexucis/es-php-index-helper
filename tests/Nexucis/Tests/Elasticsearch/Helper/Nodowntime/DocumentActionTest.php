@@ -2,6 +2,8 @@
 
 namespace Nexucis\Tests\Elasticsearch\Helper\Nodowntime;
 
+use stdClass;
+
 class DocumentActionTest extends AbstractIndexHelperTest
 {
     /**
@@ -13,14 +15,36 @@ class DocumentActionTest extends AbstractIndexHelperTest
         $this->helper->deleteAllDocuments($alias);
     }
 
-    public function testDeleteAllDocuments()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testDeleteAllDocuments(string $alias)
     {
-        $alias = 'financial';
         $this->loadFinancialIndex($alias);
 
         $mappings = $this->helper->getMappings($alias);
 
         $this->assertTrue($this->countDocuments($alias) > 0);
+
+        $this->helper->deleteAllDocuments($alias);
+
+        $this->assertTrue($this->countDocuments($alias) == 0);
+        $this->assertEquals($mappings, $this->helper->getMappings($alias));
+    }
+
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testDeleteAllDocumentsIndexAlreadyExists(string $alias)
+    {
+        $this->loadFinancialIndex($alias);
+
+        $mappings = $this->helper->getMappings($alias);
+
+        $this->assertTrue($this->countDocuments($alias) > 0);
+
+        // create the target index in order to check if the method will delete it
+        $this->createIndex2($alias);
 
         $this->helper->deleteAllDocuments($alias);
 
@@ -68,7 +92,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testAddAndGetDocument($alias)
+    public function testAddAndGetDocument(string $alias)
     {
         $type = 'test';
         $body = [
@@ -96,7 +120,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testUpdateDocument($alias)
+    public function testUpdateDocument(string $alias)
     {
         $type = 'test';
         $id = 1;
@@ -125,7 +149,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testDeleteDocument($alias)
+    public function testDeleteDocument(string $alias)
     {
         $type = 'test';
         $id = 0;
@@ -152,7 +176,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
      * @dataProvider aliasDataProvider
      * @expectedException \Elasticsearch\Common\Exceptions\Missing404Exception
      */
-    public function testDocumentNotExist($alias)
+    public function testDocumentNotExist(string $alias)
     {
         $type = 'test';
         $id = 0;
@@ -172,7 +196,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testGetAllDocumentIndexEmpty($alias)
+    public function testGetAllDocumentIndexEmpty(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
         $result = $this->helper->getAllDocuments($alias);
@@ -181,13 +205,55 @@ class DocumentActionTest extends AbstractIndexHelperTest
         $this->assertTrue(count($result['hits']['hits']) === 0);
     }
 
-    public function testGetAllDocument()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testGetAllDocument(string $alias)
     {
-        $alias = 'financial';
         // create index with some contents
         $this->loadFinancialIndex($alias);
 
         $result = $this->helper->getAllDocuments($alias);
+
+        $this->assertTrue($result['hits']['total'] > 10);
+        $this->assertTrue(count($result['hits']['hits']) === 10);
+    }
+
+    /**
+     * @expectedException  \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
+     */
+    public function testSearchDocumentsIndexNotFound()
+    {
+        $alias = 'myindex';
+        $this->helper->searchDocuments($alias);
+    }
+
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testSearchDocumentsIndexEmpty(string $alias)
+    {
+        $this->helper->createIndexByAlias($alias);
+        $result = $this->helper->searchDocuments($alias);
+
+        $this->assertTrue($result['hits']['total'] === 0);
+        $this->assertTrue(count($result['hits']['hits']) === 0);
+    }
+
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testSearchDocuments(string $alias)
+    {
+        $type = 'complains';
+        // create index with some contents
+        $this->loadFinancialIndex($alias, $type);
+
+        $query = array(
+            'match_all' => new stdClass()
+        );
+
+        $result = $this->helper->searchDocuments($alias, $query, $type);
 
         $this->assertTrue($result['hits']['total'] > 10);
         $this->assertTrue(count($result['hits']['hits']) === 10);

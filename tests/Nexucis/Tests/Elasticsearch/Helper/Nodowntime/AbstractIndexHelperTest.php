@@ -59,6 +59,16 @@ abstract class AbstractIndexHelperTest extends TestCase
         ];
     }
 
+    protected function createIndex2($alias)
+    {
+        $index = $alias . IndexHelper::INDEX_NAME_CONVENTION_2;
+
+        $params = array(
+            'index' => $index
+        );
+        $this->client->indices()->create($params);
+    }
+
     protected function loadFinancialIndex($alias, $type = 'complains')
     {
         $this->helper->createIndexByAlias($alias);

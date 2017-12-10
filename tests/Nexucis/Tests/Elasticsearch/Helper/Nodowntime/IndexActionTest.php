@@ -8,7 +8,7 @@ class IndexActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testCreateIndex($alias)
+    public function testCreateIndex(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
         $this->assertTrue($this->helper->existsIndex($alias));
@@ -28,7 +28,7 @@ class IndexActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testDeleteIndex($alias)
+    public function testDeleteIndex(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
         $this->helper->deleteIndexByAlias($alias);
@@ -49,7 +49,7 @@ class IndexActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testCopyEmptyIndex($alias)
+    public function testCopyEmptyIndex(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
 
@@ -63,9 +63,11 @@ class IndexActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->helper->existsIndex($aliasDest . $this->helper::INDEX_NAME_CONVENTION_1));
     }
 
-    public function testCopyIndex()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testCopyIndex(string $alias)
     {
-        $alias = 'financial';
         // create index with some contents
         $this->loadFinancialIndex($alias);
 
@@ -79,9 +81,11 @@ class IndexActionTest extends AbstractIndexHelperTest
         $this->assertEquals($this->countDocuments($alias), $this->countDocuments($aliasDest));
     }
 
-    public function testCopyIndexAsynchronusByTask()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testCopyIndexAsynchronusByTask(string $alias)
     {
-        $alias = 'financial';
         // create index with some contents
         $this->loadFinancialIndex($alias);
 
@@ -114,7 +118,7 @@ class IndexActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testReindexEmptyIndex($alias)
+    public function testReindexEmptyIndex(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
 
@@ -124,9 +128,11 @@ class IndexActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
     }
 
-    public function testReindex()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testReindex(string $alias)
     {
-        $alias = 'financial';
         // create index with some contents
         $this->loadFinancialIndex($alias);
 
@@ -137,9 +143,29 @@ class IndexActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->countDocuments($alias) > 0);
     }
 
-    public function testReindexAsynchronusByTask()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testReindexWithIndexAlreadyExists(string $alias)
     {
-        $alias = 'financial';
+        // create index with some contents
+        $this->loadFinancialIndex($alias);
+
+        // create index 2 in order to check if it will be deleted by the reindex process
+        $this->createIndex2($alias);
+
+        $this->assertEquals($this->helper::RETURN_ACKNOWLEDGE, $this->helper->reindex($alias, true));
+
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
+        $this->assertTrue($this->countDocuments($alias) > 0);
+    }
+
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testReindexAsynchronusByTask(string $alias)
+    {
         // create index with some contents
         $this->loadFinancialIndex($alias);
 

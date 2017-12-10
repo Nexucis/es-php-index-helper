@@ -5,7 +5,6 @@ namespace Nexucis\Tests\Elasticsearch\Helper\Nodowntime;
 class SettingsActionTest extends AbstractIndexHelperTest
 {
 
-
     /**
      * @expectedException \Elasticsearch\Common\Exceptions\InvalidArgumentException
      */
@@ -40,7 +39,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testAddSettingsBasicData($alias)
+    public function testAddSettingsBasicData(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
         $settings = [
@@ -89,7 +88,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testUpdateSettingsEmpty($alias)
+    public function testUpdateSettingsEmpty(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
 
@@ -103,7 +102,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testUpdateSettingsNull($alias)
+    public function testUpdateSettingsNull(string $alias)
     {
         $this->helper->createIndexByAlias($alias);
 
@@ -126,7 +125,7 @@ class SettingsActionTest extends AbstractIndexHelperTest
     /**
      * @dataProvider aliasDataProvider
      */
-    public function testUpdateSettingsBasicData($alias)
+    public function testUpdateSettingsBasicData(string $alias)
     {
         $settings = [
             'number_of_shards' => 1,
@@ -172,7 +171,10 @@ class SettingsActionTest extends AbstractIndexHelperTest
         $this->assertEquals($settings['number_of_replicas'], $resultSettings['number_of_replicas']);
     }
 
-    public function testUpdateSettingsWithIndexNotEmpty()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateSettingsWithIndexNotEmpty(string $alias)
     {
         $settings = [
             'number_of_shards' => 1,
@@ -205,7 +207,6 @@ class SettingsActionTest extends AbstractIndexHelperTest
             ]
         ];
 
-        $alias = 'financial';
         // create index with some contents
         $this->loadFinancialIndex($alias);
         $mappings = $this->helper->getMappings($alias);
@@ -222,5 +223,52 @@ class SettingsActionTest extends AbstractIndexHelperTest
 
         $this->assertTrue($this->countDocuments($alias) > 0);
         $this->assertEquals($mappings, $this->helper->getMappings($alias));
+    }
+
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateSettingsWithIndexAlreadyExists(string $alias)
+    {
+        $this->helper->createIndexByAlias($alias);
+        $this->createIndex2($alias);
+
+        $this->helper->updateSettings($alias, null);
+
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
+        $this->assertFalse(array_key_exists('analysis', $this->helper->getSettings($alias)));
+    }
+
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateSettingsWithoutReindexation(string $alias)
+    {
+        $this->helper->createIndexByAlias($alias);
+
+        $this->assertEquals($this->helper::RETURN_ACKNOWLEDGE, $this->helper->updateSettings($alias, null, false, false));
+
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
+    }
+
+    /**
+     * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
+     */
+    public function testGetSettingsIndexNotFoundException()
+    {
+        $aliasSrc = 'myindextest';
+        $this->helper->getSettings($aliasSrc);
+    }
+
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testGetSettingsEmptyIndex(string $alias)
+    {
+        $this->helper->createIndexByAlias($alias);
+
+        $this->assertFalse(array_key_exists('analysis', $this->helper->getSettings($alias)));
     }
 }

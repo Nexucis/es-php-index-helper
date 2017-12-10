@@ -106,7 +106,7 @@ class IndexHelper implements IndexHelperInterface
      * @param string|bool $refresh wait until the result are visible to search
      * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4. In fact, it would be preferable to create an asynchronous process that executes this task.
-     * If you set it to true, don't forget to put an alias to the new index when the corresponding task is gone.
+     * If you set it to false, don't forget to put an alias to the new index when the corresponding task is gone.
      * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
      * @throws RuntimeException
      * @throws IndexNotFoundException
@@ -155,7 +155,7 @@ class IndexHelper implements IndexHelperInterface
      * @param bool $needToCreateIndexDest
      * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
-     * If you set it to true, don't forget to remove the old index and to switch the alias after the task is gone.
+     * If you set it to false, don't forget to remove the old index and to switch the alias after the task is gone.
      * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
      * @throws RuntimeException
      * @throws IndexNotFoundException
@@ -248,7 +248,7 @@ class IndexHelper implements IndexHelperInterface
      * But if you pass this parameters to false, don't forget to reindex. If you don't do it, you will not see your modification of the settings
      * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
-     * If you set it to true, don't forget to remove the old index and to switch the alias after the task is gone.
+     * If you set it to false, don't forget to remove the old index and to switch the alias after the task is gone.
      * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
      * @throws RuntimeException
      * @throws IndexNotFoundException
@@ -308,7 +308,7 @@ class IndexHelper implements IndexHelperInterface
      * But if you pass this parameters to false, don't forget to reindex. If you don't do it, you will not see your modification of the mappings
      * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
-     * If you set it to true, don't forget to remove the old index and to switch the alias after the task is gone.
+     * If you set it to false, don't forget to remove the old index and to switch the alias after the task is gone.
      * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
      * @throws RuntimeException
      * @throws IndexNotFoundException
@@ -444,7 +444,7 @@ class IndexHelper implements IndexHelperInterface
      * @return array
      * @throws IndexNotFoundException
      */
-    public function searchDocuments($alias, $query, $type = null, $from = 0, $size = 10)
+    public function searchDocuments($alias, $query = null, $type = null, $from = 0, $size = 10)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException($alias);
@@ -590,17 +590,12 @@ class IndexHelper implements IndexHelperInterface
     /**
      * @param $index : index can put here [REQUIRED]
      * @return void
-     * @throws IndexNotFoundException
      */
     protected function deleteIndex($index)
     {
         $params = array(
             'index' => $index
         );
-
-        if (!$this->existsIndex($index)) {
-            throw new IndexNotFoundException($index);
-        }
 
         $this->client->indices()->delete($params);
     }
