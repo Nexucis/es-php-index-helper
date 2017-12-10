@@ -444,7 +444,7 @@ class IndexHelper implements IndexHelperInterface
      * @return array
      * @throws IndexNotFoundException
      */
-    public function searchDocuments($alias, $query, $type = null, $from = 0, $size = 10)
+    public function searchDocuments($alias, $query = null, $type = null, $from = 0, $size = 10)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException($alias);

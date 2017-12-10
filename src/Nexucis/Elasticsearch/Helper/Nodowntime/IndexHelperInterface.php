@@ -160,7 +160,7 @@ interface IndexHelperInterface
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
      * @return array
      */
-    public function searchDocuments($alias, $query, $type = null, $from = 0, $size = 10);
+    public function searchDocuments($alias, $query = null, $type = null, $from = 0, $size = 10);
 
     /**
      * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index
