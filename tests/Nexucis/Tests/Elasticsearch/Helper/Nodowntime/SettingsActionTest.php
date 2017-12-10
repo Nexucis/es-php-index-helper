@@ -5,7 +5,6 @@ namespace Nexucis\Tests\Elasticsearch\Helper\Nodowntime;
 class SettingsActionTest extends AbstractIndexHelperTest
 {
 
-
     /**
      * @expectedException \Elasticsearch\Common\Exceptions\InvalidArgumentException
      */
@@ -252,5 +251,24 @@ class SettingsActionTest extends AbstractIndexHelperTest
 
         $this->assertTrue($this->helper->existsIndex($alias));
         $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
+    }
+
+    /**
+     * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
+     */
+    public function testGetSettingsIndexNotFoundException()
+    {
+        $aliasSrc = 'myindextest';
+        $this->helper->getSettings($aliasSrc);
+    }
+
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testGetSettingsEmptyIndex(string $alias)
+    {
+        $this->helper->createIndexByAlias($alias);
+
+        $this->assertFalse(array_key_exists('analysis', $this->helper->getSettings($alias)));
     }
 }
