@@ -162,6 +162,21 @@ class MappingsActionTest extends AbstractIndexHelperTest
     }
 
     /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateMappingIndexAlreadyExists(string $alias)
+    {
+        $this->helper->createIndexByAlias($alias);
+        $this->createIndex2($alias);
+
+        $this->helper->updateMappings($alias, null);
+
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
+        $this->assertEquals(array(), $this->helper->getMappings($alias));
+    }
+
+    /**
      * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
      */
     public function testGetMappingsIndexNotFound()

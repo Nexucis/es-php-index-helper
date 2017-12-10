@@ -223,4 +223,19 @@ class SettingsActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->countDocuments($alias) > 0);
         $this->assertEquals($mappings, $this->helper->getMappings($alias));
     }
+
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateSettingsWithIndexAlreadyExists(string $alias)
+    {
+        $this->helper->createIndexByAlias($alias);
+        $this->createIndex2($alias);
+
+        $this->helper->updateSettings($alias, null);
+
+        $this->assertTrue($this->helper->existsIndex($alias));
+        $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
+        $this->assertFalse(array_key_exists('analysis', $this->helper->getSettings($alias)));
+    }
 }
