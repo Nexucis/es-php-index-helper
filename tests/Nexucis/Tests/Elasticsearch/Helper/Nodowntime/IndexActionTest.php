@@ -63,9 +63,11 @@ class IndexActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->helper->existsIndex($aliasDest . $this->helper::INDEX_NAME_CONVENTION_1));
     }
 
-    public function testCopyIndex()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testCopyIndex(string $alias)
     {
-        $alias = 'financial';
         // create index with some contents
         $this->loadFinancialIndex($alias);
 
@@ -79,9 +81,11 @@ class IndexActionTest extends AbstractIndexHelperTest
         $this->assertEquals($this->countDocuments($alias), $this->countDocuments($aliasDest));
     }
 
-    public function testCopyIndexAsynchronusByTask()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testCopyIndexAsynchronusByTask(string $alias)
     {
-        $alias = 'financial';
         // create index with some contents
         $this->loadFinancialIndex($alias);
 
@@ -124,9 +128,11 @@ class IndexActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
     }
 
-    public function testReindex()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testReindex(string $alias)
     {
-        $alias = 'financial';
         // create index with some contents
         $this->loadFinancialIndex($alias);
 
@@ -137,9 +143,11 @@ class IndexActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->countDocuments($alias) > 0);
     }
 
-    public function testReindexWithIndexAlreadyExists()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testReindexWithIndexAlreadyExists(string $alias)
     {
-        $alias = 'financial';
         // create index with some contents
         $this->loadFinancialIndex($alias);
 
@@ -153,9 +161,11 @@ class IndexActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->countDocuments($alias) > 0);
     }
 
-    public function testReindexAsynchronusByTask()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testReindexAsynchronusByTask(string $alias)
     {
-        $alias = 'financial';
         // create index with some contents
         $this->loadFinancialIndex($alias);
 

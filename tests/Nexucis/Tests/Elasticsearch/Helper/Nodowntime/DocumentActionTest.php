@@ -15,9 +15,11 @@ class DocumentActionTest extends AbstractIndexHelperTest
         $this->helper->deleteAllDocuments($alias);
     }
 
-    public function testDeleteAllDocuments()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testDeleteAllDocuments(string $alias)
     {
-        $alias = 'financial';
         $this->loadFinancialIndex($alias);
 
         $mappings = $this->helper->getMappings($alias);
@@ -30,9 +32,11 @@ class DocumentActionTest extends AbstractIndexHelperTest
         $this->assertEquals($mappings, $this->helper->getMappings($alias));
     }
 
-    public function testDeleteAllDocumentsIndexAlreadyExists()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testDeleteAllDocumentsIndexAlreadyExists(string $alias)
     {
-        $alias = 'financial';
         $this->loadFinancialIndex($alias);
 
         $mappings = $this->helper->getMappings($alias);
@@ -201,9 +205,11 @@ class DocumentActionTest extends AbstractIndexHelperTest
         $this->assertTrue(count($result['hits']['hits']) === 0);
     }
 
-    public function testGetAllDocument()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testGetAllDocument(string $alias)
     {
-        $alias = 'financial';
         // create index with some contents
         $this->loadFinancialIndex($alias);
 
@@ -234,9 +240,11 @@ class DocumentActionTest extends AbstractIndexHelperTest
         $this->assertTrue(count($result['hits']['hits']) === 0);
     }
 
-    public function testSearchDocuments()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testSearchDocuments(string $alias)
     {
-        $alias = 'financial';
         $type = 'complains';
         // create index with some contents
         $this->loadFinancialIndex($alias, $type);

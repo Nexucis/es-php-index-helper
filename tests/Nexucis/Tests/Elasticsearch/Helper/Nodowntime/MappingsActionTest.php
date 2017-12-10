@@ -70,10 +70,12 @@ class MappingsActionTest extends AbstractIndexHelperTest
         $this->assertEquals($mapping, $this->helper->getMappings($alias));
     }
 
-    public function testUpdateMappingsWithIndexNotEmpty()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateMappingsWithIndexNotEmpty(string $alias)
     {
         $type = 'complains';
-        $alias = 'financial';
         // create index with some contents
         $this->loadFinancialIndex($alias, $type);
 

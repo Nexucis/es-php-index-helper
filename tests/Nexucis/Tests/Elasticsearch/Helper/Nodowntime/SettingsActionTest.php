@@ -172,7 +172,10 @@ class SettingsActionTest extends AbstractIndexHelperTest
         $this->assertEquals($settings['number_of_replicas'], $resultSettings['number_of_replicas']);
     }
 
-    public function testUpdateSettingsWithIndexNotEmpty()
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testUpdateSettingsWithIndexNotEmpty(string $alias)
     {
         $settings = [
             'number_of_shards' => 1,
@@ -205,7 +208,6 @@ class SettingsActionTest extends AbstractIndexHelperTest
             ]
         ];
 
-        $alias = 'financial';
         // create index with some contents
         $this->loadFinancialIndex($alias);
         $mappings = $this->helper->getMappings($alias);
