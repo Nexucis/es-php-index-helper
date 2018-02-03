@@ -1,26 +1,12 @@
-# PHP CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-php/ for more details
-#
 version: 2
 jobs:
   build:
     docker:
-      # specify the version you desire here
       - image: circleci/php:7.1.8-browsers
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mysql:9.4
       - image: docker.elastic.co/elasticsearch/elasticsearch:6.0.0
-
     working_directory: ~/repo
-
     steps:
       - checkout
-
-      # Download and cache dependencies
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "composer.json" }}
@@ -93,6 +79,21 @@ jobs:
 
       # run code analyzer
       - run: vendor/bin/phpstan analyse --level 7 -c phpstan.neon src tests
+  analyze_eol:
+    docker:
+      - image: nexucis/ci-checkfiles
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run: checkEOL *.php *.md *.xml *.sh composer.json phpstan.neon
+
+  analyze_encoding_utf8:
+    docker:
+      - image: nexucis/ci-checkfiles:
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run: checkEncoding utf-8 *.php *.md *.xml *.sh composer.json phpstan.neon
 
 workflows:
   version: 2
@@ -103,5 +104,11 @@ workflows:
           requires:
             - build
       - analyze_phpstan:
+          requires:
+            - build
+      - analyze_eol:
+          requires:
+            - build
+      - analyze_encoding_utf8:
           requires:
             - build
