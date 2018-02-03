@@ -260,5 +260,12 @@ To launch it, run the following command :
 
 If you are interesting by this tool, you can learn about it [here](https://github.com/phpstan/phpstan)
 
+### Encoding Analyzer and EOL analyzer
+The continuous integration analyze encoding and eol of php files and some others. 
+
+To perform this analyze, it uses the docker images nexucis/ci-checkfiles (available on [docker hub](https://hub.docker.com/r/nexucis/ci-checkfiles/).
+
+If you are interesting by this tool, you can learn about it on the [github repository](https://github.com/Nexucis/ci-checkFiles)
+
 ## License
 [MIT](./LICENSE)
