@@ -233,7 +233,7 @@ docker run -d -p 9200:9200 docker.elastic.co/elasticsearch/elasticsearch:6.0.0
 Once ElasticSearch is up, you can run the following command :
 
 ```bash
-./vendor/bin/phpunit
+composer test
 ```
 
 ### Run PHP_CodeSniffer
@@ -243,8 +243,7 @@ This tool will check if the code respects some coding rules. In this project, we
 To launch it, run the following command :
 
 ```bash
-./vendor/bin/phpcs --standard=ruleset.xml --extensions=php --encoding=utf-8 --tab-width=4 src
-./vendor/bin/phpcs --standard=ruleset.xml --extensions=php --encoding=utf-8 --tab-width=4 tests
+composer lint src && composer lint tests
 ```
 
 If you are interesting by this tool, you can learn about it [here](https://github.com/squizlabs/PHP_CodeSniffer)
@@ -255,7 +254,7 @@ This tool wiil find some errors in the code without running it.
 To launch it, run the following command :
 
 ```bash
-./vendor/bin/phpstan analyse --level 7 -c phpstan.neon src
+composer analyse src
 ```
 
 If you are interesting by this tool, you can learn about it [here](https://github.com/phpstan/phpstan)
