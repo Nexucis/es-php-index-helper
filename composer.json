@@ -27,5 +27,10 @@
     "psr-4": {
       "Nexucis\\Tests\\": "tests/Nexucis/Tests"
     }
+  },
+  "scripts": {
+    "test": "./vendor/bin/phpunit",
+    "lint": "./vendor/bin/phpcs --standard=ruleset.xml --extensions=php --encoding=utf-8 --tab-width=4",
+    "analyse": "./vendor/bin/phpstan analyse --level 7 -c phpstan.neon"
   }
 }
