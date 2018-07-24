@@ -441,10 +441,11 @@ class IndexHelper implements IndexHelperInterface
      * @param string $type
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
+     * @param array|null $source allows you to select what fields to be returned (all by default)
      * @return array
      * @throws IndexNotFoundException
      */
-    public function searchDocuments($alias, $query = null, $type = null, $from = 0, $size = 10)
+    public function searchDocuments($alias, $query = null, $type = null, $from = 0, $size = 10, $source = null)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException($alias);
@@ -457,7 +458,11 @@ class IndexHelper implements IndexHelperInterface
         );
 
         if (is_array($query)) {
-            $params['body'] = array('query' => $query);
+            $params['body']['query'] = $query;
+        }
+
+        if (is_array($source)) {
+            $params['body']['_source'] = $source;
         }
 
         if ($type !== null) {
