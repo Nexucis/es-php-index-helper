@@ -258,4 +258,32 @@ class DocumentActionTest extends AbstractIndexHelperTest
         $this->assertTrue($result['hits']['total'] > 10);
         $this->assertTrue(count($result['hits']['hits']) === 10);
     }
+
+    /**
+     * @dataProvider aliasDataProvider
+     */
+    public function testSearchDocumentsWithSource(string $alias)
+    {
+        $type = 'complains';
+        $expectedFields = array(
+            'name',
+            'id'
+        );
+        // create index with some contents
+        $this->loadFinancialIndex($alias, $type);
+
+        $query = array(
+            'match_all' => new stdClass()
+        );
+
+        $result = $this->helper->searchDocuments($alias, $query, $type, 0, 10, $expectedFields);
+
+        $this->assertTrue($result['hits']['total'] > 10);
+        $this->assertTrue(count($result['hits']['hits']) === 10);
+
+        foreach ($result['hits']['hits'] as $item) {
+            $actualFields = array_keys($item['_source']);
+            $this->assertEquals($expectedFields, $actualFields);
+        }
+    }
 }
