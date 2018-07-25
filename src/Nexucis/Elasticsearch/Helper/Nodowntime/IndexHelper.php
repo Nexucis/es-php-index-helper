@@ -462,7 +462,7 @@ class IndexHelper implements IndexHelperInterface
         }
 
         if (is_array($source)) {
-            $params['body']['_source'] = $source;
+            $params['_source'] = $source;
         }
 
         if ($type !== null) {
