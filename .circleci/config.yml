@@ -28,7 +28,7 @@ jobs:
       - run: php --ini
 
       # run tests!
-      - run: vendor/bin/phpunit
+      - run: composer test
 
       # run coverage
       - run: bash <(curl -s https://codecov.io/bash)
@@ -54,8 +54,8 @@ jobs:
           key: v1-dependencies-{{ checksum "composer.json" }}
 
       # run code analyzer
-      - run: vendor/bin/phpcs --standard=ruleset.xml --extensions=php --encoding=utf-8 --tab-width=4 src
-      - run: vendor/bin/phpcs --standard=ruleset.xml --extensions=php --encoding=utf-8 --tab-width=4 tests
+      - run: composer lint src
+      - run: composer lint tests
 
   analyze_phpstan:
     docker:
@@ -78,7 +78,7 @@ jobs:
           key: v1-dependencies-{{ checksum "composer.json" }}
 
       # run code analyzer
-      - run: vendor/bin/phpstan analyse --level 7 -c phpstan.neon src tests
+      - run: composer analyse src tests
   analyze_eol:
     docker:
       - image: nexucis/ci-checkfiles
