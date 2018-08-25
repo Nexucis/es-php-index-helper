@@ -100,6 +100,20 @@ class SearchParameterTest extends TestCase
         $this->assertTrue($this->arraysAreSimilar($expectedParams, $params));
     }
 
+    public function testBuildWithIncludeSourceAsBool()
+    {
+        $search = (new SearchParameter())
+            ->includeSource(false);
+
+        $expectedParams = array(
+            'from' => 0,
+            'size' => 10,
+            '_source' => false
+        );
+        $params = $search->build();
+        $this->assertTrue($this->arraysAreSimilar($expectedParams, $params));
+    }
+
     /**
      * Snippet found on stack overflow : https://stackoverflow.com/questions/3293531/how-to-permanently-remove-few-commits-from-remote-branch
      * Determine if two associative arrays are similar
