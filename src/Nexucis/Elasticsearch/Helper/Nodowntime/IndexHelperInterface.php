@@ -7,7 +7,7 @@ use Elasticsearch\Common\Exceptions\InvalidArgumentException;
 use Elasticsearch\Common\Exceptions\RuntimeException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexAlreadyExistException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
-use Nexucis\Elasticsearch\Helper\Nodowntime\Parameter\SearchParameter;
+use Nexucis\Elasticsearch\Helper\Nodowntime\DumpNamespace\SearchParameter;
 
 /**
  * Class IndexHelperInterface
