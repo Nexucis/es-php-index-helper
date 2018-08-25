@@ -2,7 +2,7 @@
 
 namespace Nexucis\Tests\Elasticsearch\Helper\Nodowntime;
 
-use Nexucis\Elasticsearch\Helper\Nodowntime\DumpNamespace\SearchParameter;
+use Nexucis\Elasticsearch\Helper\Nodowntime\Parameter\SearchParameter;
 use stdClass;
 
 class DocumentActionTest extends AbstractIndexHelperTest

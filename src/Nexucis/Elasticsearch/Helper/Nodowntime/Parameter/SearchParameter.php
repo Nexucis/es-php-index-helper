@@ -1,6 +1,6 @@
 <?php
 
-namespace Nexucis\Elasticsearch\Helper\Nodowntime\DumpNamespace;
+namespace Nexucis\Elasticsearch\Helper\Nodowntime\Parameter;
 
 /**
  * Class SearchParameter
