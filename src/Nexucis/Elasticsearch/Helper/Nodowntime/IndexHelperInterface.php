@@ -7,6 +7,7 @@ use Elasticsearch\Common\Exceptions\InvalidArgumentException;
 use Elasticsearch\Common\Exceptions\RuntimeException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexAlreadyExistException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
+use Nexucis\Elasticsearch\Helper\Nodowntime\Parameter\SearchParameter;
 
 /**
  * Class IndexHelperInterface
@@ -148,6 +149,7 @@ interface IndexHelperInterface
      * @param string $alias [REQUIRED]
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
+     * @throws IndexNotFoundException
      * @return array
      */
     public function getAllDocuments($alias, $from = 0, $size = 10);
@@ -158,10 +160,20 @@ interface IndexHelperInterface
      * @param string $type
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
-     * @param array|null $source allows you to select what fields to be returned (all by default)
+     * @throws IndexNotFoundException
      * @return array
      */
-    public function searchDocuments($alias, $query = null, $type = null, $from = 0, $size = 10, $source = null);
+    public function searchDocuments($alias, $query = null, $type = null, $from = 0, $size = 10);
+
+    /**
+     * @param $alias
+     * @param string $type
+     * @param array|null $body
+     * @param SearchParameter $searchParameter
+     * @return array
+     * @throws IndexNotFoundException
+     */
+    public function advancedSearchDocument($alias, $type = null, $body = null, $searchParameter = null);
 
     /**
      * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index

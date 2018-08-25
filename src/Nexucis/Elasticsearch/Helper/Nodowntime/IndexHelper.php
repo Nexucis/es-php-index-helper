@@ -7,6 +7,7 @@ use Elasticsearch\Common\Exceptions\InvalidArgumentException;
 use Elasticsearch\Common\Exceptions\RuntimeException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexAlreadyExistException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
+use Nexucis\Elasticsearch\Helper\Nodowntime\Parameter\SearchParameter;
 use stdClass;
 
 /**
@@ -441,32 +442,57 @@ class IndexHelper implements IndexHelperInterface
      * @param string $type
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
-     * @param array|null $source allows you to select what fields to be returned (all by default)
      * @return array
      * @throws IndexNotFoundException
      */
-    public function searchDocuments($alias, $query = null, $type = null, $from = 0, $size = 10, $source = null)
+    public function searchDocuments($alias, $query = null, $type = null, $from = 0, $size = 10)
+    {
+        $body = null;
+
+        if (is_array($query)) {
+            $body = array(
+                'query' => $query
+            );
+        }
+
+        return $this->advancedSearchDocument(
+            $alias,
+            $type,
+            $body,
+            (new SearchParameter())
+                ->from($from)
+                ->size($size)
+        );
+    }
+
+    /**
+     * @param $alias [REQUIRED]
+     * @param string $type
+     * @param array|null $body
+     * @param SearchParameter $searchParameter
+     * @return array
+     * @throws IndexNotFoundException
+     */
+    public function advancedSearchDocument($alias, $type = null, $body = null, $searchParameter = null)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException($alias);
         }
 
-        $params = array(
-            'index' => $alias,
-            'size' => $size,
-            'from' => $from,
-        );
+        $params = array();
 
-        if (is_array($query)) {
-            $params['body']['query'] = $query;
+        if (is_array($searchParameter)) {
+            $params = $searchParameter->build();
         }
 
-        if (is_array($source)) {
-            $params['_source'] = $source;
-        }
+        $params['index'] = $alias;
 
         if ($type !== null) {
             $params['type'] = $type;
+        }
+
+        if (is_array($body)) {
+            $params['body'] = $body;
         }
 
         return $this->client->search($params);
