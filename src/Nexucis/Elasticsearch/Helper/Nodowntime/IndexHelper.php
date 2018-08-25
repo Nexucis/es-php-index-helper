@@ -481,7 +481,7 @@ class IndexHelper implements IndexHelperInterface
 
         $params = array();
 
-        if (is_array($searchParameter)) {
+        if ($searchParameter !== null) {
             $params = $searchParameter->build();
         }
 
