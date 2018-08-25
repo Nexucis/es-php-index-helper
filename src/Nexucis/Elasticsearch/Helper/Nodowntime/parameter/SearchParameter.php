@@ -13,10 +13,10 @@ namespace Nexucis\Elasticsearch\Helper\Nodowntime\Parameter;
 class SearchParameter
 {
 
-    const OPERATOR_OR = 'OR';
-    const OPERATOR_AND = 'AND';
-    const SEARCH_TYPE_DFS_QUERY = 'dfs_query_then_fetch';
-    const SEARCH_TYPE_QUERY = 'query_then_fetch';
+    public static $OPERATOR_OR = 'OR';
+    public static $OPERATOR_AND = 'AND';
+    public static $SEARCH_TYPE_DFS_QUERY = 'dfs_query_then_fetch';
+    public static $SEARCH_TYPE_QUERY = 'query_then_fetch';
 
     /**
      * @var string
@@ -502,7 +502,7 @@ class SearchParameter
      * @param string $suggestMode
      * @return SearchParameter
      */
-    public function setSuggestMode(string $suggestMode)
+    public function suggestMode(string $suggestMode)
     {
         $this->suggestMode = $suggestMode;
         return $this;
@@ -512,7 +512,7 @@ class SearchParameter
      * @param int $suggestSize
      * @return SearchParameter
      */
-    public function setSuggestSize(int $suggestSize)
+    public function suggestSize(int $suggestSize)
     {
         $this->suggestSize = $suggestSize;
         return $this;
@@ -522,7 +522,7 @@ class SearchParameter
      * @param string $suggestText
      * @return SearchParameter
      */
-    public function setSuggestText(string $suggestText)
+    public function suggestText(string $suggestText)
     {
         $this->suggestText = $suggestText;
         return $this;
@@ -570,7 +570,7 @@ class SearchParameter
 
     protected function buildDefaultOperator(&$params)
     {
-        if (($this->defaultOperator === self::OPERATOR_OR) || ($this->defaultOperator === self::OPERATOR_AND)) {
+        if (($this->defaultOperator === SearchParameter::$OPERATOR_OR) || ($this->defaultOperator === SearchParameter::$OPERATOR_AND)) {
             $params['default_operator'] = $this->defaultOperator;
         }
     }
@@ -647,7 +647,7 @@ class SearchParameter
 
     protected function buildSearchType(&$params)
     {
-        if (($this->searchType === self::SEARCH_TYPE_DFS_QUERY) || ($this->searchType === self::SEARCH_TYPE_QUERY)) {
+        if (($this->searchType === SearchParameter::$SEARCH_TYPE_DFS_QUERY) || ($this->searchType === SearchParameter::$SEARCH_TYPE_QUERY)) {
             $params['search_type'] = $this->searchType;
         }
     }
