@@ -47,7 +47,7 @@ class SearchParameterTest extends TestCase
             ->excludeFieldsFromSource(array(
                 'exclude1'
             ))
-            ->includeSource(array(
+            ->includeFieldsFromSource(array(
                 'include1', 'include2', 'include3'
             ))
             ->stats(array(
@@ -97,10 +97,11 @@ class SearchParameterTest extends TestCase
         );
 
         $params = $search->build();
-        $this->assertTrue($this->arrays_are_similar($expectedParams, $params));
+        $this->assertTrue($this->arraysAreSimilar($expectedParams, $params));
     }
 
     /**
+     * Snippet found on stack overflow : https://stackoverflow.com/questions/3293531/how-to-permanently-remove-few-commits-from-remote-branch
      * Determine if two associative arrays are similar
      *
      * Both arrays must have the same indexes with identical values
@@ -110,7 +111,7 @@ class SearchParameterTest extends TestCase
      * @param array $b
      * @return bool
      */
-    function arrays_are_similar($a, $b)
+    private function arraysAreSimilar($a, $b)
     {
         // if the indexes don't match, return immediately
         if (count(array_diff_assoc($a, $b))) {

@@ -281,8 +281,8 @@ class DocumentActionTest extends AbstractIndexHelperTest
 
         $result = $this->helper->advancedSearchDocument(
             $alias,
-            $body,
             $type,
+            $body,
             (new SearchParameter())
                 ->from(0)
                 ->size(10)

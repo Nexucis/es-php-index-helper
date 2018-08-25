@@ -212,7 +212,7 @@ class SearchParameter
         $this->buildDf($params);
         $this->buildExplain($params);
         $this->buildFields($params);
-        $this->buildFrom($param);
+        $this->buildFrom($params);
         $this->buildIgnoreIndices($params);
         $this->buildIndicesBoost($params);
         $this->buildLenient($params);
