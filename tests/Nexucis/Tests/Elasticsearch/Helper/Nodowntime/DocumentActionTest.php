@@ -2,6 +2,7 @@
 
 namespace Nexucis\Tests\Elasticsearch\Helper\Nodowntime;
 
+use Nexucis\Elasticsearch\Helper\Nodowntime\Parameter\SearchParameter;
 use stdClass;
 
 class DocumentActionTest extends AbstractIndexHelperTest
@@ -272,11 +273,21 @@ class DocumentActionTest extends AbstractIndexHelperTest
         // create index with some contents
         $this->loadFinancialIndex($alias, $type);
 
-        $query = array(
-            'match_all' => new stdClass()
+        $body = array(
+            'query' => array(
+                'match_all' => new stdClass()
+            )
         );
 
-        $result = $this->helper->searchDocuments($alias, $query, $type, 0, 10, $expectedFields);
+        $result = $this->helper->advancedSearchDocument(
+            $alias,
+            $type,
+            $body,
+            (new SearchParameter())
+                ->from(0)
+                ->size(10)
+                ->includeSource($expectedFields)
+        );
 
         $this->assertTrue($result['hits']['total'] > 10);
         $this->assertTrue(count($result['hits']['hits']) === 10);
