@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [v6.1.1](https://github.com/Nexucis/es-php-index-helper/tree/6.1.1)
+
+### Feature
+* **[Dev]**: Support elastic lib with version between 6.0.1 and 7.0.0
+
+## [v6.1.0](https://github.com/Nexucis/es-php-index-helper/tree/6.1.0)
+
+### Feature
+* **[Public]** : add a new method `advancedSearchDocument` that takes an object `SearchParameter` that allows the possibility to customize the searching in an advanced mode
+* **[Public]** : Update elasticsearch-php dependency version from 6.0.0 to 6.0.1
+* **[Dev]**: composer wraps the way to start the test and the checktyle of the code
+
 ## [v6.0.0](https://github.com/Nexucis/es-php-index-helper/tree/6.0.0)
 
 ### Feature
