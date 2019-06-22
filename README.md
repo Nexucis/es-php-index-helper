@@ -32,7 +32,8 @@ Where :
 
 | Elasticsearch Version | Support Branch  |
 | --------------------- | --------------- |
-| >= 6.0                | master          |
+| >= 7.0                | master          |
+| >= 6.0, < 7.0         | support/6.0     |
 | >= 5.0, < 6.0         | support/5.0     |
 | >= 2.0, < 5.0         | support/2.0     |
 
