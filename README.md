@@ -221,10 +221,10 @@ Any contribution or suggestion would be really appreciated. Feel free to use the
 All following tools are running by [circleci](https://circleci.com/gh/Nexucis/es-php-index-helper), so in order to help you to improve your code and make easier your life, here it is how you can launch the tools with the correct parameter.
  
 ### Run unit test
-If you want to launch the unit test, you need to have a local elasticsearch instance which must be accessible through the url http://localhost:9200. A simply way to launch it, is to start the [corresponding container](https://hub.docker.com/_/elasticsearch/) : 
+If you want to launch the unit test, you need to have a local elasticsearch instance which must be accessible through the url http://localhost:9200. A simply way to launch it, is to start the [corresponding container](https://www.docker.elastic.co/) : 
 
 ```bash
-docker run -d -p 9200:9200 docker.elastic.co/elasticsearch/elasticsearch:6.0.0
+docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.1.1
 ```
 
 Once ElasticSearch is up, you can run the following command :
