@@ -137,16 +137,14 @@ It takes a lot of steps and verifications to check the update is done successful
 <?php
 $alias = "myindex";
 $mappings = [
-    'my_type' => [
-        'properties' => [
-            'first_name' => [
-                'type' => 'text',
-                'analyzer' => 'standard'
-            ],
-            'age' => [
-                'type' => 'integer'
-                ]
-            ]
+    'properties' => [
+        'first_name' => [
+            'type' => 'text',
+            'analyzer' => 'standard'
+        ],
+        'age' => [
+            'type' => 'integer'
+        ]
     ]
 ];
 $helper->updateMappings($alias, $mappings);
