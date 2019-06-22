@@ -140,7 +140,7 @@ interface IndexHelperInterface
      * @param @deprecated $type string [REQUIRED] the type of the document
      * @param $id string|int [REQUIRED] the document ID
      * @param $refresh bool
-     * @return array
+     * @return callable|array
      * @throws IndexNotFoundException
      */
     public function getDocument($alias, $type, $id, $refresh = false);
@@ -150,7 +150,7 @@ interface IndexHelperInterface
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
      * @throws IndexNotFoundException
-     * @return array
+     * @return callable|array
      */
     public function getAllDocuments($alias, $from = 0, $size = 10);
 
@@ -161,7 +161,7 @@ interface IndexHelperInterface
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
      * @throws IndexNotFoundException
-     * @return array
+     * @return callable|array
      */
     public function searchDocuments($alias, $query = null, $type = null, $from = 0, $size = 10);
 
@@ -170,7 +170,7 @@ interface IndexHelperInterface
      * @param @deprecated string $type
      * @param array|null $body
      * @param SearchParameter $searchParameter
-     * @return array
+     * @return callable|array
      * @throws IndexNotFoundException
      */
     public function advancedSearchDocument($alias, $type = null, $body = null, $searchParameter = null);

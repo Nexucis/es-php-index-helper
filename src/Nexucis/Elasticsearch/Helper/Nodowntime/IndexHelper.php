@@ -405,7 +405,7 @@ class IndexHelper implements IndexHelperInterface
      * @param @deprecated $type string [REQUIRED] the type of the document
      * @param $id string|int [REQUIRED] the document ID
      * @param $refresh bool
-     * @return array
+     * @return callable|array
      * @throws IndexNotFoundException
      */
     public function getDocument($alias, $type, $id, $refresh = false)
@@ -428,7 +428,7 @@ class IndexHelper implements IndexHelperInterface
      * @param string $alias [REQUIRED]
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
-     * @return array
+     * @return callable|array
      * @throws IndexNotFoundException
      */
     public function getAllDocuments($alias, $from = 0, $size = 10)
@@ -442,7 +442,7 @@ class IndexHelper implements IndexHelperInterface
      * @param @deprecated string $type. This parameter will be removed in the next major release
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
-     * @return array
+     * @return callable|array
      * @throws IndexNotFoundException
      */
     public function searchDocuments($alias, $query = null, $type = null, $from = 0, $size = 10)
@@ -470,7 +470,7 @@ class IndexHelper implements IndexHelperInterface
      * @param @deprecated string $type. This parameter will be removed in the next major release
      * @param array|null $body
      * @param SearchParameter $searchParameter
-     * @return array
+     * @return callable|array
      * @throws IndexNotFoundException
      */
     public function advancedSearchDocument($alias, $type = null, $body = null, $searchParameter = null)
@@ -827,7 +827,7 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param string $index
-     * @return array
+     * @return callable|array
      */
     protected function getSettingsByIndex($index)
     {
@@ -839,7 +839,7 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param string $index
-     * @return array
+     * @return callable|array
      */
     protected function getMappingsByIndex($index)
     {
