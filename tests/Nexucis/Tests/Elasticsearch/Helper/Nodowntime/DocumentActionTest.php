@@ -2,6 +2,7 @@
 
 namespace Nexucis\Tests\Elasticsearch\Helper\Nodowntime;
 
+use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Parameter\SearchParameter;
 use stdClass;
 
@@ -169,13 +170,13 @@ class DocumentActionTest extends AbstractIndexHelperTest
             'index' => $alias
         );
 
-        $this->expectException(\Elasticsearch\Common\Exceptions\Missing404Exception::class);
+        $this->expectException(Missing404Exception::class);
         $this->client->get($param);
     }
 
     /**
      * @dataProvider aliasDataProvider
-     * @expectedException \Elasticsearch\Common\Exceptions\Missing404Exception
+     * @expectedException Missing404Exception
      */
     public function testDocumentNotExist(string $alias)
     {

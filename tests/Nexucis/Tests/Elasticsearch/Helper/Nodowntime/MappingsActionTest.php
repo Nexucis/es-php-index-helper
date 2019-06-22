@@ -49,15 +49,13 @@ class MappingsActionTest extends AbstractIndexHelperTest
     public function testUpdateMappingsBasicData(string $alias)
     {
         $mapping = [
-            'my_type' => [
-                'properties' => [
-                    'first_name' => [
-                        'type' => 'text',
-                        'analyzer' => 'standard'
-                    ],
-                    'age' => [
-                        'type' => 'integer'
-                    ]
+            'properties' => [
+                'first_name' => [
+                    'type' => 'text',
+                    'analyzer' => 'standard'
+                ],
+                'age' => [
+                    'type' => 'integer'
                 ]
             ]
         ];
@@ -75,17 +73,14 @@ class MappingsActionTest extends AbstractIndexHelperTest
      */
     public function testUpdateMappingsWithIndexNotEmpty(string $alias)
     {
-        $type = 'complains';
         // create index with some contents
-        $this->loadFinancialIndex($alias, $type);
+        $this->loadFinancialIndex($alias);
 
         $mapping = [
-            $type => [
-                'properties' => [
-                    'viewType' => [
-                        'type' => 'text',
-                        'index' => false
-                    ]
+            'properties' => [
+                'viewType' => [
+                    'type' => 'text',
+                    'index' => false
                 ]
             ]
         ];
@@ -93,7 +88,7 @@ class MappingsActionTest extends AbstractIndexHelperTest
         $this->helper->updateMappings($alias, $mapping, true);
         $this->assertTrue($this->helper->existsIndex($alias));
         $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
-        $this->assertEquals($mapping[$type]['properties']['viewType']['index'], $this->helper->getMappings($alias)[$type]['properties']['viewType']['index']);
+        $this->assertEquals($mapping['properties']['viewType']['index'], $this->helper->getMappings($alias)['properties']['viewType']['index']);
 
         $this->assertTrue($this->countDocuments($alias) > 0);
     }
@@ -135,15 +130,13 @@ class MappingsActionTest extends AbstractIndexHelperTest
         ];
 
         $mapping = [
-            'my_type' => [
-                'properties' => [
-                    'first_name' => [
-                        'type' => 'text',
-                        'analyzer' => 'standard'
-                    ],
-                    'age' => [
-                        'type' => 'integer'
-                    ]
+            'properties' => [
+                'first_name' => [
+                    'type' => 'text',
+                    'analyzer' => 'standard'
+                ],
+                'age' => [
+                    'type' => 'integer'
                 ]
             ]
         ];
