@@ -135,7 +135,7 @@ interface IndexHelperInterface
 
     /**
      * @param $alias string [REQUIRED] the name of the index or the name of the alias
-     * @param @deprecated $type string [REQUIRED] the type of the document
+     * @param $type string [REQUIRED] the type of the document. This parameter will be removed in the next major release
      * @param $id string|int [REQUIRED] the document ID
      * @param $refresh bool
      * @return callable|array
@@ -155,7 +155,7 @@ interface IndexHelperInterface
     /**
      * @param string $alias [REQUIRED]
      * @param array|null $query
-     * @param string $type
+     * @param string $type. This parameter will be removed in the next major release
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
      * @return callable|array
@@ -165,7 +165,7 @@ interface IndexHelperInterface
 
     /**
      * @param $alias
-     * @param string $type
+     * @param string $type. This parameter will be removed in the next major release
      * @param array|null $body
      * @param SearchParameter $searchParameter
      * @return callable|array
@@ -176,7 +176,7 @@ interface IndexHelperInterface
     /**
      * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index
      * @param $id [REQUIRED]
-     * @param string $type [REQUIRED]
+     * @param string $type [REQUIRED]. This parameter will be removed in the next major release
      * @param array $body [REQUIRED] : actual document to update
      * @param bool $refresh wait until the result are visible to search
      * @return boolean : true if the document has been updated. Otherwise, the document has been created.
@@ -187,7 +187,7 @@ interface IndexHelperInterface
     /**
      * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index
      * @param $id [REQUIRED]
-     * @param string $type [REQUIRED]
+     * @param string $type [REQUIRED]. This parameter will be removed in the next major release
      * @param array $body [REQUIRED] : actual document to create
      * @param bool $refresh wait until the result are visible to search
      * @return boolean : true if the document has been created.
@@ -206,7 +206,7 @@ interface IndexHelperInterface
     /**
      * @param $alias [REQUIRED]
      * @param $id [REQUIRED]
-     * @param string $type [REQUIRED]
+     * @param string $type [REQUIRED]. This parameter will be removed in the next major release
      * @param boolean $refresh , Refresh the index after performing the operation
      * @return void
      * @throws IndexNotFoundException
