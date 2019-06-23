@@ -145,7 +145,7 @@ $mappings = [
         ]
     ]
 ];
-$helper->updateMappings($alias, $mappings);
+$helper->updateMappings($alias, $mappings, false, true, true, false);
 ```
 
 You just need to provide the alias name and the new mapping and that's it.
@@ -154,7 +154,34 @@ You just need to provide the alias name and the new mapping and that's it.
 
 * With ElasticSearch `2.4`, to call this method in an asynchronous process..
 * With ElasticSearch `5` or greater, to set the parameter `$waitForCompletion` to false. It will return taskID, which can then be used with the [_task api](https://www.elastic.co/guide/en/elasticsearch/reference/current/tasks.html)
-    
+
+:warning: Elasticsearch has started to remove the document type in the mapping. Following the [recommendation](https://www.elastic.co/blog/moving-from-types-to-typeless-apis-in-elasticsearch-7-0), 
+the method `updateMappings` has a new parameter `$includeTypeName` which allows to support the old mapping format
+
+By default, the method `updateMappings` will consider the old mapping format which is for example :
+
+```php
+<?php
+$alias = "myindex";
+$mappings = [
+    'my_type' => [
+        'properties' => [
+            'first_name' => [
+                'type' => 'text',
+                'analyzer' => 'standard'
+            ],
+            'age' => [
+                'type' => 'integer'
+            ]
+        ]
+    ]
+];
+$helper->updateMappings($alias, $mappings);
+```
+
+If you want to move to the new format, you have to remove the type in the mapping and set to false the parameter `$includeTypeName`
+
+Please be aware that the parameter `$includeTypeName` will be removed in the next major version
 ### Settings Operation
 Indices settings can be updated the same way as mapping using the `updateSettings` method:
 

@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## [v7.0.0](https://github.com/Nexucis/es-php-index-helper/tree/7.0.0)
+* Upgrade elasticsearch-php dependency version from 6.0.X to 7.0.1
+* Requirement of PHP 7.1 instead of 7.0 that is not supported since 1st Jan 2019
+* **[Public]** add a new parameter `$includeTypeName` in the method `updateMappings`, following the [elasticsearch recommendation](https://www.elastic.co/blog/moving-from-types-to-typeless-apis-in-elasticsearch-7-0)
+
 ## [v6.1.1](https://github.com/Nexucis/es-php-index-helper/tree/6.1.1)
 
 ### Feature
@@ -16,7 +21,7 @@ Changelog
 ## [v6.0.0](https://github.com/Nexucis/es-php-index-helper/tree/6.0.0)
 
 ### Feature
-* Upgrade elasticsearch-php dependencie version from 5.3.1 to 6.0.0
+* Upgrade elasticsearch-php dependency version from 5.3.1 to 6.0.0
 * **[Public]** Add new method `deleteIndexByAlias` which cannot be taken an index as parameter
 
 ### Breaking Changes
