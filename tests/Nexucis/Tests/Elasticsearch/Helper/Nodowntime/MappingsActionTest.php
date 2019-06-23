@@ -6,13 +6,13 @@ class MappingsActionTest extends AbstractIndexHelperTest
 {
 
     /**
-     * @dataProvider aliasDataProvider
+     * @dataProvider aliasDataProviderWithTypeName
      */
-    public function testUpdateMappingsEmpty(string $alias)
+    public function testUpdateMappingsEmpty(string $alias, bool $includeTypeName)
     {
         $this->helper->createIndexByAlias($alias);
 
-        $this->helper->updateMappings($alias, array());
+        $this->helper->updateMappings($alias, array(), false, true, true, $includeTypeName);
 
         $this->assertTrue($this->helper->existsIndex($alias));
         $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
@@ -20,13 +20,13 @@ class MappingsActionTest extends AbstractIndexHelperTest
     }
 
     /**
-     * @dataProvider aliasDataProvider
+     * @dataProvider aliasDataProviderWithTypeName
      */
-    public function testUpdateMappingsNull(string $alias)
+    public function testUpdateMappingsNull(string $alias, bool $includeTypeName)
     {
         $this->helper->createIndexByAlias($alias);
 
-        $this->helper->updateMappings($alias, null);
+        $this->helper->updateMappings($alias, null, false, true, true, $includeTypeName);
 
         $this->assertTrue($this->helper->existsIndex($alias));
         $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
@@ -44,12 +44,26 @@ class MappingsActionTest extends AbstractIndexHelperTest
     }
 
     /**
-     * @dataProvider aliasDataProvider
+     * @dataProvider aliasDataProviderWithTypeName
      */
-    public function testUpdateMappingsBasicData(string $alias)
+    public function testUpdateMappingsBasicData(string $alias, bool $includeTypeName)
     {
-        $mapping = [
-            'my_type' => [
+        if ($includeTypeName) {
+            $mapping = [
+                'my_type' => [
+                    'properties' => [
+                        'first_name' => [
+                            'type' => 'text',
+                            'analyzer' => 'standard'
+                        ],
+                        'age' => [
+                            'type' => 'integer'
+                        ]
+                    ]
+                ]
+            ];
+        } else {
+            $mapping = [
                 'properties' => [
                     'first_name' => [
                         'type' => 'text',
@@ -59,15 +73,27 @@ class MappingsActionTest extends AbstractIndexHelperTest
                         'type' => 'integer'
                     ]
                 ]
+            ];
+        }
+
+        $mappingExpected = [
+            'properties' => [
+                'first_name' => [
+                    'type' => 'text',
+                    'analyzer' => 'standard'
+                ],
+                'age' => [
+                    'type' => 'integer'
+                ]
             ]
         ];
 
         $this->helper->createIndexByAlias($alias);
 
-        $this->helper->updateMappings($alias, $mapping);
+        $this->helper->updateMappings($alias, $mapping, true, true, true, $includeTypeName);
         $this->assertTrue($this->helper->existsIndex($alias));
         $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
-        $this->assertEquals($mapping, $this->helper->getMappings($alias));
+        $this->assertEquals($mappingExpected, $this->helper->getMappings($alias));
     }
 
     /**
@@ -75,33 +101,30 @@ class MappingsActionTest extends AbstractIndexHelperTest
      */
     public function testUpdateMappingsWithIndexNotEmpty(string $alias)
     {
-        $type = 'complains';
         // create index with some contents
-        $this->loadFinancialIndex($alias, $type);
+        $this->loadFinancialIndex($alias);
 
         $mapping = [
-            $type => [
-                'properties' => [
-                    'viewType' => [
-                        'type' => 'text',
-                        'index' => false
-                    ]
+            'properties' => [
+                'viewType' => [
+                    'type' => 'text',
+                    'index' => false
                 ]
             ]
         ];
 
-        $this->helper->updateMappings($alias, $mapping, true);
+        $this->helper->updateMappings($alias, $mapping, true, true, true, false);
         $this->assertTrue($this->helper->existsIndex($alias));
         $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
-        $this->assertEquals($mapping[$type]['properties']['viewType']['index'], $this->helper->getMappings($alias)[$type]['properties']['viewType']['index']);
+        $this->assertEquals($mapping['properties']['viewType']['index'], $this->helper->getMappings($alias)['properties']['viewType']['index']);
 
         $this->assertTrue($this->countDocuments($alias) > 0);
     }
 
     /**
-     * @dataProvider aliasDataProvider
+     * @dataProvider aliasDataProviderWithTypeName
      */
-    public function testUpdateMappingWithSettingsNotEmpty(string $alias)
+    public function testUpdateMappingWithSettingsNotEmpty(string $alias, bool $includeTypeName)
     {
         $settings = [
             'number_of_shards' => 1,
@@ -134,8 +157,22 @@ class MappingsActionTest extends AbstractIndexHelperTest
             ]
         ];
 
-        $mapping = [
-            'my_type' => [
+        if ($includeTypeName) {
+            $mapping = [
+                'my_type' => [
+                    'properties' => [
+                        'first_name' => [
+                            'type' => 'text',
+                            'analyzer' => 'standard'
+                        ],
+                        'age' => [
+                            'type' => 'integer'
+                        ]
+                    ]
+                ]
+            ];
+        } else {
+            $mapping = [
                 'properties' => [
                     'first_name' => [
                         'type' => 'text',
@@ -145,16 +182,29 @@ class MappingsActionTest extends AbstractIndexHelperTest
                         'type' => 'integer'
                     ]
                 ]
+            ];
+        }
+
+        $mappingExpected = [
+            'properties' => [
+                'first_name' => [
+                    'type' => 'text',
+                    'analyzer' => 'standard'
+                ],
+                'age' => [
+                    'type' => 'integer'
+                ]
             ]
         ];
 
-        $this->helper->createIndexByAlias($alias);
-        $this->helper->updateSettings($alias, $settings);
 
-        $this->helper->updateMappings($alias, $mapping);
+        $this->helper->createIndexByAlias($alias);
+        $this->helper->updateSettings($alias, $settings, $includeTypeName);
+
+        $this->helper->updateMappings($alias, $mapping, true, true, true, $includeTypeName);
         $this->assertTrue($this->helper->existsIndex($alias));
         $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
-        $this->assertEquals($mapping, $this->helper->getMappings($alias));
+        $this->assertEquals($mappingExpected, $this->helper->getMappings($alias));
 
         $resultSettings = $this->helper->getSettings($alias);
         $this->assertTrue(array_key_exists('analysis', $resultSettings));
@@ -164,14 +214,14 @@ class MappingsActionTest extends AbstractIndexHelperTest
     }
 
     /**
-     * @dataProvider aliasDataProvider
+     * @dataProvider aliasDataProviderWithTypeName
      */
-    public function testUpdateMappingsIndexAlreadyExists(string $alias)
+    public function testUpdateMappingsIndexAlreadyExists(string $alias, bool $includeTypeName)
     {
         $this->helper->createIndexByAlias($alias);
         $this->createIndex2($alias);
 
-        $this->helper->updateMappings($alias, null);
+        $this->helper->updateMappings($alias, null, true, true, true, $includeTypeName);
 
         $this->assertTrue($this->helper->existsIndex($alias));
         $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_2));
@@ -179,13 +229,13 @@ class MappingsActionTest extends AbstractIndexHelperTest
     }
 
     /**
-     * @dataProvider aliasDataProvider
+     * @dataProvider aliasDataProviderWithTypeName
      */
-    public function testUpdateMappingsWithoutReindexation(string $alias)
+    public function testUpdateMappingsWithoutReindexation(string $alias, bool $includeTypeName)
     {
         $this->helper->createIndexByAlias($alias);
 
-        $this->assertEquals($this->helper::RETURN_ACKNOWLEDGE, $this->helper->updateMappings($alias, null, false, false));
+        $this->assertEquals($this->helper::RETURN_ACKNOWLEDGE, $this->helper->updateMappings($alias, null, false, false, true, $includeTypeName));
 
         $this->assertTrue($this->helper->existsIndex($alias));
         $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));

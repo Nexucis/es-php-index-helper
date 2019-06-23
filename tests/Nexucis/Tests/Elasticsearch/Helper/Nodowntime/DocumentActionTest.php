@@ -202,7 +202,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
         $this->helper->createIndexByAlias($alias);
         $result = $this->helper->getAllDocuments($alias);
 
-        $this->assertTrue($result['hits']['total'] === 0);
+        $this->assertTrue($result['hits']['total']['value'] === 0);
         $this->assertTrue(count($result['hits']['hits']) === 0);
     }
 
@@ -216,7 +216,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
 
         $result = $this->helper->getAllDocuments($alias);
 
-        $this->assertTrue($result['hits']['total'] > 10);
+        $this->assertTrue($result['hits']['total']['value'] > 10);
         $this->assertTrue(count($result['hits']['hits']) === 10);
     }
 
@@ -237,7 +237,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
         $this->helper->createIndexByAlias($alias);
         $result = $this->helper->searchDocuments($alias);
 
-        $this->assertTrue($result['hits']['total'] === 0);
+        $this->assertTrue($result['hits']['total']['value'] === 0);
         $this->assertTrue(count($result['hits']['hits']) === 0);
     }
 
@@ -246,17 +246,16 @@ class DocumentActionTest extends AbstractIndexHelperTest
      */
     public function testSearchDocuments(string $alias)
     {
-        $type = 'complains';
         // create index with some contents
-        $this->loadFinancialIndex($alias, $type);
+        $this->loadFinancialIndex($alias);
 
         $query = array(
             'match_all' => new stdClass()
         );
 
-        $result = $this->helper->searchDocuments($alias, $query, $type);
+        $result = $this->helper->searchDocuments($alias, $query);
 
-        $this->assertTrue($result['hits']['total'] > 10);
+        $this->assertTrue($result['hits']['total']['value'] > 10);
         $this->assertTrue(count($result['hits']['hits']) === 10);
     }
 
@@ -265,13 +264,12 @@ class DocumentActionTest extends AbstractIndexHelperTest
      */
     public function testSearchDocumentsWithSource(string $alias)
     {
-        $type = 'complains';
         $expectedFields = array(
             'name',
             'id'
         );
         // create index with some contents
-        $this->loadFinancialIndex($alias, $type);
+        $this->loadFinancialIndex($alias);
 
         $body = array(
             'query' => array(
@@ -281,7 +279,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
 
         $result = $this->helper->advancedSearchDocument(
             $alias,
-            $type,
+            null,
             $body,
             (new SearchParameter())
                 ->from(0)
@@ -289,7 +287,7 @@ class DocumentActionTest extends AbstractIndexHelperTest
                 ->includeSource($expectedFields)
         );
 
-        $this->assertTrue($result['hits']['total'] > 10);
+        $this->assertTrue($result['hits']['total']['value'] > 10);
         $this->assertTrue(count($result['hits']['hits']) === 10);
 
         foreach ($result['hits']['hits'] as $item) {

@@ -1,8 +1,6 @@
 # Elasticsearch Index Helper for php
 
-[![CircleCI](https://circleci.com/gh/Nexucis/es-php-index-helper.svg?style=shield)](https://circleci.com/gh/Nexucis/es-php-index-helper) [![codecov](https://codecov.io/gh/Nexucis/es-php-index-helper/branch/master/graph/badge.svg)](https://codecov.io/gh/Nexucis/es-php-index-helper) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-
-[![Latest Stable Version](https://poser.pugx.org/nexucis/es-index-helper/v/stable)](https://packagist.org/packages/nexucis/es-index-helper) [![Latest Unstable Version](https://poser.pugx.org/nexucis/es-index-helper/v/unstable)](https://packagist.org/packages/nexucis/es-index-helper)[![Total Downloads](https://poser.pugx.org/nexucis/es-index-helper/downloads)](https://packagist.org/packages/nexucis/es-index-helper)
+[![CircleCI](https://circleci.com/gh/Nexucis/es-php-index-helper.svg?style=shield)](https://circleci.com/gh/Nexucis/es-php-index-helper) [![codecov](https://codecov.io/gh/Nexucis/es-php-index-helper/branch/master/graph/badge.svg)](https://codecov.io/gh/Nexucis/es-php-index-helper) [![Latest Stable Version](https://poser.pugx.org/nexucis/es-index-helper/v/stable)](https://packagist.org/packages/nexucis/es-index-helper) [![Total Downloads](https://poser.pugx.org/nexucis/es-index-helper/downloads)](https://packagist.org/packages/nexucis/es-index-helper)
 
 1. [Overview](#overview) 
 2. [Installation](#installation)
@@ -32,7 +30,8 @@ Where :
 
 | Elasticsearch Version | Support Branch  |
 | --------------------- | --------------- |
-| >= 6.0                | master          |
+| >= 7.0                | master          |
+| >= 6.0, < 7.0         | support/6.0     |
 | >= 5.0, < 6.0         | support/5.0     |
 | >= 2.0, < 5.0         | support/2.0     |
 
@@ -136,19 +135,17 @@ It takes a lot of steps and verifications to check the update is done successful
 <?php
 $alias = "myindex";
 $mappings = [
-    'my_type' => [
-        'properties' => [
-            'first_name' => [
-                'type' => 'text',
-                'analyzer' => 'standard'
-            ],
-            'age' => [
-                'type' => 'integer'
-                ]
-            ]
+    'properties' => [
+        'first_name' => [
+            'type' => 'text',
+            'analyzer' => 'standard'
+        ],
+        'age' => [
+            'type' => 'integer'
+        ]
     ]
 ];
-$helper->updateMappings($alias, $mappings);
+$helper->updateMappings($alias, $mappings, false, true, true, false);
 ```
 
 You just need to provide the alias name and the new mapping and that's it.
@@ -157,7 +154,34 @@ You just need to provide the alias name and the new mapping and that's it.
 
 * With ElasticSearch `2.4`, to call this method in an asynchronous process..
 * With ElasticSearch `5` or greater, to set the parameter `$waitForCompletion` to false. It will return taskID, which can then be used with the [_task api](https://www.elastic.co/guide/en/elasticsearch/reference/current/tasks.html)
-    
+
+:warning: Elasticsearch has started to remove the document type in the mapping. Following the [recommendation](https://www.elastic.co/blog/moving-from-types-to-typeless-apis-in-elasticsearch-7-0), 
+the method `updateMappings` has a new parameter `$includeTypeName` which allows to support the old mapping format
+
+By default, the method `updateMappings` will consider the old mapping format which is for example :
+
+```php
+<?php
+$alias = "myindex";
+$mappings = [
+    'my_type' => [
+        'properties' => [
+            'first_name' => [
+                'type' => 'text',
+                'analyzer' => 'standard'
+            ],
+            'age' => [
+                'type' => 'integer'
+            ]
+        ]
+    ]
+];
+$helper->updateMappings($alias, $mappings);
+```
+
+If you want to move to the new format, you have to remove the type in the mapping and set to false the parameter `$includeTypeName`
+
+Please be aware that the parameter `$includeTypeName` will be removed in the next major version
 ### Settings Operation
 Indices settings can be updated the same way as mapping using the `updateSettings` method:
 
@@ -224,10 +248,10 @@ Any contribution or suggestion would be really appreciated. Feel free to use the
 All following tools are running by [circleci](https://circleci.com/gh/Nexucis/es-php-index-helper), so in order to help you to improve your code and make easier your life, here it is how you can launch the tools with the correct parameter.
  
 ### Run unit test
-If you want to launch the unit test, you need to have a local elasticsearch instance which must be accessible through the url http://localhost:9200. A simply way to launch it, is to start the [corresponding container](https://hub.docker.com/_/elasticsearch/) : 
+If you want to launch the unit test, you need to have a local elasticsearch instance which must be accessible through the url http://localhost:9200. A simply way to launch it, is to start the [corresponding container](https://www.docker.elastic.co/) : 
 
 ```bash
-docker run -d -p 9200:9200 docker.elastic.co/elasticsearch/elasticsearch:6.0.0
+docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.1.1
 ```
 
 Once ElasticSearch is up, you can run the following command :

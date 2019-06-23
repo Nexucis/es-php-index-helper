@@ -61,6 +61,28 @@ abstract class AbstractIndexHelperTest extends TestCase
         ];
     }
 
+    public function aliasDataProviderWithTypeName()
+    {
+        return [
+            'latin-char-with-type' => [
+                'myindextest',
+                true
+            ],
+            'latin-char-without-type' => [
+                'myindextest',
+                false
+            ],
+            'utf-8-char-with-type' => [
+                '⿇⽸⾽',
+                true
+            ],
+            'utf-8-char-without-type' => [
+                '⿇⽸⾽',
+                false
+            ],
+        ];
+    }
+
     protected function createIndex2($alias)
     {
         $index = $alias . IndexHelper::INDEX_NAME_CONVENTION_2;
@@ -71,11 +93,11 @@ abstract class AbstractIndexHelperTest extends TestCase
         $this->client->indices()->create($params);
     }
 
-    protected function loadFinancialIndex($alias, $type = 'complains')
+    protected function loadFinancialIndex($alias)
     {
         $this->helper->createIndexByAlias($alias);
 
-        $this->addBulkDocuments($this->jsonArrayToBulkArray(self::$documents, $alias, $type));
+        $this->addBulkDocuments($this->jsonArrayToBulkArray(self::$documents, $alias));
     }
 
     /**
@@ -95,14 +117,13 @@ abstract class AbstractIndexHelperTest extends TestCase
         $this->client->bulk($params);
     }
 
-    private function jsonArrayToBulkArray($documents, $index, $type)
+    private function jsonArrayToBulkArray($documents, $index)
     {
         $params = array();
         foreach ($documents as $document) {
             $params['body'][] = [
                 'index' => [
                     '_index' => $index,
-                    '_type' => $type,
                 ]
             ];
             $params['body'][] = $document;
