@@ -109,9 +109,8 @@ class IndexHelper implements IndexHelperInterface
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4. In fact, it would be preferable to create an asynchronous process that executes this task.
      * If you set it to false, don't forget to put an alias to the new index when the corresponding task is gone.
      * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
-     * @throws RuntimeException
-     * @throws IndexNotFoundException
      * @throws IndexAlreadyExistException
+     * @throws IndexNotFoundException
      */
     public function copyIndex($aliasSrc, $aliasDest, $refresh = false, $waitForCompletion = true)
     {
@@ -158,7 +157,6 @@ class IndexHelper implements IndexHelperInterface
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
      * If you set it to false, don't forget to remove the old index and to switch the alias after the task is gone.
      * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
-     * @throws RuntimeException
      * @throws IndexNotFoundException
      */
     public function reindex($alias, $refresh = false, $needToCreateIndexDest = true, $waitForCompletion = true)
@@ -251,7 +249,6 @@ class IndexHelper implements IndexHelperInterface
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
      * If you set it to false, don't forget to remove the old index and to switch the alias after the task is gone.
      * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
-     * @throws RuntimeException
      * @throws IndexNotFoundException
      */
     public function updateSettings($alias, $settings, $refresh = false, $needReindexation = true, $waitForCompletion = true)
@@ -310,11 +307,13 @@ class IndexHelper implements IndexHelperInterface
      * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
      * If you set it to false, don't forget to remove the old index and to switch the alias after the task is gone.
+     * @param bool $includeTypeName : Indicate if you still use a type in your index. To be ready for the next release (v8), you should consider to set this parameter to false.
+     * Which means you have to change your mapping to remove the usage of the type. See more here: https://www.elastic.co/blog/moving-from-types-to-typeless-apis-in-elasticsearch-7-0
+     * This parameter will be removed in the next release
      * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
-     * @throws RuntimeException
      * @throws IndexNotFoundException
      */
-    public function updateMappings($alias, $mapping, $refresh = false, $needReindexation = true, $waitForCompletion = true)
+    public function updateMappings($alias, $mapping, $refresh = false, $needReindexation = true, $waitForCompletion = true, $includeTypeName = true)
     {
         if (!$this->existsAlias($alias)) {
             throw new IndexNotFoundException($alias);
@@ -339,6 +338,10 @@ class IndexHelper implements IndexHelperInterface
         }
 
         $this->copySettings($params, $settings);
+
+        if ($includeTypeName) {
+            $params['include_type_name'] = true;
+        }
 
         $result = $this->client->indices()->create($params);
 
@@ -402,7 +405,7 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param $alias string [REQUIRED] the name of the index or the name of the alias
-     * @param @deprecated $type string [REQUIRED] the type of the document
+     * @param $type string [REQUIRED] the type of the document
      * @param $id string|int [REQUIRED] the document ID
      * @param $refresh bool
      * @return callable|array
@@ -439,7 +442,7 @@ class IndexHelper implements IndexHelperInterface
     /**
      * @param string $alias [REQUIRED]
      * @param array|null $query
-     * @param @deprecated string $type. This parameter will be removed in the next major release
+     * @param string $type . This parameter will be removed in the next major release
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
      * @return callable|array
@@ -467,7 +470,7 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param $alias [REQUIRED]
-     * @param @deprecated string $type. This parameter will be removed in the next major release
+     * @param string $type . This parameter will be removed in the next major release
      * @param array|null $body
      * @param SearchParameter $searchParameter
      * @return callable|array
@@ -501,7 +504,7 @@ class IndexHelper implements IndexHelperInterface
     /**
      * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index
      * @param $id [REQUIRED]
-     * @param @deprecated string $type [REQUIRED]
+     * @param string $type [REQUIRED]
      * @param array $body [REQUIRED] : actual document to update
      * @param bool $refresh wait until the result are visible to search
      * @return boolean : true if the document has been updated. Otherwise, the document has been created.
@@ -518,7 +521,7 @@ class IndexHelper implements IndexHelperInterface
     /**
      * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index
      * @param $id [REQUIRED]
-     * @param @deprecated string $type [REQUIRED]
+     * @param string $type [REQUIRED]
      * @param array $body [REQUIRED] : actual document to create
      * @param bool $refresh wait until the result are visible to search
      * @return boolean : true if the document has been created.
@@ -562,7 +565,7 @@ class IndexHelper implements IndexHelperInterface
     /**
      * @param $alias [REQUIRED]
      * @param $id [REQUIRED]
-     * @param @deprecated string $type [REQUIRED]
+     * @param string $type [REQUIRED]
      * @param boolean $refresh , Refresh the index after performing the operation
      * @return void
      * @throws IndexNotFoundException
@@ -733,7 +736,6 @@ class IndexHelper implements IndexHelperInterface
         }
 
         $this->copySettings($params, $settingSource);
-
 
         $this->client->indices()->create($params);
     }

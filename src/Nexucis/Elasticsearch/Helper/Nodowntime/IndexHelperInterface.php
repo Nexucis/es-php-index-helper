@@ -4,7 +4,6 @@ namespace Nexucis\Elasticsearch\Helper\Nodowntime;
 
 use Elasticsearch\Client;
 use Elasticsearch\Common\Exceptions\InvalidArgumentException;
-use Elasticsearch\Common\Exceptions\RuntimeException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexAlreadyExistException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Parameter\SearchParameter;
@@ -50,9 +49,8 @@ interface IndexHelperInterface
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4. In fact, it would be preferable to create an asynchronous process that executes this task.
      * If you set it to false, don't forget to put an alias to the new index when the corresponding task is gone.
      * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
-     * @throws RuntimeException
-     * @throws IndexNotFoundException
      * @throws IndexAlreadyExistException
+     * @throws IndexNotFoundException
      */
     public function copyIndex($aliasSrc, $aliasDest, $refresh = false, $waitForCompletion = true);
 
@@ -64,7 +62,6 @@ interface IndexHelperInterface
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
      * If you set it to false, don't forget to remove the old index and to switch the alias after the task is gone.
      * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
-     * @throws RuntimeException
      * @throws IndexNotFoundException
      */
     public function reindex($alias, $refresh = false, $needToCreateIndexDest = true, $waitForCompletion = true);
@@ -95,7 +92,6 @@ interface IndexHelperInterface
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
      * If you set it to false, don't forget to remove the old index and to switch the alias after the task is gone.
      * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
-     * @throws RuntimeException
      * @throws IndexNotFoundException
      */
     public function updateSettings($alias, $settings, $refresh = false, $needReindexation = true, $waitForCompletion = true);
@@ -112,11 +108,13 @@ interface IndexHelperInterface
      * @param bool $waitForCompletion : According to the official documentation (https://www.elastic.co/guide/en/elasticsearch/reference/2.4/docs-reindex.html),
      * it is strongly advised to not set this parameter to false with ElasticSearch 2.4.
      * If you set it to false, don't forget to remove the old index and to switch the alias after the task is gone.
+     * @param bool $includeTypeName : Indicate if you still use a type in your index. To be ready for the next release (v8), you should consider to set this parameter to false.
+     * Which means you have to change your mapping to remove the usage of the type. See more here: https://www.elastic.co/blog/moving-from-types-to-typeless-apis-in-elasticsearch-7-0
+     * This parameter will be removed in the next release
      * @return string : the task ID if the parameter $waitForCompletion is set to false, acknowledge if not
-     * @throws RuntimeException
      * @throws IndexNotFoundException
      */
-    public function updateMappings($alias, $mapping, $refresh = false, $needReindexation = true, $waitForCompletion = true);
+    public function updateMappings($alias, $mapping, $refresh = false, $needReindexation = true, $waitForCompletion = true, $includeTypeName = true);
 
     /**
      * @return array
@@ -149,25 +147,25 @@ interface IndexHelperInterface
      * @param string $alias [REQUIRED]
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
-     * @throws IndexNotFoundException
      * @return callable|array
+     * @throws IndexNotFoundException
      */
     public function getAllDocuments($alias, $from = 0, $size = 10);
 
     /**
      * @param string $alias [REQUIRED]
      * @param array|null $query
-     * @param @deprecated string $type
+     * @param string $type
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
-     * @throws IndexNotFoundException
      * @return callable|array
+     * @throws IndexNotFoundException
      */
     public function searchDocuments($alias, $query = null, $type = null, $from = 0, $size = 10);
 
     /**
      * @param $alias
-     * @param @deprecated string $type
+     * @param string $type
      * @param array|null $body
      * @param SearchParameter $searchParameter
      * @return callable|array
@@ -178,7 +176,7 @@ interface IndexHelperInterface
     /**
      * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index
      * @param $id [REQUIRED]
-     * @param @deprecated string $type [REQUIRED]
+     * @param string $type [REQUIRED]
      * @param array $body [REQUIRED] : actual document to update
      * @param bool $refresh wait until the result are visible to search
      * @return boolean : true if the document has been updated. Otherwise, the document has been created.
@@ -189,7 +187,7 @@ interface IndexHelperInterface
     /**
      * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index
      * @param $id [REQUIRED]
-     * @param @deprecated string $type [REQUIRED]
+     * @param string $type [REQUIRED]
      * @param array $body [REQUIRED] : actual document to create
      * @param bool $refresh wait until the result are visible to search
      * @return boolean : true if the document has been created.
@@ -202,14 +200,13 @@ interface IndexHelperInterface
      *
      * @param string $alias [REQUIRED]
      * @return void
-     * @throws IndexNotFoundException
      */
     public function deleteAllDocuments($alias);
 
     /**
      * @param $alias [REQUIRED]
      * @param $id [REQUIRED]
-     * @param @deprecated string $type [REQUIRED]
+     * @param string $type [REQUIRED]
      * @param boolean $refresh , Refresh the index after performing the operation
      * @return void
      * @throws IndexNotFoundException

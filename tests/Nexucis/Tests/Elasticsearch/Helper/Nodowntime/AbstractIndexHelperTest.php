@@ -61,6 +61,28 @@ abstract class AbstractIndexHelperTest extends TestCase
         ];
     }
 
+    public function aliasDataProviderWithTypeName()
+    {
+        return [
+            'latin-char-with-type' => [
+                'myindextest',
+                true
+            ],
+            'latin-char-without-type' => [
+                'myindextest',
+                false
+            ],
+            'utf-8-char-with-type' => [
+                '⿇⽸⾽',
+                true
+            ],
+            'utf-8-char-without-type' => [
+                '⿇⽸⾽',
+                false
+            ],
+        ];
+    }
+
     protected function createIndex2($alias)
     {
         $index = $alias . IndexHelper::INDEX_NAME_CONVENTION_2;
