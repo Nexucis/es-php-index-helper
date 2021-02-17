@@ -2,6 +2,8 @@
 
 namespace Nexucis\Tests\Elasticsearch\Helper\Nodowntime;
 
+use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
+
 class MappingsActionTest extends AbstractIndexHelperTest
 {
 
@@ -33,12 +35,11 @@ class MappingsActionTest extends AbstractIndexHelperTest
         $this->assertEquals(array(), $this->helper->getMappings($alias));
     }
 
-    /**
-     * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
-     */
     public function testUpdateMappingsIndexNotFoundException()
     {
         $aliasSrc = 'myindextest';
+
+        $this->expectException(IndexNotFoundException::class);
 
         $this->helper->updateMappings($aliasSrc, array());
     }
@@ -241,12 +242,12 @@ class MappingsActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
     }
 
-    /**
-     * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
-     */
     public function testGetMappingsIndexNotFound()
     {
         $alias = 'myindex';
+
+        $this->expectException(IndexNotFoundException::class);
+
         $this->helper->getMappings($alias);
     }
 

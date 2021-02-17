@@ -2,37 +2,37 @@
 
 namespace Nexucis\Tests\Elasticsearch\Helper\Nodowntime;
 
+use Elasticsearch\Common\Exceptions\InvalidArgumentException;
+use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
+
 class SettingsActionTest extends AbstractIndexHelperTest
 {
-
-    /**
-     * @expectedException \Elasticsearch\Common\Exceptions\InvalidArgumentException
-     */
     public function testAddSettingsEmpty()
     {
         $aliasSrc = 'myindextest';
         $this->helper->createIndexByAlias($aliasSrc);
 
+        $this->expectException(InvalidArgumentException::class);
+
         $this->helper->addSettings($aliasSrc, array());
     }
 
-    /**
-     * @expectedException \Elasticsearch\Common\Exceptions\InvalidArgumentException
-     */
     public function testAddSettingsNull()
     {
         $aliasSrc = 'myindextest';
         $this->helper->createIndexByAlias($aliasSrc);
 
+        $this->expectException(InvalidArgumentException::class);
+
         $this->helper->addSettings($aliasSrc, null);
     }
 
-    /**
-     * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
-     */
     public function testAddSettingsIndexNotFoundException()
     {
         $aliasSrc = 'myindextest';
+
+        $this->expectException(IndexNotFoundException::class);
+
         $this->helper->addSettings($aliasSrc, null);
     }
 
@@ -113,12 +113,12 @@ class SettingsActionTest extends AbstractIndexHelperTest
         $this->assertFalse(array_key_exists('analysis', $this->helper->getSettings($alias)));
     }
 
-    /**
-     * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
-     */
     public function testUpdateSettingsIndexNotFound()
     {
         $aliasSrc = 'myindextest';
+
+        $this->expectException(IndexNotFoundException::class);
+
         $this->helper->updateSettings($aliasSrc, array());
     }
 
@@ -253,12 +253,12 @@ class SettingsActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
     }
 
-    /**
-     * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
-     */
     public function testGetSettingsIndexNotFoundException()
     {
         $aliasSrc = 'myindextest';
+
+        $this->expectException(IndexNotFoundException::class);
+
         $this->helper->getSettings($aliasSrc);
     }
 
