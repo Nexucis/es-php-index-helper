@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/php:7.2.9-apache-stretch-node-browsers
+      - image: circleci/php:<< parameters.php-version >>-apache-stretch-node-browsers
       - image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
         environment:
           - discovery.type=single-node
@@ -102,6 +102,9 @@ workflows:
   build_and_analyze:
     jobs:
       - build
+          matrix:
+              parameters:
+                  php-version: [ "7.1", "7.2", "7.3", "7.4", "8.0" ]
       - analyze_phpcs:
           requires:
             - build
