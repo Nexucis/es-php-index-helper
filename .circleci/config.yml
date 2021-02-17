@@ -103,8 +103,8 @@ workflows:
     jobs:
       - build:
           matrix:
-              parameters:
-                  php-version: [ "7.1", "7.2", "7.3", "7.4", "8.0" ]
+            parameters:
+              php-version: [ "7.1", "7.2", "7.3", "7.4", "8.0" ]
       - analyze_phpcs:
           requires:
             - build
