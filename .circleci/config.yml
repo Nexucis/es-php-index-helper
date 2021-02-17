@@ -101,7 +101,7 @@ workflows:
   version: 2
   build_and_analyze:
     jobs:
-      - build
+      - build:
           matrix:
               parameters:
                   php-version: [ "7.1", "7.2", "7.3", "7.4", "8.0" ]
