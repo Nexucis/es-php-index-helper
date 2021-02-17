@@ -26,8 +26,10 @@ abstract class AbstractIndexHelperTest extends TestCase
      */
     public static function setUpBeforeClass(): void
     {
-        // load static data
-        self::$documents = json_decode(file_get_contents('http://data.consumerfinance.gov/api/views.json'));
+        self::$documents = self::$documents === null
+            ? json_decode(file_get_contents(__DIR__ . '/views.json'))
+            : self::$documents;
+
         parent::setUpBeforeClass();
     }
 
