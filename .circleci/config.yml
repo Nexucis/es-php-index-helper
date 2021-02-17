@@ -5,7 +5,7 @@ jobs:
       php-versions:
         type: string
     docker:
-      - image: circleci/php:<< parameters.php-versions >>-apache-stretch-node-browsers
+      - image: circleci/php:<< parameters.php-versions >>-apache-buster-node-browsers
       - image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
         environment:
           - discovery.type=single-node
