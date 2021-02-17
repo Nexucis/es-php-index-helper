@@ -1,8 +1,11 @@
-version: 2
+version: 2.1
 jobs:
   build:
+    parameters:
+      php-versions:
+        type: string
     docker:
-      - image: circleci/php:<< parameters.php-version >>-apache-stretch-node-browsers
+      - image: circleci/php:<< parameters.php-versions >>-apache-stretch-node-browsers
       - image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
         environment:
           - discovery.type=single-node
@@ -97,23 +100,23 @@ jobs:
       - checkout
       - run: checkEncoding utf-8 *.php *.md *.xml *.sh composer.json phpstan.neon
 
+
 workflows:
-  version: 2
-  build_and_analyze:
-    jobs:
-      - build:
-          matrix:
-            parameters:
-              php-version: [ "7.1", "7.2", "7.3", "7.4", "8.0" ]
-      - analyze_phpcs:
-          requires:
-            - build
-      - analyze_phpstan:
-          requires:
-            - build
-      - analyze_eol:
-          requires:
-            - build
-      - analyze_encoding_utf8:
-          requires:
-            - build
+    build_and_analyze:
+        jobs:
+            - build:
+                  matrix:
+                      parameters:
+                          php-versions: ["7.1", "7.2", "7.3", "7.4", "8.0"]
+            - analyze_phpcs:
+                requires:
+                    - build
+            - analyze_phpstan:
+                requires:
+                    - build
+            - analyze_eol:
+                  requires:
+                    - build
+            - analyze_encoding_utf8:
+                requires:
+                    - build
