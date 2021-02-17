@@ -84,7 +84,7 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * @param $alias : alias [REQUIRED]
+     * @param string $alias [REQUIRED]
      * @return void
      * @throws IndexNotFoundException
      */
@@ -206,7 +206,7 @@ class IndexHelper implements IndexHelperInterface
      * you don't need to reindex , unlike the delete task
      *
      * @param string $alias [REQUIRED]
-     * @param array $settings [REQUIRED]
+     * @param mixed[] $settings [REQUIRED]
      * @return void
      * @throws IndexNotFoundException
      * @throws InvalidArgumentException
@@ -240,7 +240,7 @@ class IndexHelper implements IndexHelperInterface
      * This method must call when you want to delete something inside the settings.
      *
      * @param string $alias [REQUIRED]
-     * @param array $settings [REQUIRED]
+     * @param mixed $settings [REQUIRED]
      * @param string|bool $refresh wait until the result are visible to search
      * @param bool $needReindexation : The process of reindexation can be so long, instead of calling reindex method inside this method,
      * you may want to call it in an asynchronous process.
@@ -299,7 +299,7 @@ class IndexHelper implements IndexHelperInterface
      * This method must call whenever you want to add or delete something inside the mappings
      *
      * @param string $alias [REQUIRED]
-     * @param array $mapping [REQUIRED]
+     * @param mixed[] $mapping [REQUIRED]
      * @param string|bool $refresh wait until the result are visible to search
      * @param bool $needReindexation : The process of reindexation can be so long, instead of calling reindex method inside this method,
      * you may want to call it in an asynchronous process.
@@ -353,7 +353,7 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * @return array
+     * @return mixed[]
      */
     public function getListAlias()
     {
@@ -369,7 +369,7 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param string $alias [REQUIRED]
-     * @return array
+     * @return mixed[]
      * @throws IndexNotFoundException
      */
     public function getMappings($alias)
@@ -390,7 +390,7 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param string $alias [REQUIRED]
-     * @return array
+     * @return mixed[]
      * @throws IndexNotFoundException
      */
     public function getSettings($alias)
@@ -404,11 +404,11 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * @param $alias string [REQUIRED] the name of the index or the name of the alias
-     * @param $type string [REQUIRED] the type of the document
-     * @param $id string|int [REQUIRED] the document ID
-     * @param $refresh bool
-     * @return callable|array
+     * @param string $alias [REQUIRED] the name of the index or the name of the alias
+     * @param string $type [REQUIRED] the type of the document
+     * @param string|int $id [REQUIRED] the document ID
+     * @param bool $refresh
+     * @return callable|mixed[]
      * @throws IndexNotFoundException
      */
     public function getDocument($alias, $type, $id, $refresh = false)
@@ -431,7 +431,7 @@ class IndexHelper implements IndexHelperInterface
      * @param string $alias [REQUIRED]
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
-     * @return callable|array
+     * @return callable|mixed[]
      * @throws IndexNotFoundException
      */
     public function getAllDocuments($alias, $from = 0, $size = 10)
@@ -441,11 +441,11 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param string $alias [REQUIRED]
-     * @param array|null $query
+     * @param mixed[]|null $query
      * @param string $type . This parameter will be removed in the next major release
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
-     * @return callable|array
+     * @return callable|mixed[]
      * @throws IndexNotFoundException
      */
     public function searchDocuments($alias, $query = null, $type = null, $from = 0, $size = 10)
@@ -469,11 +469,11 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * @param $alias [REQUIRED]
+     * @param string $alias [REQUIRED]
      * @param string $type . This parameter will be removed in the next major release
-     * @param array|null $body
+     * @param mixed[]|null $body
      * @param SearchParameter $searchParameter
-     * @return callable|array
+     * @return callable|mixed[]
      * @throws IndexNotFoundException
      */
     public function advancedSearchDocument($alias, $type = null, $body = null, $searchParameter = null)
@@ -503,11 +503,11 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index
-     * @param $id [REQUIRED]
+     * @param string $id [REQUIRED]
      * @param string $type [REQUIRED]
-     * @param array $body [REQUIRED] : actual document to update
+     * @param mixed[] $body [REQUIRED] : actual document to update
      * @param bool $refresh wait until the result are visible to search
-     * @return boolean : true if the document has been updated. Otherwise, the document has been created.
+     * @return bool : true if the document has been updated. Otherwise, the document has been created.
      * @throws IndexNotFoundException
      */
     public function updateDocument($index, $id, $type, $body, $refresh = false)
@@ -520,11 +520,11 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index
-     * @param $id [REQUIRED]
+     * @param string $id [REQUIRED]
      * @param string $type [REQUIRED]
-     * @param array $body [REQUIRED] : actual document to create
+     * @param mixed $body [REQUIRED] : actual document to create
      * @param bool $refresh wait until the result are visible to search
-     * @return boolean : true if the document has been created.
+     * @return bool : true if the document has been created.
      * @throws IndexNotFoundException
      */
     public function addDocument($index, $type, $body, $id = null, $refresh = false)
@@ -563,10 +563,10 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * @param $alias [REQUIRED]
-     * @param $id [REQUIRED]
+     * @param string $alias [REQUIRED]
+     * @param string $id [REQUIRED]
      * @param string $type [REQUIRED]
-     * @param boolean $refresh , Refresh the index after performing the operation
+     * @param bool $refresh , Refresh the index after performing the operation
      * @return void
      * @throws IndexNotFoundException
      */
@@ -597,7 +597,7 @@ class IndexHelper implements IndexHelperInterface
     /**
      * @param string $index
      * @param string|integer $id
-     * @param array $body
+     * @param mixed[] $body
      * @param string $type
      * @param bool $refresh
      * @return mixed
@@ -622,7 +622,7 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * @param $index : index can put here [REQUIRED]
+     * @param string $index : index can put here [REQUIRED]
      * @return void
      */
     protected function deleteIndex($index)
@@ -636,6 +636,7 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param string $index
+     * @return void
      */
     protected function openIndex($index)
     {
@@ -647,6 +648,7 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param string $index
+     * @return void
      */
     protected function closeIndex($index)
     {
@@ -669,7 +671,7 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * @param $index
+     * @param string $index
      * @return bool : true if the index doesn't have any documents. False otherwise.
      */
     protected function indexIsEmpty($index)
@@ -678,7 +680,7 @@ class IndexHelper implements IndexHelperInterface
     }
 
     /**
-     * @param $index
+     * @param string $index
      * @return int
      */
     protected function countDocuments($index)
@@ -700,20 +702,14 @@ class IndexHelper implements IndexHelperInterface
             'name' => urlencode($alias)
         );
 
-        $response = $this->client->indices()->existsAlias($params);
-
-        if (is_array($response) && array_key_exists('status', $response)) {
-            return $response['status'] === 200;
-        } elseif (is_bool($response)) {
-            return $response;
-        }
-
-        return false;
+        return $this->client->indices()->existsAlias($params);
     }
 
     /**
-     * @param $indexSource
-     * @param $indexDest
+     * @param string $indexSource
+     * @param string $indexDest
+     *
+     * @return void
      */
     protected function copyMappingAndSetting($indexSource, $indexDest)
     {
@@ -740,6 +736,12 @@ class IndexHelper implements IndexHelperInterface
         $this->client->indices()->create($params);
     }
 
+    /**
+     * @param string[] $params
+     * @param mixed[] $settings
+     *
+     * @return void
+     */
     protected function copySettings(&$params, $settings)
     {
         $numberOfShards = null;
@@ -789,6 +791,10 @@ class IndexHelper implements IndexHelperInterface
         }
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     private function createBody(&$params)
     {
         if (!array_key_exists('body', $params)) {
@@ -801,7 +807,7 @@ class IndexHelper implements IndexHelperInterface
      * @param string $indexDest
      * @param string|bool $refresh wait until the result are visible to search
      * @param bool $waitForCompletion
-     * @return boolean | string
+     * @return bool | string
      */
     protected function copyDocuments($indexSrc, $indexDest, $refresh = false, $waitForCompletion = true)
     {
@@ -829,7 +835,7 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param string $index
-     * @return callable|array
+     * @return mixed[]
      */
     protected function getSettingsByIndex($index)
     {
@@ -841,7 +847,7 @@ class IndexHelper implements IndexHelperInterface
 
     /**
      * @param string $index
-     * @return callable|array
+     * @return mixed[]
      */
     protected function getMappingsByIndex($index)
     {
@@ -869,6 +875,8 @@ class IndexHelper implements IndexHelperInterface
      * @param string $alias
      * @param string $indexSrc
      * @param string $indexDest
+     *
+     * @return void
      */
     protected function switchIndex($alias, $indexSrc, $indexDest)
     {
@@ -896,6 +904,8 @@ class IndexHelper implements IndexHelperInterface
     /**
      * @param string $alias
      * @param string $index
+     *
+     * @return void
      */
     protected function putAlias($alias, $index)
     {

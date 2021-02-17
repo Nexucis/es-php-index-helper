@@ -13,9 +13,21 @@ namespace Nexucis\Elasticsearch\Helper\Nodowntime\Parameter;
 class SearchParameter
 {
 
+    /**
+     * @var string
+     */
     public static $OPERATOR_OR = 'OR';
+    /**
+     * @var string
+     */
     public static $OPERATOR_AND = 'AND';
+    /**
+     * @var string
+     */
     public static $SEARCH_TYPE_DFS_QUERY = 'dfs_query_then_fetch';
+    /**
+     * @var string
+     */
     public static $SEARCH_TYPE_QUERY = 'query_then_fetch';
 
     /**
@@ -45,7 +57,7 @@ class SearchParameter
     protected $explain;
 
     /**
-     * @var array
+     * @var string[]
      */
     protected $fields;
     /**
@@ -59,7 +71,7 @@ class SearchParameter
     protected $ignoreIndices;
 
     /**
-     * @var array
+     * @var string[]
      */
     protected $indicesBoost;
 
@@ -94,7 +106,7 @@ class SearchParameter
     protected $requestCache;
 
     /**
-     * @var array
+     * @var string[]
      */
     protected $routing;
 
@@ -120,7 +132,7 @@ class SearchParameter
     protected $size;
 
     /**
-     * @var array
+     * @var string[]
      */
     protected $sort;
 
@@ -132,26 +144,26 @@ class SearchParameter
     /**
      * True or false to return the _source field or not, or a list of fields to return
      * The corresponding parameter in ElasticSearch is _source
-     * @var boolean|array
+     * @var bool|string[]
      */
     protected $includeSource;
 
     /**
      * A list of fields to exclude from the returned _source field
      * The corresponding parameter in ElasticSearch is _source_exclude
-     * @var array
+     * @var string[]
      */
     protected $fieldExcluded;
 
     /**
      * A list of fields to exclude from the returned _source field
      * The corresponding parameter in ElasticSearch is _source_include
-     * @var array
+     * @var string[]
      */
     protected $fieldsIncluded;
 
     /**
-     * @var array
+     * @var string[]
      */
     protected $stats;
 
@@ -183,7 +195,7 @@ class SearchParameter
     protected $timeout;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $version;
 
@@ -201,7 +213,7 @@ class SearchParameter
 
     /**
      * Convert the object to an appropriate array with the correct field attempt by ElasticSearch
-     * @return array
+     * @return string[]
      */
     public function build()
     {
@@ -293,7 +305,7 @@ class SearchParameter
     }
 
     /**
-     * @param array $fields
+     * @param string[] $fields
      * @return SearchParameter
      */
     public function fields(array $fields)
@@ -323,7 +335,7 @@ class SearchParameter
     }
 
     /**
-     * @param array $indicesBoost
+     * @param string[] $indicesBoost
      * @return SearchParameter
      */
     public function indicesBoost(array $indicesBoost)
@@ -393,7 +405,7 @@ class SearchParameter
     }
 
     /**
-     * @param array $routing
+     * @param string[] $routing
      * @return SearchParameter
      */
     public function routing(array $routing)
@@ -422,6 +434,10 @@ class SearchParameter
         return $this;
     }
 
+    /**
+     * @param int $size
+     * @return SearchParameter
+     */
     public function size(int $size)
     {
         $this->size = $size;
@@ -429,7 +445,7 @@ class SearchParameter
     }
 
     /**
-     * @param array $sort
+     * @param string[] $sort
      * @return SearchParameter
      */
     public function sort(array $sort)
@@ -449,7 +465,7 @@ class SearchParameter
     }
 
     /**
-     * @param array|bool $includeSource
+     * @param string[]|bool $includeSource
      * @return SearchParameter
      */
     public function includeSource($includeSource)
@@ -459,7 +475,7 @@ class SearchParameter
     }
 
     /**
-     * @param array $fieldIncluded
+     * @param string[] $fieldIncluded
      * @return SearchParameter
      */
     public function includeFieldsFromSource(array $fieldIncluded)
@@ -469,7 +485,7 @@ class SearchParameter
     }
 
     /**
-     * @param array $fieldExcluded
+     * @param string[] $fieldExcluded
      * @return SearchParameter
      */
     public function excludeFieldsFromSource(array $fieldExcluded)
@@ -479,7 +495,7 @@ class SearchParameter
     }
 
     /**
-     * @param array $stats
+     * @param string[] $stats
      * @return SearchParameter
      */
     public function stats(array $stats)
@@ -558,16 +574,28 @@ class SearchParameter
         return $this;
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildAnalyzer(&$params)
     {
         $this->buildString($params, 'analyzer', $this->analyzer);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildAnalyzeWildcard(&$params)
     {
         $this->buildBoolean($params, 'analyze_wildcard', $this->analyzeWildcard);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildDefaultOperator(&$params)
     {
         if (($this->defaultOperator === SearchParameter::$OPERATOR_OR) || ($this->defaultOperator === SearchParameter::$OPERATOR_AND)) {
@@ -575,76 +603,136 @@ class SearchParameter
         }
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildDf(&$params)
     {
         $this->buildString($params, 'df', $this->df);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildExplain(&$params)
     {
         $this->buildBoolean($params, 'explain', $this->explain);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildFields(&$params)
     {
         $this->buildArray($params, 'fields', $this->fields);
     }
 
+    /**
+     * @param string[] $param
+     * @return void
+     */
     protected function buildFrom(&$param)
     {
         $param['from'] = $this->from;
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildIgnoreIndices(&$params)
     {
         $this->buildString($params, 'ignore_indices', $this->ignoreIndices);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildIndicesBoost(&$params)
     {
         $this->buildArray($params, 'indices_boost', $this->indicesBoost);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildLenient(&$params)
     {
         $this->buildBoolean($params, 'lenient', $this->lenient);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildLowercaseExpendedTerms(&$params)
     {
         $this->buildBoolean($params, 'lowercase_expanded_terms', $this->lowercaseExpandedTerms);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildPreference(&$params)
     {
         $this->buildString($params, 'preference', $this->preference);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildQuery(&$params)
     {
         $this->buildString($params, 'q', $this->q);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildQueryCache(&$params)
     {
         $this->buildBoolean($params, 'query_cache', $this->queryCache);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildRequestCache(&$params)
     {
         $this->buildBoolean($params, 'request_cache', $this->requestCache);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildRouting(&$params)
     {
         $this->buildArray($params, 'routing', $this->routing);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildScroll(&$params)
     {
         $this->buildString($params, 'scroll', $this->scroll);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildSearchType(&$params)
     {
         if (($this->searchType === SearchParameter::$SEARCH_TYPE_DFS_QUERY) || ($this->searchType === SearchParameter::$SEARCH_TYPE_QUERY)) {
@@ -652,21 +740,37 @@ class SearchParameter
         }
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildSize(&$params)
     {
         $params['size'] = $this->size;
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildSort(&$params)
     {
         $this->buildArray($params, 'sort', $this->sort);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildSource(&$params)
     {
         $this->buildString($params, 'source', $this->source);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildIncludeSource(&$params)
     {
         if (is_bool($this->includeSource)) {
@@ -676,56 +780,103 @@ class SearchParameter
         }
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildFieldExcluded(&$params)
     {
         $this->buildArray($params, '_source_exclude', $this->fieldExcluded);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildFieldsIncluded(&$params)
     {
         $this->buildArray($params, '_source_include', $this->fieldsIncluded);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildState(&$params)
     {
         $this->buildArray($params, 'stats', $this->stats);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildSuggestField(&$params)
     {
         $this->buildString($params, 'suggest_field', $this->suggestField);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildSuggestMode(&$params)
     {
         $this->buildString($params, 'suggest_mode', $this->suggestMode);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildSuggestSize(&$params)
     {
         $this->buildInt($params, 'suggest_size', $this->suggestSize);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildSuggestText(&$params)
     {
         $this->buildString($params, 'suggest_text', $this->suggestText);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildTimeout(&$params)
     {
         $this->buildString($params, 'timeout', $this->timeout);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildTerminateAfter(&$params)
     {
         $this->buildInt($params, 'terminate_after', $this->terminateAfter);
     }
 
+    /**
+     * @param string[] $params
+     * @return void
+     */
     protected function buildVersion(&$params)
     {
         $this->buildBoolean($params, 'version', $this->version);
     }
 
+    /**
+     * @param string[] $params
+     * @param string $esParam
+     * @param bool $attribute
+     *
+     * @return void
+     */
     private function buildBoolean(&$params, string $esParam, $attribute)
     {
         if (is_bool($attribute)) {
@@ -733,6 +884,13 @@ class SearchParameter
         }
     }
 
+    /**
+     * @param string[] $params
+     * @param string $esParam
+     * @param int $attribute
+     *
+     * @return void
+     */
     private function buildInt(&$params, string $esParam, $attribute)
     {
         if (is_int($attribute) && ($attribute > 0)) {
@@ -740,6 +898,13 @@ class SearchParameter
         }
     }
 
+    /**
+     * @param string[] $params
+     * @param string $esParam
+     * @param string $attribute
+     *
+     * @return void
+     */
     private function buildString(&$params, string $esParam, $attribute)
     {
         if (is_string($attribute) && strlen($attribute) > 0) {
@@ -747,6 +912,13 @@ class SearchParameter
         }
     }
 
+    /**
+     * @param string[] $params
+     * @param string $esParam
+     * @param string[] $attribute
+     *
+     * @return void
+     */
     private function buildArray(&$params, string $esParam, $attribute)
     {
         if (is_array($attribute) && (count($attribute) !== 0)) {

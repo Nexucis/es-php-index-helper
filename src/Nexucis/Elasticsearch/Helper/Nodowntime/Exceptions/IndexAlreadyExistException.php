@@ -15,6 +15,9 @@ use Elasticsearch\Common\Exceptions\ElasticsearchException;
 class IndexAlreadyExistException extends \Exception implements ElasticsearchException
 {
 
+    /**
+     * @var string
+     */
     private $index;
 
     /**
