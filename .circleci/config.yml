@@ -84,7 +84,7 @@ jobs:
           key: v1-dependencies-{{ checksum "composer.json" }}
 
       # run code analyzer
-      - run: composer analyse src tests
+      - run: composer analyse
   analyze_eol:
     docker:
       - image: nexucis/ci-checkfiles
