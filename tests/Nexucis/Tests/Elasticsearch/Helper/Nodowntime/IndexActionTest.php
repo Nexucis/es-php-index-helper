@@ -4,9 +4,11 @@ namespace Nexucis\Tests\Elasticsearch\Helper\Nodowntime;
 
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexAlreadyExistException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
+use Yoast\PHPUnitPolyfills\Polyfills\AssertionRenames;
 
 class IndexActionTest extends AbstractIndexHelperTest
 {
+    use AssertionRenames;
 
     /**
      * @dataProvider aliasDataProvider
