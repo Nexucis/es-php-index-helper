@@ -1,7 +1,7 @@
 #!/bin/bash
 
 loop=0
-endLoop=4
+endLoop=5
 wait=1
 
 # for some strange reason, HEAD request go in infinity loop ...
