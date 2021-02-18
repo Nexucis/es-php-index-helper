@@ -29,6 +29,7 @@ jobs:
       - run: .circleci/wait_es_up.sh
 
       # enable xdebug
+      - run: echo -e "xdebug.mode = coverage" | sudo tee /usr/local/etc/php/php.ini > /dev/null
       - run: sudo ln -s /etc/php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
       - run: php --ini
 
