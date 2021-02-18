@@ -41,7 +41,7 @@ jobs:
 
   analyze_phpcs:
     docker:
-      - image: circleci/php:7.2.9-apache-stretch-node-browsers
+      - image: circleci/php:7.4-apache-stretch-node-browsers
     working_directory: ~/repo
     steps:
       - checkout
@@ -65,7 +65,7 @@ jobs:
 
   analyze_phpstan:
     docker:
-      - image: circleci/php:7.2.9-apache-stretch-node-browsers
+      - image: circleci/php:7.4-apache-stretch-node-browsers
     working_directory: ~/repo
     steps:
       - checkout
