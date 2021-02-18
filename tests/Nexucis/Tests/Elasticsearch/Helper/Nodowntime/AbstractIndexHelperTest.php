@@ -24,17 +24,19 @@ abstract class AbstractIndexHelperTest extends TestCase
     /**
      * initialize static data
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
-        // load static data
-        self::$documents = json_decode(file_get_contents('http://data.consumerfinance.gov/api/views.json'));
+        self::$documents = self::$documents === null
+            ? json_decode(file_get_contents(__DIR__ . '/views.json'))
+            : self::$documents;
+
         parent::setUpBeforeClass();
     }
 
     /**
      * initialize elasticsearch client and index Helper
      */
-    public function setUp()
+    public function setUp(): void
     {
         $client = ClientBuilder::create()->setHosts([$_SERVER['ES_TEST_HOST']])->build();
         $this->helper = new IndexHelper($client);
@@ -43,7 +45,7 @@ abstract class AbstractIndexHelperTest extends TestCase
         parent::setUp();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // remove all previously indices created by test or by the before setup
         $param = [

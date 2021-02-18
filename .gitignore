@@ -7,3 +7,5 @@ composer.lock
 # intelliJ files
 .idea/
 /**/clover.xml
+
+.phpunit.result.cache

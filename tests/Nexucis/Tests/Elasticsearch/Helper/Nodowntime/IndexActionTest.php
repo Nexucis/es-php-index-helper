@@ -2,8 +2,13 @@
 
 namespace Nexucis\Tests\Elasticsearch\Helper\Nodowntime;
 
+use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexAlreadyExistException;
+use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
+use Yoast\PHPUnitPolyfills\Polyfills\AssertionRenames;
+
 class IndexActionTest extends AbstractIndexHelperTest
 {
+    use AssertionRenames;
 
     /**
      * @dataProvider aliasDataProvider
@@ -15,13 +20,13 @@ class IndexActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
     }
 
-    /**
-     * @@expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexAlreadyExistException
-     */
     public function testCreateIndexAlreadyExistsException()
     {
         $alias = 'myindextest';
         $this->helper->createIndexByAlias($alias);
+
+        $this->expectException(IndexAlreadyExistException::class);
+
         $this->helper->createIndexByAlias($alias);
     }
 
@@ -37,12 +42,12 @@ class IndexActionTest extends AbstractIndexHelperTest
         $this->assertFalse($this->helper->existsIndex($alias . $this->helper::INDEX_NAME_CONVENTION_1));
     }
 
-    /**
-     * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
-     */
     public function testDeleteIndexNotFoundException()
     {
         $alias = 'myindextest';
+
+        $this->expectException(IndexNotFoundException::class);
+
         $this->helper->deleteIndexByAlias($alias);
     }
 
@@ -92,25 +97,24 @@ class IndexActionTest extends AbstractIndexHelperTest
         $aliasDest = "indexcopy";
 
         $result = $this->helper->copyIndex($alias, $aliasDest, false, false);
-        $this->assertRegExp('/\w+:\d+/i', $result);
+        $this->assertMatchesRegularExpression('/\w+:\d+/i', $result);
     }
 
-    /**
-     * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
-     */
     public function testCopyIndexNotFoundException()
     {
         $aliasSrc = 'myindextest';
+
+        $this->expectException(IndexNotFoundException::class);
+
         $this->helper->copyIndex($aliasSrc, $aliasSrc);
     }
 
-    /**
-     * @@expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexAlreadyExistException
-     */
     public function testCopyIndexAlreadyExistsException()
     {
         $aliasSrc = 'myindextest';
         $this->helper->createIndexByAlias($aliasSrc);
+
+        $this->expectException(IndexAlreadyExistException::class);
 
         $this->helper->copyIndex($aliasSrc, $aliasSrc);
     }
@@ -171,15 +175,14 @@ class IndexActionTest extends AbstractIndexHelperTest
 
         $result = $this->helper->reindex($alias, false, true, false);
 
-        $this->assertRegExp('/\w+:\d+/i', $result);
+        $this->assertMatchesRegularExpression('/\w+:\d+/i', $result);
     }
 
-    /**
-     * @expectedException \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
-     */
     public function testReindexIndexNotFoundException()
     {
         $aliasSrc = 'myindextest';
+
+        $this->expectException(IndexNotFoundException::class);
 
         $this->helper->reindex($aliasSrc);
     }

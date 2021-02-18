@@ -14,8 +14,9 @@ use Elasticsearch\Common\Exceptions\ElasticsearchException;
  */
 class IndexNotFoundException extends \Exception implements ElasticsearchException
 {
-
-
+    /**
+     * @var string
+     */
     private $index;
 
     /**

@@ -72,7 +72,7 @@ interface IndexHelperInterface
      * you don't need to reindex , unlike the delete task
      *
      * @param string $alias [REQUIRED]
-     * @param array $settings [REQUIRED]
+     * @param mixed[] $settings [REQUIRED]
      * @return void
      * @throws IndexNotFoundException
      * @throws InvalidArgumentException
@@ -83,7 +83,7 @@ interface IndexHelperInterface
      * This method must call when you want to delete something inside the settings.
      *
      * @param string $alias [REQUIRED]
-     * @param array $settings [REQUIRED]
+     * @param mixed[] $settings [REQUIRED]
      * @param string|bool $refresh wait until the result are visible to search
      * @param bool $needReindexation : The process of reindexation can be so long, instead of calling reindex method inside this method,
      * you may want to call it in an asynchronous process.
@@ -100,7 +100,7 @@ interface IndexHelperInterface
      * This method must call whenever you want to add or delete something inside the mappings
      *
      * @param string $alias [REQUIRED]
-     * @param array $mapping [REQUIRED]
+     * @param mixed[] $mapping [REQUIRED]
      * @param string|bool $refresh wait until the result are visible to search
      * @param bool $needReindexation : The process of reindexation can be so long, instead of calling reindex method inside this method,
      * you may want to call it in an asynchronous process.
@@ -117,28 +117,28 @@ interface IndexHelperInterface
     public function updateMappings($alias, $mapping, $refresh = false, $needReindexation = true, $waitForCompletion = true, $includeTypeName = true);
 
     /**
-     * @return array
+     * @return mixed[]
      */
     public function getListAlias();
 
     /**
      * @param string $alias [REQUIRED]
-     * @return array
+     * @return mixed[]
      */
     public function getMappings($alias);
 
     /**
      * @param string $alias [REQUIRED]
-     * @return array
+     * @return mixed[]
      */
     public function getSettings($alias);
 
     /**
-     * @param $alias string [REQUIRED] the name of the index or the name of the alias
-     * @param $type string [REQUIRED] the type of the document. This parameter will be removed in the next major release
-     * @param $id string|int [REQUIRED] the document ID
-     * @param $refresh bool
-     * @return callable|array
+     * @param string $alias [REQUIRED] the name of the index or the name of the alias
+     * @param string $type [REQUIRED] the type of the document. This parameter will be removed in the next major release
+     * @param string|int $id [REQUIRED] the document ID
+     * @param bool $refresh
+     * @return callable|mixed[]
      * @throws IndexNotFoundException
      */
     public function getDocument($alias, $type, $id, $refresh = false);
@@ -147,50 +147,50 @@ interface IndexHelperInterface
      * @param string $alias [REQUIRED]
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
-     * @return callable|array
+     * @return callable|mixed[]
      * @throws IndexNotFoundException
      */
     public function getAllDocuments($alias, $from = 0, $size = 10);
 
     /**
      * @param string $alias [REQUIRED]
-     * @param array|null $query
+     * @param mixed[]|null $query
      * @param string $type. This parameter will be removed in the next major release
      * @param int $from the offset from the first result you want to fetch (0 by default)
      * @param int $size allows you to configure the maximum amount of hits to be returned. (10 by default)
-     * @return callable|array
+     * @return callable|mixed[]
      * @throws IndexNotFoundException
      */
     public function searchDocuments($alias, $query = null, $type = null, $from = 0, $size = 10);
 
     /**
-     * @param $alias
+     * @param string $alias
      * @param string $type. This parameter will be removed in the next major release
-     * @param array|null $body
+     * @param mixed[]|null $body
      * @param SearchParameter $searchParameter
-     * @return callable|array
+     * @return callable|mixed[]
      * @throws IndexNotFoundException
      */
     public function advancedSearchDocument($alias, $type = null, $body = null, $searchParameter = null);
 
     /**
      * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index
-     * @param $id [REQUIRED]
+     * @param string $id [REQUIRED]
      * @param string $type [REQUIRED]. This parameter will be removed in the next major release
-     * @param array $body [REQUIRED] : actual document to update
+     * @param mixed[] $body [REQUIRED] : actual document to update
      * @param bool $refresh wait until the result are visible to search
-     * @return boolean : true if the document has been updated. Otherwise, the document has been created.
+     * @return bool : true if the document has been updated. Otherwise, the document has been created.
      * @throws IndexNotFoundException
      */
     public function updateDocument($index, $id, $type, $body, $refresh = false);
 
     /**
      * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index
-     * @param $id [REQUIRED]
+     * @param string $id [REQUIRED]
      * @param string $type [REQUIRED]. This parameter will be removed in the next major release
-     * @param array $body [REQUIRED] : actual document to create
+     * @param mixed[] $body [REQUIRED] : actual document to create
      * @param bool $refresh wait until the result are visible to search
-     * @return boolean : true if the document has been created.
+     * @return bool : true if the document has been created.
      * @throws IndexNotFoundException
      */
     public function addDocument($index, $type, $body, $id = null, $refresh = false);
@@ -204,10 +204,10 @@ interface IndexHelperInterface
     public function deleteAllDocuments($alias);
 
     /**
-     * @param $alias [REQUIRED]
-     * @param $id [REQUIRED]
+     * @param string $alias [REQUIRED]
+     * @param string $id [REQUIRED]
      * @param string $type [REQUIRED]. This parameter will be removed in the next major release
-     * @param boolean $refresh , Refresh the index after performing the operation
+     * @param bool $refresh , Refresh the index after performing the operation
      * @return void
      * @throws IndexNotFoundException
      */

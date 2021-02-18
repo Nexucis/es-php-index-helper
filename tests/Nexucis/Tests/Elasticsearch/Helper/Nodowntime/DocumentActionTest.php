@@ -2,17 +2,19 @@
 
 namespace Nexucis\Tests\Elasticsearch\Helper\Nodowntime;
 
+use Elasticsearch\Common\Exceptions\Missing404Exception;
+use Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException;
 use Nexucis\Elasticsearch\Helper\Nodowntime\Parameter\SearchParameter;
 use stdClass;
 
 class DocumentActionTest extends AbstractIndexHelperTest
 {
-    /**
-     * @expectedException  \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
-     */
     public function testDeleteAllDocumentsIndexNotFound()
     {
         $alias = 'myindex';
+
+        $this->expectException(IndexNotFoundException::class);
+
         $this->helper->deleteAllDocuments($alias);
     }
 
@@ -72,21 +74,21 @@ class DocumentActionTest extends AbstractIndexHelperTest
         $this->assertTrue(count($aliases) === 2);
     }
 
-    /**
-     * @expectedException  \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
-     */
     public function testGetDocumentIndexNotFound()
     {
         $alias = 'myindex';
+
+        $this->expectException(IndexNotFoundException::class);
+
         $this->helper->getDocument($alias, 'test', 'id');
     }
 
-    /**
-     * @expectedException  \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
-     */
     public function testAddDocumentIndexNotFound()
     {
         $alias = 'myindex';
+
+        $this->expectException(IndexNotFoundException::class);
+
         $this->helper->addDocument($alias, 'test', []);
     }
 
@@ -109,12 +111,12 @@ class DocumentActionTest extends AbstractIndexHelperTest
         $this->assertSame($body['test'], $document['_source']['test']);
     }
 
-    /**
-     * @expectedException  \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
-     */
     public function testUpdateDocumentIndexNotFound()
     {
         $alias = 'myindex';
+
+        $this->expectException(IndexNotFoundException::class);
+
         $this->helper->updateDocument($alias, 0, 'test', []);
     }
 
@@ -138,12 +140,12 @@ class DocumentActionTest extends AbstractIndexHelperTest
         $this->assertTrue($this->helper->updateDocument($alias, $id, $type, $body));
     }
 
-    /**
-     * @expectedException  \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
-     */
     public function testDeleteDocumentIndexNotFound()
     {
         $alias = 'myindex';
+
+        $this->expectException(IndexNotFoundException::class);
+
         $this->helper->deleteDocument($alias, 0, 'test');
     }
 
@@ -169,28 +171,30 @@ class DocumentActionTest extends AbstractIndexHelperTest
             'index' => $alias
         );
 
-        $this->expectException(\Elasticsearch\Common\Exceptions\Missing404Exception::class);
+        $this->expectException(Missing404Exception::class);
         $this->client->get($param);
     }
 
     /**
      * @dataProvider aliasDataProvider
-     * @expectedException \Elasticsearch\Common\Exceptions\Missing404Exception
      */
     public function testDocumentNotExist(string $alias)
     {
         $type = 'test';
         $id = 0;
         $this->helper->createIndexByAlias($alias);
+
+        $this->expectException(Missing404Exception::class);
+
         $this->helper->deleteDocument($alias, $id, $type);
     }
 
-    /**
-     * @expectedException  \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
-     */
     public function testGetAllDocumentIndexNotFound()
     {
         $alias = 'myindex';
+
+        $this->expectException(IndexNotFoundException::class);
+
         $this->helper->getAllDocuments($alias);
     }
 
@@ -220,12 +224,12 @@ class DocumentActionTest extends AbstractIndexHelperTest
         $this->assertTrue(count($result['hits']['hits']) === 10);
     }
 
-    /**
-     * @expectedException  \Nexucis\Elasticsearch\Helper\Nodowntime\Exceptions\IndexNotFoundException
-     */
     public function testSearchDocumentsIndexNotFound()
     {
         $alias = 'myindex';
+
+        $this->expectException(IndexNotFoundException::class);
+
         $this->helper->searchDocuments($alias);
     }
 
