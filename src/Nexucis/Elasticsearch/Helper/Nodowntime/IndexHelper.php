@@ -240,7 +240,7 @@ class IndexHelper implements IndexHelperInterface
      * This method must call when you want to delete something inside the settings.
      *
      * @param string $alias [REQUIRED]
-     * @param mixed $settings [REQUIRED]
+     * @param mixed[] $settings [REQUIRED]
      * @param string|bool $refresh wait until the result are visible to search
      * @param bool $needReindexation : The process of reindexation can be so long, instead of calling reindex method inside this method,
      * you may want to call it in an asynchronous process.
@@ -522,7 +522,7 @@ class IndexHelper implements IndexHelperInterface
      * @param string $index [REQUIRED] If the alias is associated to an unique index, you can pass an alias rather than an index
      * @param string $id [REQUIRED]
      * @param string $type [REQUIRED]
-     * @param mixed $body [REQUIRED] : actual document to create
+     * @param mixed[] $body [REQUIRED] : actual document to create
      * @param bool $refresh wait until the result are visible to search
      * @return bool : true if the document has been created.
      * @throws IndexNotFoundException
